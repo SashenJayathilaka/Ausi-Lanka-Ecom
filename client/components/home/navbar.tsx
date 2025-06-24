@@ -1,17 +1,16 @@
 "use client";
 
+import { useCartStore } from "@/store/useCartStore";
 import { fadeIn } from "@/utils/motion";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { HiMenu, HiX, HiShoppingCart } from "react-icons/hi";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
 import Link from "next/link";
+import { useState } from "react";
+import { HiMenu, HiShoppingCart, HiX } from "react-icons/hi";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("#home");
-  const cartItems = useSelector((state: RootState) => state.bucket.products);
+  const cartItems = useCartStore((state) => state.products);
 
   const navLinks = [
     { href: "/", label: "Home" },
