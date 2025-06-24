@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer";
+import { calculate } from "../calculator/calculator.js";
 
 export const scrapeProduct = async (req, res) => {
   const productUrl = req.query.url;
@@ -70,8 +71,9 @@ export const scrapeProduct = async (req, res) => {
     const image = (await extractImage()) || "Image not found";
 
     await browser.close();
+    const calPrice = calculate(price);
 
-    res.json({ title, price, image });
+    res.json({ title, price, image, calculatedPrice: calPrice });
   } catch (err) {
     console.error("Scrape error:", err.message);
     res.status(500).json({ error: "Scraping failed." });

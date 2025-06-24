@@ -1,15 +1,16 @@
 "use client";
 
-import { clearBucket, removeProduct } from "@/store/bucketSlice";
-import { RootState } from "@/store/store";
+import { useCartStore } from "@/store/useCartStore";
 import { fadeIn, listItem, staggerContainer } from "@/utils/motion";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { FiPackage, FiShoppingCart, FiTrash2, FiX } from "react-icons/fi";
-import { useDispatch, useSelector } from "react-redux";
 
 const Bucket = () => {
-  const dispatch = useDispatch();
-  const products = useSelector((state: RootState) => state.bucket.products);
+  const router = useRouter();
+  const products = useCartStore((state) => state.products);
+  const removeProduct = useCartStore((state) => state.removeProduct);
+  const clearCart = useCartStore((state) => state.clearCart);
 
   const calculateTotal = () => {
     return products.reduce((total, product) => {
@@ -25,7 +26,7 @@ const Bucket = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
-      className="bg-white rounded-xl shadow-xl flex flex-col h-full w-full lg:w-96"
+      className="bg-transparent rounded-xl shadow-xl flex flex-col h-full w-full lg:w-96"
     >
       {/* Bucket Header */}
       <motion.div
@@ -117,7 +118,7 @@ const Bucket = () => {
                   </div>
 
                   <motion.button
-                    onClick={() => dispatch(removeProduct(idx))}
+                    onClick={() => removeProduct(idx)}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     className="text-gray-400 hover:text-red-500 p-1 transition-colors flex-shrink-0"
@@ -131,7 +132,7 @@ const Bucket = () => {
         )}
       </motion.div>
 
-      {/* Fixed Bucket Footer - Always shows when there are items */}
+      {/* Footer */}
       {products.length > 0 && (
         <div className="border-t border-gray-200 p-6 bg-gray-50">
           <div className="space-y-3">
@@ -156,11 +157,12 @@ const Bucket = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium shadow-md transition-colors"
+              onClick={() => router.push("/checkout")}
             >
               Proceed to Checkout
             </motion.button>
             <motion.button
-              onClick={() => dispatch(clearBucket())}
+              onClick={clearCart}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full flex items-center justify-center gap-2 text-gray-600 hover:text-red-600 py-2 px-4 rounded-lg font-medium transition-colors"

@@ -1,20 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { addProduct } from "@/store/bucketSlice";
-import { fadeIn, staggerContainer, textVariant, slideIn } from "@/utils/motion";
+import { useCartStore } from "@/store/useCartStore";
+import { fadeIn, slideIn, staggerContainer, textVariant } from "@/utils/motion";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import {
-  FiShoppingCart,
-  FiClipboard,
   FiChevronRight,
+  FiClipboard,
+  FiShoppingCart,
   FiX,
 } from "react-icons/fi";
-import { useDispatch, useSelector } from "react-redux";
 import Bucket from "./bucket";
-import { RootState } from "@/store/store";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface ScrapeResult {
   title: string;
@@ -25,14 +23,44 @@ interface ScrapeResult {
 }
 
 const ChemistWareHouse = () => {
-  const dispatch = useDispatch();
-  const products = useSelector((state: RootState) => state.bucket.products);
+  const products = useCartStore((state) => state.products);
+  const addProduct = useCartStore((state) => state.addProduct);
+
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<ScrapeResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showBucket, setShowBucket] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
+
+  // Supported retailers data
+  const supportedRetailers = [
+    {
+      name: "Chemist Warehouse",
+      url: "https://www.chemistwarehouse.com.au/",
+      logo: "/assets/partner_chemistwarehouse.webp",
+    },
+    {
+      name: "Coles",
+      url: "https://www.coles.com.au/",
+      logo: "/assets/coles.png",
+    },
+    {
+      name: "Woolworths",
+      url: "https://www.woolworths.com.au/",
+      logo: "/assets/woolworths.png",
+    },
+    {
+      name: "JB Hi-Fi",
+      url: "https://www.jbhifi.com.au/",
+      logo: "/assets/jbhifi.png",
+    },
+    {
+      name: "Officeworks",
+      url: "https://www.officeworks.com.au/",
+      logo: "/assets/officeworks.png",
+    },
+  ];
 
   const handlePaste = async () => {
     try {
@@ -70,14 +98,24 @@ const ChemistWareHouse = () => {
         url
       )}`;
       retailer = "Coles";
+    } else if (url.includes("woolworths.com.au")) {
+      apiEndpoint = `http://localhost:5000/api/woolworths/scrape?url=${encodeURIComponent(
+        url
+      )}`;
+      retailer = "Woolworths";
     } else if (url.includes("jbhifi.com.au")) {
       apiEndpoint = `http://localhost:5000/api/jbhifi/scrape?url=${encodeURIComponent(
         url
       )}`;
       retailer = "JB Hi-Fi";
+    } else if (url.includes("officeworks.com.au")) {
+      apiEndpoint = `http://localhost:5000/api/officeworks/scrape?url=${encodeURIComponent(
+        url
+      )}`;
+      retailer = "Officeworks";
     } else {
       setError(
-        "Please enter a valid retailer URL (Chemist Warehouse, Coles, or JB Hi-Fi)."
+        "Please enter a valid retailer URL (Chemist Warehouse, Coles, Woolworths, JB Hi-Fi, or Officeworks)."
       );
       return;
     }
@@ -107,15 +145,15 @@ const ChemistWareHouse = () => {
 
   const handleAddToBucket = () => {
     if (data) {
-      dispatch(
-        addProduct({
-          name: data.title,
-          price: data.price,
-          image: data.image!,
-          url: data.url,
-          retailer: data.retailer,
-        })
-      );
+      addProduct({
+        name: data.title,
+        price: data.price,
+        image: data.image!,
+        url: data.url,
+        retailer: data.retailer,
+        calculatedPrice: 0,
+      });
+
       setUrl("");
       setData(null);
     }
@@ -134,55 +172,59 @@ const ChemistWareHouse = () => {
 
   // Get retailer logo path
   const getRetailerLogo = (retailer: string) => {
-    switch (retailer) {
-      case "Coles":
-        return "/assets/coles.png";
-      case "JB Hi-Fi":
-        return "/assets/jbhifi.png";
-      case "Chemist Warehouse":
-      default:
-        return "/assets/partner_chemistwarehouse.webp";
-    }
+    const foundRetailer = supportedRetailers.find((r) => r.name === retailer);
+    return foundRetailer
+      ? foundRetailer.logo
+      : "/assets/partner_chemistwarehouse.webp";
   };
 
   return (
     <div className="min-h-screen bg-transparent relative">
-      {/* Hero Section */}
+      {/* Enhanced Hero Section */}
       <motion.section
         className="relative py-20 md:py-32 overflow-hidden"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
       >
+        {/* New gradient background */}
+        <div className="absolute inset-0 overflow-hidden z-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 opacity-90"></div>
+          <div className="absolute inset-0 bg-[url('/assets/grid-pattern.svg')] bg-[length:60px_60px] opacity-10"></div>
+          <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-blue-400 rounded-full filter blur-[100px] opacity-30"></div>
+          <div className="absolute -top-32 -right-32 w-64 h-64 bg-purple-400 rounded-full filter blur-[100px] opacity-30"></div>
+          <div className="absolute -top-28 -left-28 w-[500px] h-[500px] bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 rounded-full blur-[80px] -z-10"></div>
+        </div>
+
         <motion.div
           variants={staggerContainer()}
           className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
         >
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-4xl mx-auto text-center">
             <motion.h1
               variants={textVariant(0.2)}
-              className="text-4xl md:text-6xl font-bold text-gray-900 mb-6"
+              className="text-4xl md:text-6xl font-bold text-white mb-6"
             >
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-800">
-                Price Scraper
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-white">
+                Smart Price Scraper
               </span>
             </motion.h1>
 
             <motion.p
               variants={textVariant(0.4)}
-              className="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto"
+              className="text-lg md:text-xl text-blue-100 mb-10 max-w-2xl mx-auto"
             >
-              Find the best deals from top retailers
+              {` Find the best deals from Australia's top retailers`}
             </motion.p>
 
             <motion.div
               variants={fadeIn("up", 0.6)}
               className="relative w-full max-w-2xl mx-auto"
             >
-              <div className="flex shadow-lg rounded-full bg-white border border-gray-200">
+              <div className="flex shadow-xl rounded-full bg-white/90 backdrop-blur-sm border border-white/20">
                 <input
                   type="text"
-                  className="flex-1 border-0 rounded-l-full px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 placeholder-gray-400"
+                  className="flex-1 border-0 rounded-l-full px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 placeholder-gray-500 bg-transparent"
                   placeholder="Paste product URL from supported retailers..."
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
@@ -219,14 +261,53 @@ const ChemistWareHouse = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute -bottom-8 left-0 right-0 text-sm text-blue-500 font-medium"
+                  className="absolute -bottom-8 left-0 right-0 text-sm text-blue-200 font-medium"
                 >
                   URL pasted from clipboard!
                 </motion.div>
               )}
             </motion.div>
+
+            {/* Supported Retailers Section */}
+            <motion.div variants={fadeIn("up", 0.8)} className="mt-16">
+              <h3 className="text-sm font-semibold text-blue-200 uppercase tracking-wider mb-4">
+                Supported Retailers
+              </h3>
+              <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+                {supportedRetailers.map((retailer, index) => (
+                  <motion.a
+                    key={retailer.name}
+                    href={retailer.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ y: -5 }}
+                    className="flex flex-col items-center group"
+                    variants={fadeIn("up", 0.5 + index * 0.1)}
+                  >
+                    <div className="bg-white p-3 rounded-lg shadow-md group-hover:shadow-lg transition-all w-16 h-16 md:w-20 md:h-20 flex items-center justify-center">
+                      <img
+                        src={retailer.logo}
+                        alt={retailer.name}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    <span className="mt-2 text-sm font-medium text-white group-hover:text-blue-200 transition-colors">
+                      {retailer.name}
+                    </span>
+                  </motion.a>
+                ))}
+              </div>
+            </motion.div>
           </div>
         </motion.div>
+
+        {/* Decorative elements */}
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent z-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+        />
       </motion.section>
 
       {/* Main Content */}
