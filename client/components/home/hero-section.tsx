@@ -32,13 +32,13 @@ const Hero = () => {
           whileInView="show"
           className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
         >
-          We boost the growth for{" "}
+          🇱🇰 Buy Top Australian Products{" "}
           <span className="text-blue-600 relative inline-block">
-            Startup to Fortune 500
+            from Sri Lanka
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-200/60"></span>
           </span>{" "}
-          Companies
-          <span className="inline-block ml-2 animate-pulse">⏰</span>
+          Hassle-Free
+          <span className="inline-block ml-2 animate-pulse">🌏</span>
         </motion.h1>
 
         <motion.p
@@ -47,8 +47,9 @@ const Hero = () => {
           whileInView="show"
           className="text-gray-600 text-lg md:text-xl max-w-xl"
         >
-          Get the most accurate leads, sales people training and conversions,
-          tools and more — all within the same one billing.
+          We connect you with the best deals on trusted Australian products and
+          deliver them to your doorstep in Sri Lanka via Air Cargo (1 week) or
+          Sea Cargo (1 month) — safe, reliable, and affordable.
         </motion.p>
 
         <motion.div
@@ -78,7 +79,7 @@ const Hero = () => {
       >
         <div className="relative">
           <Image
-            src="/assets/hero-image.png"
+            src="/assets/4530199.jpg"
             alt="Team meeting"
             className="rounded-lg relative z-10 hover:scale-[1.02] transition-transform duration-300"
             width={600}

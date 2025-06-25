@@ -74,7 +74,7 @@ const Navbar = () => {
             whileHover={{ scale: 1.05 }}
             className="relative"
           >
-            <Link href="/product" className="p-2 flex items-center">
+            <Link href="/cart" className="p-2 flex items-center">
               <HiShoppingCart className="h-5 w-5 text-gray-700" />
               {cartItems.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">

@@ -21,28 +21,28 @@ const MonitorSection = () => {
             variants={fadeIn("up", 0.4)}
             className="text-emerald-500 font-semibold"
           >
-            MONITOR
+            📦 Monitor Your Orders
           </motion.span>
           <motion.h2
             variants={textVariant(0.5)}
             className="text-3xl md:text-4xl font-bold text-navy-900 mt-4 mb-6 md:w-4/5"
           >
-            Introducing best mobile carousels
+            Track Your Shipments with Confidence
           </motion.h2>
           <motion.p
             variants={fadeIn("up", 0.6)}
             className="text-gray-600 mb-8 md:w-4/5"
           >
-            Before the ship is really back. Round, round, all around the world.
-            Round, all around the world. Round, all around the world. Round, all
-            around the world.
+            Stay informed every step of the way — whether you choose air cargo
+            or sea cargo. Easily monitor order status, estimated delivery times,
+            and updates from dispatch to arrival in Sri Lanka.
           </motion.p>
           <motion.a
             variants={fadeIn("up", 0.7)}
             href="#"
             className="text-blue-500 font-semibold flex items-center gap-2 hover:gap-4 transition-all"
           >
-            Learn more about monitoring
+            Learn more about tracking
             <motion.svg
               variants={fadeIn("left", 0.8)}
               className="w-5 h-5"

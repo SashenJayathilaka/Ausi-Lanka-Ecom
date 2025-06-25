@@ -8,18 +8,21 @@ const FeaturesSection = () => {
   const features = [
     {
       icon: "🔍",
-      title: "Find out what you need",
-      description: "We present you a proposal and discuss nitty-gritty like",
+      title: "Tell Us What You Need",
+      description:
+        "Let us know the type of products you're looking to source — we’ll suggest the best options from trusted Australian suppliers.",
     },
     {
       icon: "⚙️",
-      title: "Work out the details",
-      description: "Communication protocols apart from engagement models",
+      title: "Choose Your Shipping & Pricing",
+      description:
+        "Select your preferred shipping method:✈️ Air Cargo (1 week) or 🚢 Sea Cargo (1 month) — with clear pricing, no hidden costs.",
     },
     {
       icon: "🚀",
-      title: "We get to work fast",
-      description: "Protocols apart from engage models, pricing billing",
+      title: "We Handle the Rest",
+      description:
+        "We take care of product sourcing, packaging, and shipping — you just focus on selling and growing your customer base in Sri Lanka.",
     },
   ];
 
@@ -69,7 +72,7 @@ const FeaturesSection = () => {
             </motion.div>
             <motion.h3
               variants={textVariant(0.3)}
-              className="text-2xl font-medium mb-3"
+              className="text-2xl font-medium mb-3 text-center"
             >
               {feature.title}
             </motion.h3>
@@ -90,7 +93,7 @@ const FeaturesSection = () => {
           whileTap={{ scale: 0.95 }}
           className="bg-blue-600 text-white cursor-pointer px-8 py-3 rounded-full font-medium hover:bg-blue-700 transition-colors relative"
         >
-          Become a Partner
+          Become a Reseller
           <div className="absolute -z-10 w-full h-full rounded-full bg-blue-600/30 blur-xl top-0 left-0"></div>
         </motion.button>
       </motion.div>
