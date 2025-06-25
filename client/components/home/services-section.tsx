@@ -11,26 +11,30 @@ const ServicesSection = () => {
   const services = [
     {
       icon: <BsStack className="w-8 h-8 text-indigo-600" />,
-      title: "Web Design",
-      description: "One for all and all for one, Muskehounds are always ready.",
+      title: "Product Sourcing",
+      description:
+        "We help you access authentic products directly from trusted Australian retailers.",
       link: "#learn-more",
     },
     {
       icon: <HiLightBulb className="w-8 h-8 text-amber-400" />,
-      title: "Ad-Creatives",
-      description: "Alphabet Village and the subline of her own road.",
+      title: "Order Fulfillment",
+      description:
+        "Fast, reliable shipping methods tailored to your needs — with full visibility.",
       link: "#learn-more",
     },
     {
       icon: <FiSettings className="w-8 h-8 text-red-400" />,
-      title: "Automation",
-      description: "Little Blind Text should turn around and return.",
+      title: "Smart Automation",
+      description:
+        "From placing orders to status updates — automation makes it seamless.",
       link: "#learn-more",
     },
     {
       icon: <BiTime className="w-8 h-8 text-cyan-400" />,
-      title: "Infographics",
-      description: "Nothing the copy said could convince her.",
+      title: "Clear Communication",
+      description:
+        "Track your shipments, customer requests, and delivery performance with ease.",
       link: "#learn-more",
     },
   ];
@@ -50,13 +54,14 @@ const ServicesSection = () => {
             variants={textVariant(0.2)}
             className="text-3xl md:text-4xl font-bold mb-6 md:w-4/5"
           >
-            Future of support with new shape
+            Future-Ready Support Built for You
           </motion.h2>
           <motion.p
             variants={fadeIn("up", 0.5)}
             className="text-gray-600 text-lg mb-4 md:w-4/5"
           >
-            Discuss your goals, determine success metrics, identify problems
+            {`Let’s talk about your needs, define success, and solve your biggest
+            delivery or product sourcing challenges — together.`}
           </motion.p>
           <motion.div variants={fadeIn("up", 0.6)} className="space-y-3">
             <motion.div
@@ -66,7 +71,7 @@ const ServicesSection = () => {
               <div className="w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center">
                 <div className="w-2.5 h-2.5 rounded-full bg-indigo-600"></div>
               </div>
-              <span className="text-gray-600">UX design content strategy</span>
+              <span className="text-gray-600">User-friendly design</span>
             </motion.div>
             <motion.div
               variants={fadeIn("right", 0.8)}
@@ -75,7 +80,7 @@ const ServicesSection = () => {
               <div className="w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center">
                 <div className="w-2.5 h-2.5 rounded-full bg-indigo-600"></div>
               </div>
-              <span className="text-gray-600">Development bring</span>
+              <span className="text-gray-600">Reliable delivery</span>
             </motion.div>
           </motion.div>
           <motion.button

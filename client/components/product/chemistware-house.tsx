@@ -12,8 +12,8 @@ import {
   FiShoppingCart,
   FiX,
 } from "react-icons/fi";
-import Bucket from "./bucket";
 import ShippingCountdown from "../home/ShippingCountdown";
+import Bucket from "./bucket";
 
 interface ScrapeResult {
   title: string;
@@ -183,7 +183,7 @@ const ChemistWareHouse = () => {
     <div className="min-h-screen bg-transparent relative">
       {/* Enhanced Hero Section */}
       <motion.section
-        className="relative py-20 md:py-32 overflow-hidden"
+        className="relative pt-20 pb-16 md:pt-32 md:pb-24 overflow-hidden"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
@@ -204,7 +204,7 @@ const ChemistWareHouse = () => {
           <div className="max-w-4xl mx-auto text-center">
             <motion.h1
               variants={textVariant(0.2)}
-              className="text-4xl md:text-6xl font-bold text-white mb-6"
+              className="text-4xl md:text-6xl font-bold text-white mb-4"
             >
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-white">
                 Smart Price Scraper
@@ -213,10 +213,20 @@ const ChemistWareHouse = () => {
 
             <motion.p
               variants={textVariant(0.4)}
-              className="text-lg md:text-xl text-blue-100 mb-10 max-w-2xl mx-auto"
+              className="text-lg md:text-xl text-blue-100 mb-8 max-w-2xl mx-auto"
             >
-              {` Find the best deals from Australia's top retailers`}
+              {`Find the best deals from Australia's top retailers`}
             </motion.p>
+
+            {/* Countdown Timer - Moved up below the subtitle */}
+            <motion.div variants={fadeIn("up", 0.5)} className="mb-8">
+              <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
+                <ShippingCountdown
+                  targetDate="2025-06-28T10:00:00"
+                  className="ml-2 font-bold text-white"
+                />
+              </div>
+            </motion.div>
 
             <motion.div
               variants={fadeIn("up", 0.6)}
@@ -270,7 +280,7 @@ const ChemistWareHouse = () => {
             </motion.div>
 
             {/* Supported Retailers Section */}
-            <motion.div variants={fadeIn("up", 0.8)} className="mt-16">
+            <motion.div variants={fadeIn("up", 0.8)} className="mt-12">
               <h3 className="text-sm font-semibold text-blue-200 uppercase tracking-wider mb-4">
                 Supported Retailers
               </h3>
@@ -300,10 +310,8 @@ const ChemistWareHouse = () => {
               </div>
             </motion.div>
           </div>
-          <motion.div variants={fadeIn("up", 0.8)} className="mt-16">
-            <ShippingCountdown targetDate="2025-06-28T10:00:00" />
-          </motion.div>
         </motion.div>
+
         {/* Decorative elements */}
         <motion.div
           className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent z-10"
@@ -314,7 +322,6 @@ const ChemistWareHouse = () => {
       </motion.section>
 
       {/* Main Content */}
-
       <motion.section
         className="container mx-auto px-4 sm:px-6 lg:px-8 pb-20"
         variants={staggerContainer()}

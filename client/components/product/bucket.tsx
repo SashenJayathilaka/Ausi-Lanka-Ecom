@@ -4,22 +4,38 @@ import { useCartStore } from "@/store/useCartStore";
 import { fadeIn, listItem, staggerContainer } from "@/utils/motion";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { FiPackage, FiShoppingCart, FiTrash2, FiX } from "react-icons/fi";
+import {
+  FiMinus,
+  FiPlus,
+  FiPackage,
+  FiShoppingCart,
+  FiTrash2,
+  FiX,
+} from "react-icons/fi";
 
 const Bucket = () => {
   const router = useRouter();
   const products = useCartStore((state) => state.products);
   const removeProduct = useCartStore((state) => state.removeProduct);
   const clearCart = useCartStore((state) => state.clearCart);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
 
   const calculateTotal = () => {
     return products.reduce((total, product) => {
       const priceValue = parseFloat(product.price.replace(/[^\d.-]/g, "")) || 0;
-      return total + priceValue;
+      return total + priceValue * (product.quantity || 1);
     }, 0);
   };
 
   const totalPrice = calculateTotal();
+
+  const handleQuantityChange = (index: number, newQuantity: number) => {
+    if (newQuantity < 1) {
+      removeProduct(index);
+    } else {
+      updateQuantity(index, newQuantity);
+    }
+  };
 
   return (
     <motion.div
@@ -43,7 +59,10 @@ const Bucket = () => {
             </h2>
           </div>
           <span className="flex-shrink-0 bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
-            {products.length} {products.length === 1 ? "item" : "items"}
+            {products.reduce((sum, item) => sum + (item.quantity || 1), 0)}{" "}
+            {products.reduce((sum, item) => sum + (item.quantity || 1), 0) === 1
+              ? "item"
+              : "items"}
           </span>
         </div>
       </motion.div>
@@ -67,14 +86,14 @@ const Bucket = () => {
               Your bucket is empty
             </h3>
             <p className="text-gray-500 mt-2 max-w-md">
-              Products you add from Chemist Warehouse will appear here
+              Products you add will appear here
             </p>
           </motion.div>
         ) : (
           <motion.ul className="divide-y divide-gray-200">
             {products.map((product, idx) => (
               <motion.li
-                key={idx}
+                key={`${product.name}-${idx}`}
                 custom={idx}
                 variants={listItem}
                 className="p-4 hover:bg-gray-50 transition-colors"
@@ -104,6 +123,11 @@ const Bucket = () => {
                     </h3>
                     <p className="text-green-600 font-semibold mt-1">
                       {product.price}
+                      {product.quantity! > 1 && (
+                        <span className="text-gray-500 ml-1">
+                          × {product.quantity}
+                        </span>
+                      )}
                     </p>
                     {product.url && (
                       <a
@@ -115,6 +139,33 @@ const Bucket = () => {
                         View product
                       </a>
                     )}
+
+                    {/* Quantity Controls */}
+                    <div className="flex items-center mt-3">
+                      <motion.button
+                        onClick={() =>
+                          handleQuantityChange(idx, (product.quantity || 1) - 1)
+                        }
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="p-1 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700"
+                      >
+                        <FiMinus className="h-4 w-4" />
+                      </motion.button>
+                      <span className="mx-3 w-8 text-center font-medium">
+                        {product.quantity || 1}
+                      </span>
+                      <motion.button
+                        onClick={() =>
+                          handleQuantityChange(idx, (product.quantity || 1) + 1)
+                        }
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="p-1 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700"
+                      >
+                        <FiPlus className="h-4 w-4" />
+                      </motion.button>
+                    </div>
                   </div>
 
                   <motion.button
