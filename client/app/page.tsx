@@ -1,10 +1,13 @@
 import CompanyLogo from "@/components/home/company-logo";
 import FeaturesSection from "@/components/home/features-section";
+import Footer from "@/components/home/footer";
 import Hero from "@/components/home/hero-section";
 import MonitorSection from "@/components/home/monitor-section";
 import Navbar from "@/components/home/navbar";
-import ScheduleSection from "@/components/home/schedule-section";
+import NewsletterSection from "@/components/home/newsletter-section";
+import ServicesSection from "@/components/home/services-section";
 import ShippingCountdown from "@/components/home/ShippingCountdown";
+import TestimonialsSection from "@/components/home/testimonials-section";
 
 export default function Home() {
   return (
@@ -19,8 +22,13 @@ export default function Home() {
         </section>
         {/*    <PurposeSection /> */}
         <FeaturesSection />
-        <ScheduleSection />
+        {/* <ScheduleSection /> */}
         <MonitorSection />
+        {/*   <PricingSection /> */}
+        <ServicesSection />
+        <TestimonialsSection />
+        <NewsletterSection />
+        <Footer />
       </div>
     </main>
   );

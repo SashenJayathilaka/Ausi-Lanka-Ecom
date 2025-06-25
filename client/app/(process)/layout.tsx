@@ -1,3 +1,4 @@
+import Footer from "@/components/home/footer";
 import Navbar from "@/components/home/navbar";
 
 type Props = {
@@ -11,6 +12,7 @@ function Layout({ children }: Props) {
       <div className="overflow-hidden">
         <Navbar />
         {children}
+        <Footer />
       </div>
     </main>
   );

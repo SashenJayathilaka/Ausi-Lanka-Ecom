@@ -3,43 +3,59 @@
 
 import { useCartStore } from "@/store/useCartStore";
 import { motion } from "framer-motion";
-import { FiCheckCircle, FiShoppingBag, FiPhone, FiUser } from "react-icons/fi";
+import {
+  FiCheckCircle,
+  FiShoppingBag,
+  FiPhone,
+  FiUser,
+  FiTruck,
+  FiPackage,
+  FiMessageSquare,
+} from "react-icons/fi";
 import { useState } from "react";
 import Link from "next/link";
 
-const CheckoutSections = () => {
+const CheckoutPage = () => {
   const products = useCartStore((state) => state.products);
   const clearCart = useCartStore((state) => state.clearCart);
 
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
-    shippingMethod: "sea",
-    comment: "",
-    additionalItems: "",
+    deliveryMethod: "sea", // 'air' or 'sea'
+    comments: "",
+    missingItems: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
 
-  const totalPrice = products.reduce((total, product) => {
+  // Calculate base price
+  const basePrice = products.reduce((total, product) => {
     const priceValue = parseFloat(product.price.replace(/[^0-9.]/g, ""));
     return total + (isNaN(priceValue) ? 0 : priceValue);
   }, 0);
 
-  const shippingFee = formData.shippingMethod === "air" ? 10 : 0;
-  const grandTotal = totalPrice + shippingFee;
+  // Calculate total price with delivery
+  const deliveryFee = formData.deliveryMethod === "air" ? 10 : 0;
+  const totalPrice = basePrice + deliveryFee;
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Simulate API call
     setTimeout(() => {
       setIsSubmitting(false);
       setOrderSuccess(true);
@@ -61,11 +77,33 @@ const CheckoutSections = () => {
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Order Confirmed!
           </h2>
-          <p className="text-gray-600 mb-6">
-            {`Thank you for your purchase. We'll contact you shortly on ${formData.mobile} to confirm delivery details.`}
+          <p className="text-gray-600 mb-4">
+            {`Thank you for your purchase, ${formData.name}. We'll contact you shortly on ${formData.mobile}.`}
           </p>
-          <div className="bg-blue-50 rounded-lg p-4 mb-6">
-            <p className="text-blue-800 font-medium">
+          <div className="bg-blue-50 rounded-lg p-4 mb-6 text-left">
+            <p className="font-medium text-blue-800">Delivery Method:</p>
+            <p className="text-blue-700">
+              {formData.deliveryMethod === "air" ? (
+                <>Air Cargo (1 week delivery)</>
+              ) : (
+                <>Sea Cargo (1 month delivery)</>
+              )}
+            </p>
+            {formData.comments && (
+              <>
+                <p className="font-medium text-blue-800 mt-2">Your Comments:</p>
+                <p className="text-blue-700">{formData.comments}</p>
+              </>
+            )}
+            {formData.missingItems && (
+              <>
+                <p className="font-medium text-blue-800 mt-2">Missing Items:</p>
+                <p className="text-blue-700">{formData.missingItems}</p>
+              </>
+            )}
+          </div>
+          <div className="mb-6">
+            <p className="text-sm text-gray-500">
               Order Reference: #{Math.floor(Math.random() * 1000000)}
             </p>
           </div>
@@ -82,6 +120,7 @@ const CheckoutSections = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header */}
       <header className="bg-white shadow-sm py-4">
         <div className="container mx-auto px-4">
           <h1 className="text-xl font-bold text-gray-800">Checkout</h1>
@@ -90,6 +129,7 @@ const CheckoutSections = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
+          {/* Order Summary */}
           <div className="lg:w-2/3">
             <motion.div
               initial={{ y: 20, opacity: 0 }}
@@ -145,24 +185,31 @@ const CheckoutSections = () => {
               <div className="p-6 border-t border-gray-200">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">${totalPrice.toFixed(2)}</span>
+                  <span className="font-medium">${basePrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-gray-600">Shipping</span>
+                  <span className="text-gray-600">
+                    {formData.deliveryMethod === "air" ? (
+                      <>Air Cargo (1 week)</>
+                    ) : (
+                      <>Sea Cargo (1 month)</>
+                    )}
+                  </span>
                   <span className="font-medium">
-                    {formData.shippingMethod === "air" ? "$10.00" : "Free"}
+                    {formData.deliveryMethod === "air" ? "$10.00" : "$0.00"}
                   </span>
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t border-gray-200">
                   <span className="text-lg font-semibold">Total</span>
                   <span className="text-lg font-bold text-blue-600">
-                    ${grandTotal.toFixed(2)}
+                    ${totalPrice.toFixed(2)}
                   </span>
                 </div>
               </div>
             </motion.div>
           </div>
 
+          {/* Contact Information */}
           <div className="lg:w-1/3">
             <motion.form
               initial={{ y: 20, opacity: 0 }}
@@ -172,10 +219,9 @@ const CheckoutSections = () => {
               className="bg-white rounded-xl shadow-md overflow-hidden p-6 sticky top-8"
             >
               <h2 className="text-lg font-semibold text-gray-800 mb-6">
-                Contact Information
+                Contact & Delivery Information
               </h2>
 
-              {/* Full Name */}
               <div className="mb-6">
                 <label
                   htmlFor="name"
@@ -200,7 +246,6 @@ const CheckoutSections = () => {
                 </div>
               </div>
 
-              {/* Mobile */}
               <div className="mb-6">
                 <label
                   htmlFor="mobile"
@@ -227,72 +272,132 @@ const CheckoutSections = () => {
                 </div>
               </div>
 
-              {/* Shipping Method */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Shipping Method
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Delivery Method
                 </label>
-                <div className="flex gap-4">
-                  <label className="flex items-center">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
                     <input
                       type="radio"
-                      name="shippingMethod"
-                      value="air"
-                      checked={formData.shippingMethod === "air"}
-                      onChange={handleChange}
-                      className="mr-2"
-                    />
-                    Air Cargo (+$10, 1 week)
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="shippingMethod"
+                      id="sea-cargo"
+                      name="deliveryMethod"
                       value="sea"
-                      checked={formData.shippingMethod === "sea"}
+                      checked={formData.deliveryMethod === "sea"}
                       onChange={handleChange}
-                      className="mr-2"
+                      className="sr-only"
                     />
-                    Sea Cargo (Free, 1 month)
-                  </label>
+                    <label
+                      htmlFor="sea-cargo"
+                      className={`flex flex-col items-center p-4 border rounded-lg cursor-pointer ${
+                        formData.deliveryMethod === "sea"
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-300"
+                      }`}
+                    >
+                      <FiTruck
+                        className={`h-6 w-6 ${
+                          formData.deliveryMethod === "sea"
+                            ? "text-blue-600"
+                            : "text-gray-400"
+                        }`}
+                      />
+                      <span
+                        className={`mt-2 text-sm font-medium ${
+                          formData.deliveryMethod === "sea"
+                            ? "text-blue-700"
+                            : "text-gray-700"
+                        }`}
+                      >
+                        Sea Cargo
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        1 month delivery
+                      </span>
+                      <span className="text-xs font-medium mt-1">$0.00</span>
+                    </label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      id="air-cargo"
+                      name="deliveryMethod"
+                      value="air"
+                      checked={formData.deliveryMethod === "air"}
+                      onChange={handleChange}
+                      className="sr-only"
+                    />
+                    <label
+                      htmlFor="air-cargo"
+                      className={`flex flex-col items-center p-4 border rounded-lg cursor-pointer ${
+                        formData.deliveryMethod === "air"
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-300"
+                      }`}
+                    >
+                      <FiPackage
+                        className={`h-6 w-6 ${
+                          formData.deliveryMethod === "air"
+                            ? "text-blue-600"
+                            : "text-gray-400"
+                        }`}
+                      />
+                      <span
+                        className={`mt-2 text-sm font-medium ${
+                          formData.deliveryMethod === "air"
+                            ? "text-blue-700"
+                            : "text-gray-700"
+                        }`}
+                      >
+                        Air Cargo
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        1 week delivery
+                      </span>
+                      <span className="text-xs font-medium mt-1">+$10.00</span>
+                    </label>
+                  </div>
                 </div>
               </div>
 
-              {/* Additional Items */}
               <div className="mb-6">
                 <label
-                  htmlFor="additionalItems"
+                  htmlFor="comments"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Additional Items You Need (Not in Catalog)
+                  Additional Comments (Optional)
                 </label>
-                <input
-                  type="text"
-                  id="additionalItems"
-                  name="additionalItems"
-                  value={formData.additionalItems}
-                  onChange={handleChange}
-                  className="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="e.g. Vitamin D drops, herbal tea..."
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 pt-3 flex items-start pointer-events-none">
+                    <FiMessageSquare className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <textarea
+                    id="comments"
+                    name="comments"
+                    value={formData.comments}
+                    onChange={handleChange}
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Any special instructions..."
+                    rows={3}
+                  />
+                </div>
               </div>
 
-              {/* Comments */}
               <div className="mb-6">
                 <label
-                  htmlFor="comment"
+                  htmlFor="missingItems"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Comments or Special Instructions
+                  {`Items We Don't Have (Optional)`}
                 </label>
                 <textarea
-                  id="comment"
-                  name="comment"
-                  rows={3}
-                  value={formData.comment}
+                  id="missingItems"
+                  name="missingItems"
+                  value={formData.missingItems}
                   onChange={handleChange}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Leave any instructions or notes here..."
+                  className="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="List any items you couldn't find..."
+                  rows={2}
                 />
               </div>
 
@@ -330,7 +435,7 @@ const CheckoutSections = () => {
                     Processing...
                   </>
                 ) : (
-                  `Place Order ($${grandTotal.toFixed(2)})`
+                  `Place Order ($${totalPrice.toFixed(2)})`
                 )}
               </button>
 
@@ -345,4 +450,4 @@ const CheckoutSections = () => {
   );
 };
 
-export default CheckoutSections;
+export default CheckoutPage;
