@@ -8,6 +8,15 @@
     transform: translateX(-50%);
   }
 }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+/* customize container here using tailwindcss */
+.section-container {
+  @apply px-4 sm:px-6 lg:px-8 py-16 container mx-auto;
+}
 
 .animate-marquee {
   animation: marquee 25s linear infinite;

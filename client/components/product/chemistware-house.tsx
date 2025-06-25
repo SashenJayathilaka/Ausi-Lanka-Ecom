@@ -13,6 +13,7 @@ import {
   FiX,
 } from "react-icons/fi";
 import Bucket from "./bucket";
+import ShippingCountdown from "../home/ShippingCountdown";
 
 interface ScrapeResult {
   title: string;
@@ -299,8 +300,10 @@ const ChemistWareHouse = () => {
               </div>
             </motion.div>
           </div>
+          <motion.div variants={fadeIn("up", 0.8)} className="mt-16">
+            <ShippingCountdown targetDate="2025-06-28T10:00:00" />
+          </motion.div>
         </motion.div>
-
         {/* Decorative elements */}
         <motion.div
           className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent z-10"
@@ -311,6 +314,7 @@ const ChemistWareHouse = () => {
       </motion.section>
 
       {/* Main Content */}
+
       <motion.section
         className="container mx-auto px-4 sm:px-6 lg:px-8 pb-20"
         variants={staggerContainer()}
