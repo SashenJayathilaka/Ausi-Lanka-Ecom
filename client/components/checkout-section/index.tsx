@@ -11,28 +11,64 @@ import {
   FiTruck,
   FiPackage,
   FiMessageSquare,
+  FiMapPin,
+  FiHome,
+  FiGlobe,
 } from "react-icons/fi";
 import { useState } from "react";
 import Link from "next/link";
 
 const CheckoutPage = () => {
-  const products = useCartStore((state) => state.products);
-  const clearCart = useCartStore((state) => state.clearCart);
-
+  const { products, removeProduct, updateQuantity, clearCart } = useCartStore();
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
-    deliveryMethod: "sea", // 'air' or 'sea'
+    deliveryMethod: "sea",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    district: "",
+    postalCode: "",
     comments: "",
     missingItems: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
 
+  // Sri Lankan districts
+  const districts = [
+    "Ampara",
+    "Anuradhapura",
+    "Badulla",
+    "Batticaloa",
+    "Colombo",
+    "Galle",
+    "Gampaha",
+    "Hambantota",
+    "Jaffna",
+    "Kalutara",
+    "Kandy",
+    "Kegalle",
+    "Kilinochchi",
+    "Kurunegala",
+    "Mannar",
+    "Matale",
+    "Matara",
+    "Monaragala",
+    "Mullaitivu",
+    "Nuwara Eliya",
+    "Polonnaruwa",
+    "Puttalam",
+    "Ratnapura",
+    "Trincomalee",
+    "Vavuniya",
+  ];
+
   // Calculate base price
   const basePrice = products.reduce((total, product) => {
     const priceValue = parseFloat(product.price.replace(/[^0-9.]/g, ""));
-    return total + (isNaN(priceValue) ? 0 : priceValue);
+    const quantity = product.quantity || 1;
+    return total + (isNaN(priceValue) ? 0 : priceValue * quantity);
   }, 0);
 
   // Calculate total price with delivery
@@ -49,6 +85,16 @@ const CheckoutPage = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleQuantityChange = (index: number, newQuantity: number) => {
+    if (newQuantity >= 1) {
+      updateQuantity(index, newQuantity);
+    }
+  };
+
+  const handleRemoveItem = (index: number) => {
+    removeProduct(index);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -81,7 +127,21 @@ const CheckoutPage = () => {
             {`Thank you for your purchase, ${formData.name}. We'll contact you shortly on ${formData.mobile}.`}
           </p>
           <div className="bg-blue-50 rounded-lg p-4 mb-6 text-left">
-            <p className="font-medium text-blue-800">Delivery Method:</p>
+            <p className="font-medium text-blue-800">Delivery Address:</p>
+            <p className="text-blue-700">
+              {formData.addressLine1}
+              <br />
+              {formData.addressLine2 && (
+                <>
+                  {formData.addressLine2}
+                  <br />
+                </>
+              )}
+              {formData.city}, {formData.district}
+              <br />
+              {formData.postalCode}
+            </p>
+            <p className="font-medium text-blue-800 mt-2">Delivery Method:</p>
             <p className="text-blue-700">
               {formData.deliveryMethod === "air" ? (
                 <>Air Cargo (1 week delivery)</>
@@ -178,6 +238,40 @@ const CheckoutPage = () => {
                       <p className="text-xs text-gray-500 mt-1">
                         {product.retailer}
                       </p>
+
+                      <div className="flex items-center mt-3">
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(
+                              index,
+                              (product.quantity || 1) - 1
+                            )
+                          }
+                          className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-l-md bg-gray-100 hover:bg-gray-200"
+                        >
+                          -
+                        </button>
+                        <span className="w-10 h-8 flex items-center justify-center border-t border-b border-gray-300 bg-white">
+                          {product.quantity || 1}
+                        </span>
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(
+                              index,
+                              (product.quantity || 1) + 1
+                            )
+                          }
+                          className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-r-md bg-gray-100 hover:bg-gray-200"
+                        >
+                          +
+                        </button>
+                        <button
+                          onClick={() => handleRemoveItem(index)}
+                          className="ml-4 text-xs text-red-500 hover:text-red-700"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -265,10 +359,119 @@ const CheckoutPage = () => {
                     value={formData.mobile}
                     onChange={handleChange}
                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="0412 345 678"
+                    placeholder="07X XXX XXXX"
                     pattern="[0-9]{10}"
-                    title="Please enter a 10-digit mobile number"
+                    title="Please enter a 10-digit Sri Lankan mobile number"
                   />
+                </div>
+              </div>
+
+              {/* Sri Lankan Address Fields */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Delivery Address (Sri Lanka)
+                </label>
+
+                <div className="mb-4">
+                  <label htmlFor="addressLine1" className="sr-only">
+                    Address Line 1
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiHome className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      id="addressLine1"
+                      name="addressLine1"
+                      required
+                      value={formData.addressLine1}
+                      onChange={handleChange}
+                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 mb-2"
+                      placeholder="Address Line 1 (House No, Street)"
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <label htmlFor="addressLine2" className="sr-only">
+                    Address Line 2
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiMapPin className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      id="addressLine2"
+                      name="addressLine2"
+                      value={formData.addressLine2}
+                      onChange={handleChange}
+                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Address Line 2 (Optional)"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label htmlFor="city" className="sr-only">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      id="city"
+                      name="city"
+                      required
+                      value={formData.city}
+                      onChange={handleChange}
+                      className="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="City"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="district" className="sr-only">
+                      District
+                    </label>
+                    <select
+                      id="district"
+                      name="district"
+                      required
+                      value={formData.district}
+                      onChange={handleChange}
+                      className="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="">Select District</option>
+                      {districts.map((district) => (
+                        <option key={district} value={district}>
+                          {district}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="postalCode" className="sr-only">
+                    Postal Code
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiGlobe className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      id="postalCode"
+                      name="postalCode"
+                      required
+                      value={formData.postalCode}
+                      onChange={handleChange}
+                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Postal Code"
+                      pattern="[0-9]{5}"
+                      title="Sri Lankan postal code (5 digits)"
+                    />
+                  </div>
                 </div>
               </div>
 
