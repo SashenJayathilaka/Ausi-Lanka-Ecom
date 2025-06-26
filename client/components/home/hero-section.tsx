@@ -79,7 +79,7 @@ const Hero = () => {
       >
         <div className="relative">
           <Image
-            src="/assets/4530199.jpg"
+            src="/assets/hero.gif"
             alt="Team meeting"
             className="rounded-lg relative z-10 hover:scale-[1.02] transition-transform duration-300"
             width={600}

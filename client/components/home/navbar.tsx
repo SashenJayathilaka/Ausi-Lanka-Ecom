@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import { HiMenu, HiShoppingCart, HiX } from "react-icons/hi";
+import { FiUser } from "react-icons/fi"; // Importing the user icon from react-icons/fi
+import { AuthButton } from "./auth-button";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -84,15 +86,17 @@ const Navbar = () => {
             </Link>
           </motion.div>
 
-          {/* CTA Button */}
-          <motion.button
+          {/* Sign In Button */}
+          {/*           <motion.button
             variants={fadeIn("left", 0.3)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="hidden md:block bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 text-sm font-medium transition-all hover:shadow-lg hover:shadow-blue-100"
+            className="hidden md:flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium transition-all hover:shadow-lg hover:shadow-blue-100"
           >
-            <a href="#newsletter">Get in touch</a>
-          </motion.button>
+            <FiUser className="h-4 w-4" />
+            <span>Sign In</span>
+          </motion.button> */}
+          <AuthButton />
 
           {/* Mobile Menu Button */}
           <motion.button
@@ -144,9 +148,10 @@ const Navbar = () => {
               variants={fadeIn("up", 0.4)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 text-sm font-medium transition-all hover:shadow-lg hover:shadow-blue-100"
+              className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 text-sm font-medium transition-all hover:shadow-lg hover:shadow-blue-100"
             >
-              Get in touch
+              <FiUser className="h-4 w-4" />
+              <span>Sign In</span>
             </motion.button>
           </motion.div>
         </motion.div>
