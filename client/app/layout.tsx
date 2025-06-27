@@ -1,3 +1,4 @@
+import { TRPCProvider } from "@/trpc/client";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
@@ -18,7 +19,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={jakarta.className}>{children}</body>
+        <body className={jakarta.className}>
+          <TRPCProvider>{children}</TRPCProvider>
+        </body>
       </html>
     </ClerkProvider>
   );

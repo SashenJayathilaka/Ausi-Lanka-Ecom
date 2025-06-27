@@ -70,6 +70,12 @@ const ChemistWareHouse = () => {
         setUrl(clipboardText);
         setShowCopied(true);
         setTimeout(() => setShowCopied(false), 2000);
+
+        // Automatically start scraping after paste
+        setError(null);
+        if (isValidUrl(clipboardText)) {
+          await handleScrape(clipboardText);
+        }
       }
     } catch (err) {
       console.error("Failed to read clipboard:", err);
@@ -77,11 +83,18 @@ const ChemistWareHouse = () => {
     }
   };
 
-  const handleScrape = async () => {
+  const isValidUrl = (url: string) => {
+    return supportedRetailers.some((retailer) =>
+      url.includes(new URL(retailer.url).hostname)
+    );
+  };
+
+  const handleScrape = async (scrapeUrl?: string) => {
+    const targetUrl = scrapeUrl || url;
     setError(null);
     setData(null);
 
-    if (!url.trim()) {
+    if (!targetUrl.trim()) {
       setError("Please enter a product URL.");
       return;
     }
@@ -89,29 +102,29 @@ const ChemistWareHouse = () => {
     let apiEndpoint;
     let retailer = "";
 
-    if (url.includes("chemistwarehouse.com.au")) {
+    if (targetUrl.includes("chemistwarehouse.com.au")) {
       apiEndpoint = `http://localhost:5000/api/chemist/scrape?url=${encodeURIComponent(
-        url
+        targetUrl
       )}`;
       retailer = "Chemist Warehouse";
-    } else if (url.includes("coles.com.au")) {
+    } else if (targetUrl.includes("coles.com.au")) {
       apiEndpoint = `http://localhost:5000/api/coles/scrape?url=${encodeURIComponent(
-        url
+        targetUrl
       )}`;
       retailer = "Coles";
-    } else if (url.includes("woolworths.com.au")) {
+    } else if (targetUrl.includes("woolworths.com.au")) {
       apiEndpoint = `http://localhost:5000/api/woolworths/scrape?url=${encodeURIComponent(
-        url
+        targetUrl
       )}`;
       retailer = "Woolworths";
-    } else if (url.includes("jbhifi.com.au")) {
+    } else if (targetUrl.includes("jbhifi.com.au")) {
       apiEndpoint = `http://localhost:5000/api/jbhifi/scrape?url=${encodeURIComponent(
-        url
+        targetUrl
       )}`;
       retailer = "JB Hi-Fi";
-    } else if (url.includes("officeworks.com.au")) {
+    } else if (targetUrl.includes("officeworks.com.au")) {
       apiEndpoint = `http://localhost:5000/api/officeworks/scrape?url=${encodeURIComponent(
-        url
+        targetUrl
       )}`;
       retailer = "Officeworks";
     } else {
@@ -134,7 +147,7 @@ const ChemistWareHouse = () => {
         title: result.title || "No title found",
         price: result.price || "No price found",
         image: result.image || null,
-        url: url,
+        url: targetUrl,
         retailer: retailer,
       });
     } catch (error) {
@@ -169,6 +182,7 @@ const ChemistWareHouse = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Get retailer logo path
@@ -228,14 +242,15 @@ const ChemistWareHouse = () => {
               </div>
             </motion.div>
 
+            {/* Enhanced URL Input Field */}
             <motion.div
               variants={fadeIn("up", 0.6)}
               className="relative w-full max-w-2xl mx-auto"
             >
-              <div className="flex shadow-xl rounded-full bg-white/90 backdrop-blur-sm border border-white/20">
+              <div className="flex shadow-2xl rounded-lg bg-white/95 backdrop-blur-sm border-2 border-blue-300/50">
                 <input
                   type="text"
-                  className="flex-1 border-0 rounded-l-full px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 placeholder-gray-500 bg-transparent"
+                  className="flex-1 border-0 rounded-l-lg px-6 py-5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 placeholder-gray-500 bg-transparent text-lg"
                   placeholder="Paste product URL from supported retailers..."
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
@@ -246,22 +261,25 @@ const ChemistWareHouse = () => {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={handlePaste}
-                    className="p-2 text-gray-500 hover:text-blue-600 transition-colors"
+                    className="p-3 text-gray-500 hover:text-blue-600 transition-colors"
                     title="Paste from clipboard"
                   >
-                    <FiClipboard className="h-5 w-5" />
+                    <FiClipboard className="h-6 w-6" />
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={handleScrape}
+                    onClick={() => handleScrape()}
                     disabled={loading}
-                    className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 rounded-full m-1 flex items-center justify-center shadow-md"
+                    className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-6 rounded-r-lg flex items-center justify-center shadow-lg hover:shadow-xl transition-all"
                   >
                     {loading ? (
-                      <AiOutlineLoading3Quarters className="animate-spin h-5 w-5" />
+                      <AiOutlineLoading3Quarters className="animate-spin h-6 w-6" />
                     ) : (
-                      <FiChevronRight className="h-5 w-5" />
+                      <>
+                        <span className="mr-2 font-medium">Scrape</span>
+                        <FiChevronRight className="h-6 w-6" />
+                      </>
                     )}
                   </motion.button>
                 </div>
@@ -330,23 +348,46 @@ const ChemistWareHouse = () => {
         viewport={{ once: true }}
       >
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Scraper Results */}
+          {/* Enhanced Scraper Results Section */}
           <motion.div className="flex-1" variants={fadeIn("right", 0.4)}>
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-              <div className="p-6 md:p-8">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                  Product Details
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-blue-100">
+              <div className="p-6 md:p-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
+                <h2 className="text-3xl font-bold text-gray-800 mb-2 flex items-center">
+                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+                    Product Details
+                  </span>
+                  <span className="ml-2 text-blue-500">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-8 w-8"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </span>
                 </h2>
+                <p className="text-blue-600">
+                  View and manage scraped product information
+                </p>
+              </div>
 
+              <div className="p-6 md:p-8">
                 {error && (
                   <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mb-6 p-4 bg-red-50 rounded-lg border border-red-100 flex items-start"
+                    className="mb-6 p-4 bg-red-50 rounded-lg border border-red-200 flex items-start shadow-sm"
                   >
                     <div className="flex-shrink-0 pt-0.5">
                       <svg
-                        className="h-5 w-5 text-red-400"
+                        className="h-5 w-5 text-red-500"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -373,16 +414,16 @@ const ChemistWareHouse = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
-                    className="border border-gray-200 rounded-lg overflow-hidden"
+                    className="border-2 border-blue-100 rounded-xl overflow-hidden shadow-lg"
                   >
                     <div className="md:flex">
-                      <div className="md:w-1/3 bg-gray-50 flex items-center justify-center p-6 min-h-64 relative">
+                      <div className="md:w-1/3 bg-gradient-to-b from-blue-50 to-indigo-50 flex items-center justify-center p-6 min-h-64 relative">
                         {/* Retailer Logo */}
-                        <div className="absolute top-3 left-3 bg-white/80 rounded-lg p-1 shadow-sm z-10">
+                        <div className="absolute top-3 left-3 bg-white rounded-lg p-1 shadow-md z-10 border border-gray-200">
                           <img
                             src={getRetailerLogo(data.retailer)}
                             alt={data.retailer}
-                            className="h-6 w-auto object-contain"
+                            className="h-8 w-auto object-contain"
                           />
                         </div>
 
@@ -399,26 +440,31 @@ const ChemistWareHouse = () => {
                           </div>
                         )}
                       </div>
-                      <div className="p-6 md:w-2/3">
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      <div className="p-6 md:w-2/3 bg-white">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-3">
                           {data.title}
                         </h3>
 
-                        <div className="flex items-baseline mb-4">
-                          <span className="text-3xl font-extrabold text-blue-600">
+                        <div className="flex items-baseline mb-6">
+                          <span className="text-4xl font-extrabold text-blue-600">
                             {data.price}
+                          </span>
+                          <span className="ml-2 text-sm text-gray-500">
+                            AUD
                           </span>
                         </div>
 
-                        <div className="mt-6 flex flex-wrap gap-4">
+                        <div className="mt-8 flex flex-wrap gap-4">
                           <motion.button
                             onClick={handleAddToBucket}
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
-                            className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-6 rounded-lg flex items-center justify-center gap-2 shadow-md"
+                            className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all"
                           >
-                            <FiShoppingCart className="h-5 w-5" />
-                            <span>Add to Bucket</span>
+                            <FiShoppingCart className="h-6 w-6" />
+                            <span className="font-semibold text-lg">
+                              Add to Bucket
+                            </span>
                           </motion.button>
 
                           {data.url && (
@@ -428,9 +474,9 @@ const ChemistWareHouse = () => {
                               rel="noopener noreferrer"
                               whileHover={{ scale: 1.03 }}
                               whileTap={{ scale: 0.97 }}
-                              className="flex-1 border border-gray-300 text-gray-700 py-3 px-6 rounded-lg flex items-center justify-center gap-2 shadow-sm hover:bg-gray-50"
+                              className="flex-1 border-2 border-gray-200 text-gray-700 py-4 px-6 rounded-lg flex items-center justify-center gap-2 shadow-sm hover:bg-gray-50 hover:border-blue-200 transition-all"
                             >
-                              View Original
+                              <span className="font-medium">View Original</span>
                             </motion.a>
                           )}
                         </div>
@@ -441,9 +487,9 @@ const ChemistWareHouse = () => {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-center py-12"
+                    className="text-center py-16 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border-2 border-dashed border-blue-200"
                   >
-                    <div className="mx-auto h-24 w-24 text-gray-300 mb-4">
+                    <div className="mx-auto h-24 w-24 text-blue-300 mb-6">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -453,23 +499,24 @@ const ChemistWareHouse = () => {
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          strokeWidth={1}
+                          strokeWidth={1.5}
                           d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                         />
                       </svg>
                     </div>
-                    <h3 className="text-lg font-medium text-gray-700">
+                    <h3 className="text-xl font-medium text-gray-700 mb-2">
                       No product loaded
                     </h3>
-                    <p className="mt-1 text-gray-500">
-                      Enter a product URL from supported retailers
+                    <p className="mt-1 text-gray-600 max-w-md mx-auto">
+                      Enter a product URL from supported retailers above to view
+                      detailed product information
                     </p>
-                    <div className="mt-6">
+                    <div className="mt-8">
                       <button
                         onClick={handlePaste}
-                        className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
+                        className="inline-flex items-center px-6 py-3 border-2 border-blue-200 shadow-sm text-lg font-medium rounded-lg text-blue-700 bg-white hover:bg-blue-50 focus:outline-none transition-all"
                       >
-                        <FiClipboard className="-ml-1 mr-2 h-5 w-5 text-gray-400" />
+                        <FiClipboard className="mr-3 h-6 w-6 text-blue-400" />
                         Paste from clipboard
                       </button>
                     </div>
@@ -479,25 +526,40 @@ const ChemistWareHouse = () => {
             </div>
           </motion.div>
 
-          {/* Bucket Sidebar */}
+          {/* Enhanced Bucket Sidebar */}
           <motion.div
             variants={slideIn("left", "spring", 0.6, 1)}
             className={`fixed lg:static inset-0 z-50 lg:z-auto bg-white lg:bg-transparent transition-all duration-300 ${
               showBucket ? "translate-x-0" : "translate-x-full lg:translate-x-0"
             } ${showBucket ? "block" : "hidden lg:block"}`}
           >
-            <Bucket />
-            <button
-              onClick={() => setShowBucket(false)}
-              className="lg:hidden absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700"
-            >
-              <FiX className="h-6 w-6" />
-            </button>
+            <div className="h-full lg:h-auto flex flex-col bg-white lg:rounded-2xl lg:shadow-xl lg:border-2 lg:border-blue-100 overflow-hidden">
+              <div className="p-6 md:p-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
+                <h2 className="text-3xl font-bold text-gray-800 mb-2 flex items-center">
+                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+                    Your Shopping Bucket
+                  </span>
+                  {products.length > 0 && (
+                    <span className="ml-3 bg-blue-600 text-white text-sm font-bold rounded-full h-7 w-7 flex items-center justify-center">
+                      {products.length}
+                    </span>
+                  )}
+                </h2>
+                <p className="text-blue-600">Manage your selected products</p>
+              </div>
+              <Bucket />
+              <button
+                onClick={() => setShowBucket(false)}
+                className="lg:hidden absolute top-6 right-6 p-2 text-gray-500 hover:text-gray-700 bg-white rounded-full shadow-md"
+              >
+                <FiX className="h-6 w-6" />
+              </button>
+            </div>
           </motion.div>
         </div>
       </motion.section>
 
-      {/* Mobile Bucket Toggle */}
+      {/* Enhanced Mobile Bucket Toggle */}
       <motion.button
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -505,14 +567,14 @@ const ChemistWareHouse = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setShowBucket(!showBucket)}
-        className="lg:hidden fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-full shadow-xl z-10 flex items-center justify-center"
+        className="lg:hidden fixed bottom-8 right-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-5 rounded-full shadow-2xl z-10 flex items-center justify-center"
       >
-        <FiShoppingCart className="h-6 w-6" />
+        <FiShoppingCart className="h-8 w-8" />
         {products.length > 0 && (
           <motion.span
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center"
+            className="absolute -top-2 -right-2 bg-red-500 text-white text-sm font-bold rounded-full h-7 w-7 flex items-center justify-center"
           >
             {products.length}
           </motion.span>
