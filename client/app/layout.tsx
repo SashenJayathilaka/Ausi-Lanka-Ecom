@@ -2,6 +2,7 @@ import { TRPCProvider } from "@/trpc/client";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
@@ -20,7 +21,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={jakarta.className}>
-          <TRPCProvider>{children}</TRPCProvider>
+          <TRPCProvider>
+            <Toaster />
+            {children}
+          </TRPCProvider>
         </body>
       </html>
     </ClerkProvider>
