@@ -21,6 +21,7 @@ interface ScrapeResult {
   image: string | null;
   url?: string;
   retailer: string;
+  calculatedPrice: string;
 }
 
 const ChemistWareHouse = () => {
@@ -138,6 +139,7 @@ const ChemistWareHouse = () => {
     try {
       const response = await fetch(apiEndpoint);
       const result = await response.json();
+      console.log("🚀 ~ handleScrape ~ result :", result);
 
       if (!response.ok) {
         throw new Error(result.error || "Failed to fetch product data");
@@ -149,6 +151,7 @@ const ChemistWareHouse = () => {
         image: result.image || null,
         url: targetUrl,
         retailer: retailer,
+        calculatedPrice: result.calculatedPrice,
       });
     } catch (error) {
       setError((error as Error).message || "An error occurred while scraping");
@@ -165,7 +168,7 @@ const ChemistWareHouse = () => {
         image: data.image!,
         url: data.url,
         retailer: data.retailer,
-        calculatedPrice: 0,
+        calculatedPrice: data.calculatedPrice,
       });
 
       setUrl("");
@@ -447,7 +450,7 @@ const ChemistWareHouse = () => {
 
                         <div className="flex items-baseline mb-6">
                           <span className="text-4xl font-extrabold text-blue-600">
-                            {data.price}
+                            {data.calculatedPrice}
                           </span>
                           <span className="ml-2 text-sm text-gray-500">
                             AUD
