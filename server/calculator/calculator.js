@@ -24,8 +24,22 @@ export const calculate = async (value, productUrl) => {
     }
 
     // Calculate with current rate
-    const result = parseFloat(numericPart) * latestRate.rate;
-    return result;
+    let finalResult;
+    const result = parseFloat(numericPart);
+
+    if (productUrl.includes("chemistwarehouse.com.au")) {
+      if ((result) => 10) {
+        const pharmacy = result * 1.65;
+        finalResult = pharmacy * latestRate.rate;
+        return Math.round(finalResult).toFixed(2);
+      } else {
+        const pharmacy = result * 1.5;
+        finalResult = pharmacy * latestRate.rate;
+        return Math.round(finalResult).toFixed(2);
+      }
+    }
+
+    return 0;
   } catch (error) {
     console.error(`Calculation error for ${productUrl}:`, error);
     throw new Error(`Price conversion failed: ${error.message}`);

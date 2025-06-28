@@ -18,7 +18,7 @@ export default function Home() {
         <Hero />
         <CompanyLogo />
         <section id="about" className="w-full bg-gray-50 py-16 px-4 md:px-8">
-          <ShippingCountdown targetDate="2025-06-30T10:00:00" isSmall />
+          <ShippingCountdown targetDate="2025-07-30T10:00:00" isSmall />
         </section>
         {/*    <PurposeSection /> */}
         <FeaturesSection />

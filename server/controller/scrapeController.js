@@ -71,7 +71,7 @@ export const scrapeProduct = async (req, res) => {
     const image = (await extractImage()) || "Image not found";
 
     await browser.close();
-    const calPrice = await calculate(price);
+    const calPrice = await calculate(price, productUrl);
 
     res.json({ title, price, image, calculatedPrice: calPrice });
   } catch (err) {
