@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { motion } from "framer-motion";
 import coles from "../../public/assets/coles.png";
 import jbhifi from "../../public/assets/jbhifi.png";
 import woolworths from "../../public/assets/woolworths.png";
@@ -6,35 +9,129 @@ import officeworks from "../../public/assets/officeworks.png";
 import chemest from "../../public/assets/chemist.webp";
 
 const CompanyLogo = () => {
-  const logos = [coles, jbhifi, woolworths, officeworks, chemest];
+  const logos = [
+    { src: coles, alt: "Coles Supermarket" },
+    { src: jbhifi, alt: "JB Hi-Fi Electronics" },
+    { src: woolworths, alt: "Woolworths Supermarket" },
+    { src: officeworks, alt: "Officeworks Stationery" },
+    { src: chemest, alt: "Chemist Warehouse" },
+  ];
 
   return (
-    <div className="w-full container mx-auto py-20 overflow-hidden flex  flex-col sm:flex-row sm:items-center items-start ">
-      <div className="w-[300px] shrink-0 px-8 text-gray-600 border-l-4 border-blue-500 bg-white py-2 z-10 sm:text-base text-xl font-semibold sm:text-left  mb-8 sm:mb-0">
-        Proud partner at <br /> Hubspot & Segment
+    <div className="w-full bg-gray-50 py-16 relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-0 left-0 w-64 h-64 bg-blue-100 rounded-full blur-[100px] opacity-20"></div>
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-blue-200 rounded-full blur-[100px] opacity-15"></div>
       </div>
-      <div className="flex animate-marquee whitespace-nowrap">
-        {logos.map((logo, index) => (
-          <Image
-            key={index}
-            src={logo}
-            alt={`Company Logo ${index + 1}`}
-            className="mx-12 h-8 w-36 object-contain grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all"
-            width={150} // 36 * 4 (for 4x scaling)
-            height={150} // 8 * 4 (for 4x scaling)
-          />
-        ))}
-        {/* Duplicate logos for seamless loop */}
-        {logos.map((logo, index) => (
-          <Image
-            key={`duplicate-${index}`}
-            src={logo}
-            alt={`Company Logo ${index + 1}`}
-            className="mx-12 h-8 w-36 object-contain grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all"
-            width={150} // 36 * 4 (for 4x scaling)
-            height={150} // 8 * 4 (for 4x scaling)
-          />
-        ))}
+
+      <div className="container mx-auto px-4">
+        {/* Section header */}
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-3">
+            Trusted by Leading Australian Retailers
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            {`We partner with Australia's most recognized brands to bring you
+            authentic products`}
+          </p>
+        </div>
+
+        {/* Logo marquee container */}
+        <div className="relative h-32 overflow-hidden">
+          {/* Gradient fade edges */}
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-gray-50 to-transparent z-20"></div>
+          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-gray-50 to-transparent z-20"></div>
+
+          {/* First marquee row */}
+          <motion.div
+            className="absolute top-0 flex items-center h-full"
+            animate={{
+              x: ["0%", "-100%"],
+            }}
+            transition={{
+              duration: 40,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          >
+            {[...logos, ...logos].map((logo, index) => (
+              <motion.div
+                key={`logo-${index}`}
+                className="mx-8 flex items-center h-full"
+                whileHover={{
+                  scale: 1.05,
+                  transition: { duration: 0.2 },
+                }}
+              >
+                <div className="relative group h-20 w-48">
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt}
+                    className="object-contain h-full w-full grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                    fill
+                    sizes="(max-width: 768px) 100px, 200px"
+                    quality={100}
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Second marquee row (reverse direction) */}
+          <motion.div
+            className="absolute bottom-0 flex items-center h-full"
+            animate={{
+              x: ["-100%", "0%"],
+            }}
+            transition={{
+              duration: 45,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          >
+            {[...logos, ...logos].map((logo, index) => (
+              <motion.div
+                key={`logo-reverse-${index}`}
+                className="mx-8 flex items-center h-full"
+                whileHover={{
+                  scale: 1.05,
+                  transition: { duration: 0.2 },
+                }}
+              >
+                <div className="relative group h-20 w-48">
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt}
+                    className="object-contain h-full w-full grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                    fill
+                    sizes="(max-width: 768px) 100px, 200px"
+                    quality={100}
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* CTA button */}
+        <div className="text-center mt-12">
+          <button className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md">
+            Become a Partner
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 ml-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );

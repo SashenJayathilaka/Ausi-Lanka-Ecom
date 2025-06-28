@@ -13,6 +13,13 @@ html {
   scroll-padding-top: 100px;
 }
 
+body:not(.user-is-tabbing) button:focus,
+body:not(.user-is-tabbing) input:focus,
+body:not(.user-is-tabbing) select:focus,
+body:not(.user-is-tabbing) textarea:focus {
+  outline: none;
+}
+
 /* customize container here using tailwindcss */
 .section-container {
   @apply px-4 sm:px-6 lg:px-8 py-16 container mx-auto;

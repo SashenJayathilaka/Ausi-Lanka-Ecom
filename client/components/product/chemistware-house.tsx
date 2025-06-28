@@ -239,7 +239,7 @@ const ChemistWareHouse = () => {
             <motion.div variants={fadeIn("up", 0.5)} className="mb-8">
               <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
                 <ShippingCountdown
-                  targetDate="2025-06-28T10:00:00"
+                  targetDate="2025-07-28T10:00:00"
                   className="ml-2 font-bold text-white"
                 />
               </div>
