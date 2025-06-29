@@ -8,7 +8,7 @@ interface Product {
   image: string;
   url?: string;
   retailer: string;
-  calculatedPrice?: string;
+  calculatedPrice: string;
   quantity?: number;
 }
 

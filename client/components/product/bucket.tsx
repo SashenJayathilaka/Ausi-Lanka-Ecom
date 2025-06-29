@@ -2,6 +2,7 @@
 "use client";
 
 import { useCartStore } from "@/store/useCartStore";
+import { LkrFormat } from "@/utils/format";
 import { fadeIn, listItem, staggerContainer } from "@/utils/motion";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -25,7 +26,8 @@ const Bucket = () => {
 
   const calculateTotal = () => {
     return products.reduce((total, product) => {
-      const priceValue = parseFloat(product.price.replace(/[^\d.-]/g, "")) || 0;
+      const priceValue =
+        parseFloat(product.calculatedPrice.replace(/[^\d.-]/g, "")) || 0;
       return total + priceValue * (product.quantity || 1);
     }, 0);
   };
@@ -51,7 +53,7 @@ const Bucket = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
-      className="bg-white rounded-2xl shadow-xl flex flex-col h-full w-full border border-gray-100 overflow-hidden"
+      className="bg-white rounded-none shadow-xl flex flex-col h-full w-full border border-gray-100 overflow-hidden"
     >
       {/* Cart Header */}
       <motion.div
@@ -187,7 +189,7 @@ const Bucket = () => {
                         {product.name}
                       </h3>
                       <p className="text-green-600 font-bold mt-1 text-lg">
-                        {product.price}
+                        {LkrFormat(Number(product.calculatedPrice))}
                         {product.quantity! > 1 && (
                           <span className="text-gray-500 ml-1 text-sm">
                             × {product.quantity}
@@ -264,7 +266,7 @@ const Bucket = () => {
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Subtotal</span>
               <span className="font-medium text-gray-900">
-                ${totalPrice.toFixed(2)}
+                {LkrFormat(Number(totalPrice))}
               </span>
             </div>
             <div className="flex justify-between items-center pb-3 border-b border-gray-200">
@@ -274,7 +276,7 @@ const Bucket = () => {
             <div className="flex justify-between items-center pt-3">
               <span className="text-lg font-semibold text-gray-900">Total</span>
               <span className="text-xl font-bold text-blue-600">
-                ${totalPrice.toFixed(2)}
+                {LkrFormat(Number(totalPrice))}
               </span>
             </div>
           </div>
@@ -286,7 +288,7 @@ const Bucket = () => {
                 boxShadow: "0 4px 20px rgba(79, 70, 229, 0.3)",
               }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3.5 px-4 rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3.5 px-4 rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
               onClick={() => router.push("/checkout")}
             >
               Proceed to Checkout

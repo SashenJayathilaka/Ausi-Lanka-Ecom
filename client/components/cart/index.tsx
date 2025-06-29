@@ -2,6 +2,7 @@
 "use client";
 
 import { useCartStore } from "@/store/useCartStore";
+import { LkrFormat } from "@/utils/format";
 import { fadeIn, staggerContainer } from "@/utils/motion";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -21,7 +22,8 @@ const ShoppingCartPage = () => {
 
   const calculateTotal = () => {
     return products.reduce((total, product) => {
-      const priceValue = parseFloat(product.price.replace(/[^\d.-]/g, "")) || 0;
+      const priceValue =
+        parseFloat(product.calculatedPrice.replace(/[^\d.-]/g, "")) || 0;
       return total + priceValue * (product.quantity || 1);
     }, 0);
   };
@@ -136,7 +138,7 @@ const ShoppingCartPage = () => {
                             </button>
                           </div>
                           <p className="text-green-600 font-semibold mt-1">
-                            {product.price}
+                            {LkrFormat(Number(product.calculatedPrice))}
                           </p>
                           {product.url && (
                             <a
@@ -185,12 +187,11 @@ const ShoppingCartPage = () => {
 
                         <div className="sm:text-right">
                           <p className="text-lg font-semibold text-gray-900">
-                            $
-                            {(
+                            {LkrFormat(
                               parseFloat(
-                                product.price.replace(/[^\d.-]/g, "")
+                                product.calculatedPrice.replace(/[^\d.-]/g, "")
                               ) * (product.quantity || 1)
-                            ).toFixed(2)}
+                            )}
                           </p>
                         </div>
                       </div>
@@ -215,7 +216,7 @@ const ShoppingCartPage = () => {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Subtotal</span>
                       <span className="font-medium">
-                        ${totalPrice.toFixed(2)}
+                        {LkrFormat(Number(totalPrice || 0))}
                       </span>
                     </div>
                     <div className="flex justify-between">
@@ -227,7 +228,7 @@ const ShoppingCartPage = () => {
                         Total
                       </span>
                       <span className="text-xl font-bold text-blue-600">
-                        ${totalPrice.toFixed(2)}
+                        {LkrFormat(Number(totalPrice || 0))}
                       </span>
                     </div>
                   </div>
