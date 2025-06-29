@@ -1,149 +1,224 @@
 "use client";
 
-import React from "react";
-import { FaFacebookF, FaTwitter, FaLinkedinIn } from "react-icons/fa";
+import { fadeIn, staggerContainer, textVariant } from "@/utils/motion";
 import { motion } from "framer-motion";
-import { fadeIn, textVariant } from "@/utils/motion";
+import {
+  FaCcApplePay,
+  FaCcMastercard,
+  FaCcPaypal,
+  FaCcVisa,
+  FaFacebookF,
+  FaInstagram,
+  FaPinterestP,
+  FaTwitter,
+  FaYoutube,
+} from "react-icons/fa";
+import { FiMail, FiMapPin, FiPhone } from "react-icons/fi";
+import { RiCustomerService2Fill } from "react-icons/ri";
 
 const Footer = () => {
   const footerLinks = {
-    company: [
-      { name: "About", href: "#" },
-      { name: "Terms of Use", href: "#" },
-      { name: "Privacy Policy", href: "#" },
-      { name: "How it Works", href: "#" },
-      { name: "Contact Us", href: "#" },
+    shop: [
+      { name: "All Products", href: "/products" },
+      { name: "New Arrivals", href: "/new-arrivals" },
+      { name: "Best Sellers", href: "/best-sellers" },
+      { name: "Special Offers", href: "/offers" },
+      { name: "Gift Cards", href: "/gift-cards" },
     ],
-    getHelp: [
-      { name: "Support Carrer", href: "#" },
-      { name: "24h Service", href: "#" },
-      { name: "Quick Chat", href: "#" },
+    customer: [
+      { name: "My Account", href: "/account" },
+      { name: "Order Tracking", href: "/track-order" },
+      { name: "Wishlist", href: "/wishlist" },
+      { name: "Shipping Info", href: "/shipping" },
+      { name: "Returns & Exchanges", href: "/returns" },
     ],
-    support: [
-      { name: "FAQ", href: "#" },
-      { name: "Policy", href: "#" },
-      { name: "Business", href: "#" },
+    about: [
+      { name: "About Us", href: "/about" },
+      { name: "Our Story", href: "/story" },
+      { name: "Careers", href: "/careers" },
+      { name: "Privacy Policy", href: "/privacy" },
+      { name: "Terms of Service", href: "/terms" },
     ],
     contact: [
-      { name: "WhatsApp", href: "#" },
-      { name: "Support 24", href: "#" },
+      { name: "Contact Us", href: "/contact" },
+      { name: "Help Center", href: "/help" },
+      { name: "Live Chat", href: "/chat" },
+      { name: "FAQs", href: "/faqs" },
+      { name: "Feedback", href: "/feedback" },
     ],
   };
 
+  const paymentMethods = [
+    { icon: <FaCcVisa className="w-8 h-8" />, name: "Visa" },
+    { icon: <FaCcMastercard className="w-8 h-8" />, name: "Mastercard" },
+    { icon: <FaCcPaypal className="w-8 h-8" />, name: "PayPal" },
+    { icon: <FaCcApplePay className="w-8 h-8" />, name: "Apple Pay" },
+  ];
+
   return (
-    <motion.footer
-      variants={fadeIn("up", 0.2)}
-      initial="hidden"
-      whileInView="show"
-      className="bg-gray-50"
-    >
-      <div className="section-container">
-        <motion.div
-          variants={fadeIn("up", 0.3)}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12"
-        >
+    <footer className="bg-gray-900 text-gray-300 pt-16 pb-8">
+      <motion.div
+        variants={staggerContainer(0.1, 0.2)}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+        className="container mx-auto px-4 sm:px-6 lg:px-8"
+      >
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand Column */}
-          <motion.div variants={fadeIn("right", 0.4)} className="lg:col-span-4">
+          <motion.div variants={fadeIn("right", 0.3)} className="lg:col-span-1">
             <motion.div
-              variants={fadeIn("down", 0.5)}
-              className="flex items-center gap-1 mb-6"
+              variants={textVariant(0.2)}
+              className="flex items-center gap-2 mb-6"
             >
-              <div className="w-4 h-4 bg-blue-600 rounded-full opacity-75"></div>
-              <div className="w-4 h-4 bg-red-500 rounded-full -ml-2"></div>
-              <span className="text-xl font-medium ml-1">The Next Design</span>
+              <span className="text-2xl font-bold text-white">
+                Shop<span className="text-blue-400">Hub</span>
+              </span>
             </motion.div>
-            <motion.p
-              variants={fadeIn("up", 0.6)}
-              className="text-gray-600 mb-6"
-            >
-              The copy warned the Little Blind Text, that where it came from it
-              would have been rewritten a thousand times.
+            <motion.p variants={fadeIn("up", 0.4)} className="mb-6">
+              Your trusted partner for international shopping and seamless
+              delivery to your doorstep.
             </motion.p>
-            <motion.div variants={fadeIn("up", 0.7)} className="flex gap-4">
-              <motion.a
-                whileHover={{ scale: 1.1 }}
-                href="#"
-                className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:bg-blue-600 hover:text-white transition-colors"
-              >
-                <FaFacebookF className="w-5 h-5" />
-              </motion.a>
-              <motion.a
-                whileHover={{ scale: 1.1 }}
-                href="#"
-                className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:bg-blue-400 hover:text-white transition-colors"
-              >
-                <FaTwitter className="w-5 h-5" />
-              </motion.a>
-              <motion.a
-                whileHover={{ scale: 1.1 }}
-                href="#"
-                className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:bg-blue-700 hover:text-white transition-colors"
-              >
-                <FaLinkedinIn className="w-5 h-5" />
-              </motion.a>
+
+            <motion.div
+              variants={fadeIn("up", 0.5)}
+              className="flex gap-4 mb-8"
+            >
+              {[
+                { icon: <FaFacebookF />, color: "bg-blue-600" },
+                { icon: <FaTwitter />, color: "bg-blue-400" },
+                { icon: <FaInstagram />, color: "bg-pink-600" },
+                { icon: <FaPinterestP />, color: "bg-red-600" },
+                { icon: <FaYoutube />, color: "bg-red-700" },
+              ].map((social, index) => (
+                <motion.a
+                  key={index}
+                  variants={fadeIn("right", index * 0.1)}
+                  whileHover={{ y: -5 }}
+                  href="#"
+                  className={`${social.color} w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-opacity-90 transition-all`}
+                >
+                  {social.icon}
+                </motion.a>
+              ))}
+            </motion.div>
+
+            <motion.div variants={fadeIn("up", 0.6)} className="space-y-3">
+              <div className="flex items-center gap-3">
+                <FiPhone className="text-blue-400" />
+                <span>+94 76 123 4567</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <FiMail className="text-blue-400" />
+                <span>support@shophub.lk</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <FiMapPin className="text-blue-400 mt-1" />
+                <span>123 Commercial St, Colombo 01, Sri Lanka</span>
+              </div>
             </motion.div>
           </motion.div>
 
           {/* Links Columns */}
-          <motion.div variants={fadeIn("left", 0.4)} className="lg:col-span-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {Object.entries(footerLinks).map(
-                ([category, links], categoryIndex) => (
-                  <motion.div
-                    key={category}
-                    variants={fadeIn("up", 0.3 * (categoryIndex + 1))}
-                  >
-                    <motion.h3
-                      variants={textVariant(0.2)}
-                      className="text-lg font-medium mb-4"
+          {Object.entries(footerLinks).map(
+            ([category, links], categoryIndex) => (
+              <motion.div
+                key={category}
+                variants={fadeIn("up", 0.3 * (categoryIndex + 1))}
+              >
+                <motion.h3
+                  variants={textVariant(0.2)}
+                  className="text-lg font-semibold text-white mb-6 uppercase tracking-wider"
+                >
+                  {category}
+                </motion.h3>
+                <motion.ul variants={fadeIn("up", 0.4)} className="space-y-3">
+                  {links.map((link, index) => (
+                    <motion.li
+                      key={index}
+                      variants={fadeIn("up", 0.1 * index)}
+                      whileHover={{ x: 5 }}
                     >
-                      {category.charAt(0).toUpperCase() + category.slice(1)}
-                    </motion.h3>
-                    <motion.ul
-                      variants={fadeIn("up", 0.4)}
-                      className="space-y-3"
-                    >
-                      {links.map((link, index) => (
-                        <motion.li
-                          key={index}
-                          variants={fadeIn("up", 0.1 * (index + 1))}
-                        >
-                          <motion.a
-                            whileHover={{ x: 5 }}
-                            href={link.href}
-                            className="text-gray-600 hover:text-gray-900"
-                          >
-                            {link.name}
-                          </motion.a>
-                        </motion.li>
-                      ))}
-                    </motion.ul>
-                  </motion.div>
-                )
-              )}
+                      <a
+                        href={link.href}
+                        className="hover:text-blue-400 transition-colors"
+                      >
+                        {link.name}
+                      </a>
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              </motion.div>
+            )
+          )}
+        </div>
+
+        {/* Customer Support Banner */}
+        <motion.div
+          variants={fadeIn("up", 0.7)}
+          className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-6 mb-12 flex flex-col md:flex-row items-center justify-between gap-6"
+        >
+          <div className="flex items-center gap-4">
+            <RiCustomerService2Fill className="w-12 h-12 text-white" />
+            <div>
+              <h4 className="text-xl font-bold text-white">Need Help?</h4>
+              <p className="text-blue-100">
+                Our customer support is available 24/7
+              </p>
             </div>
-          </motion.div>
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all"
+          >
+            Contact Support
+          </motion.button>
+        </motion.div>
+
+        {/* Payment Methods */}
+        <motion.div
+          variants={fadeIn("up", 0.8)}
+          className="flex flex-wrap items-center justify-center gap-6 mb-8"
+        >
+          {paymentMethods.map((method, index) => (
+            <motion.div
+              key={index}
+              variants={fadeIn("up", index * 0.1)}
+              whileHover={{ y: -5 }}
+              className="bg-gray-800 p-3 rounded-lg"
+              title={method.name}
+            >
+              {method.icon}
+            </motion.div>
+          ))}
         </motion.div>
 
         {/* Copyright */}
         <motion.div
-          variants={fadeIn("up", 0.8)}
-          className="border-t border-gray-200 mt-12 pt-8"
+          variants={fadeIn("up", 0.9)}
+          className="border-t border-gray-800 pt-8"
         >
-          <motion.div
-            variants={fadeIn("up", 0.9)}
-            className="flex flex-col md:flex-row justify-between items-center gap-4"
-          >
-            <motion.p
-              variants={fadeIn("right", 1.0)}
-              className="text-gray-600 text-sm"
-            >
-              Copyright © {new Date().getFullYear()}
-            </motion.p>
-          </motion.div>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-500 text-sm">
+              © {new Date().getFullYear()} ShopHub. All rights reserved.
+            </p>
+            <div className="flex gap-6">
+              <a href="#" className="text-gray-500 hover:text-white text-sm">
+                Privacy Policy
+              </a>
+              <a href="#" className="text-gray-500 hover:text-white text-sm">
+                Terms of Service
+              </a>
+              <a href="#" className="text-gray-500 hover:text-white text-sm">
+                Sitemap
+              </a>
+            </div>
+          </div>
         </motion.div>
-      </div>
-    </motion.footer>
+      </motion.div>
+    </footer>
   );
 };
 
