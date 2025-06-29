@@ -4,7 +4,6 @@ import Footer from "@/components/home/footer";
 import Hero from "@/components/home/hero-section";
 import MonitorSection from "@/components/home/monitor-section";
 import Navbar from "@/components/home/navbar";
-import NewsletterSection from "@/components/home/newsletter-section";
 import ServicesSection from "@/components/home/services-section";
 import ShippingCountdown from "@/components/home/ShippingCountdown";
 import TestimonialsSection from "@/components/home/testimonials-section";
@@ -27,7 +26,7 @@ export default function Home() {
         {/*   <PricingSection /> */}
         <ServicesSection />
         <TestimonialsSection />
-        <NewsletterSection />
+        {/*   <NewsletterSection /> */}
         <Footer />
       </div>
     </main>

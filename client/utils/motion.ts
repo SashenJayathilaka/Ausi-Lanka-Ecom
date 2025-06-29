@@ -155,3 +155,39 @@ export const listItem = {
     },
   }),
 };
+
+export const zoomIn = (
+  delay: number = 0,
+  duration: number = 0.5
+): Variants => ({
+  hidden: {
+    scale: 0.5,
+    opacity: 0,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 10,
+      delay,
+    },
+  },
+  show: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 10,
+      duration,
+      delay,
+    },
+  },
+  exit: {
+    scale: 0.5,
+    opacity: 0,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 10,
+    },
+  },
+});
