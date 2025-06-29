@@ -3,14 +3,19 @@
 
 import { useCartStore } from "@/store/useCartStore";
 import { trpc } from "@/trpc/client";
+import { LkrFormat } from "@/utils/format";
 import { useClerk } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
+  FiAlertTriangle,
+  FiAnchor,
   FiCheckCircle,
+  FiClock,
   FiGlobe,
   FiHome,
   FiMapPin,
@@ -20,6 +25,7 @@ import {
   FiShoppingBag,
   FiTruck,
   FiUser,
+  FiZap,
 } from "react-icons/fi";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -69,6 +75,7 @@ const districts = [
 
 const CheckoutPage = () => {
   //const { user } = useUser();
+  const router = useRouter();
   const clerk = useClerk();
   const { products, removeProduct, updateQuantity, clearCart } = useCartStore();
   const [orderSuccess, setOrderSuccess] = useState(false);
@@ -105,7 +112,9 @@ const CheckoutPage = () => {
 
   // Calculate base price
   const basePrice = products.reduce((total, product) => {
-    const priceValue = parseFloat(product.price.replace(/[^0-9.]/g, ""));
+    const priceValue = parseFloat(
+      product.calculatedPrice.replace(/[^0-9.]/g, "")
+    );
     const quantity = product.quantity || 1;
     return total + (isNaN(priceValue) ? 0 : priceValue * quantity);
   }, 0);
@@ -140,7 +149,9 @@ const CheckoutPage = () => {
         image: product.image || "",
         url: product.url,
         retailer: product.retailer || "",
-        calculatedPrice: parseFloat(product.price.replace(/[^0-9.]/g, "")),
+        calculatedPrice: parseFloat(
+          product.calculatedPrice.replace(/[^0-9.]/g, "")
+        ),
         quantity: product.quantity || 1,
       })),
       missingItems: data.missingItems ? [data.missingItems] : undefined,
@@ -150,63 +161,191 @@ const CheckoutPage = () => {
   if (orderSuccess) {
     const formValues = form.getValues();
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col items-center justify-center p-6">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center"
+          transition={{ type: "spring", damping: 10, stiffness: 100 }}
+          className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden"
         >
-          <div className="flex justify-center mb-6">
-            <FiCheckCircle className="h-16 w-16 text-green-500" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Order Confirmed!
-          </h2>
-          <p className="text-gray-600 mb-4">
-            {`Thank you for your purchase, ${formValues.name}. We'll contact you shortly on ${formValues.mobile}.`}
-          </p>
-          <div className="bg-blue-50 rounded-lg p-4 mb-6 text-left">
-            <p className="font-medium text-blue-800">Delivery Address:</p>
-            <p className="text-blue-700">
-              {formValues.addressLine1}
-              <br />
-              {formValues.addressLine2 && (
-                <>
-                  {formValues.addressLine2}
-                  <br />
-                </>
-              )}
-              {formValues.city}, {formValues.district}
-              <br />
-              {formValues.postalCode}
-            </p>
-            <p className="font-medium text-blue-800 mt-2">Delivery Method:</p>
-            <p className="text-blue-700">
-              {formValues.deliveryMethod === "air" ? (
-                <>Air Cargo (1 week delivery)</>
-              ) : (
-                <>Sea Cargo (1 month delivery)</>
-              )}
-            </p>
-            {formValues.comments && (
-              <>
-                <p className="font-medium text-blue-800 mt-2">Your Comments:</p>
-                <p className="text-blue-700">{formValues.comments}</p>
-              </>
-            )}
-            {formValues.missingItems && (
-              <>
-                <p className="font-medium text-blue-800 mt-2">Missing Items:</p>
-                <p className="text-blue-700">{formValues.missingItems}</p>
-              </>
-            )}
-          </div>
-          <Link
-            href="/"
-            className="inline-block w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+          {/* Confetti effect */}
+          <AnimatePresence>
+            {[...Array(20)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ y: -20, x: Math.random() * 40 - 20, opacity: 0 }}
+                animate={{
+                  y: [0, Math.random() * 100 + 50],
+                  x: Math.random() * 80 - 40,
+                  opacity: [1, 0],
+                  rotate: Math.random() * 360,
+                }}
+                transition={{
+                  duration: 2 + Math.random() * 3,
+                  delay: i * 0.1,
+                  repeat: Infinity,
+                  repeatDelay: 5,
+                }}
+                className="absolute top-0 left-1/2 text-2xl"
+                style={{
+                  color: ["#4ade80", "#60a5fa", "#fbbf24", "#f472b6"][
+                    Math.floor(Math.random() * 4)
+                  ],
+                }}
+              >
+                {["🎉", "✨", "✅", "🛒"][Math.floor(Math.random() * 4)]}
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+          {/* Main content */}
+          <motion.div
+            initial={{ y: 20 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="relative z-10"
           >
-            Continue Shopping
-          </Link>
+            <div className="flex justify-center mb-6">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", delay: 0.4 }}
+              >
+                <div className="relative">
+                  <FiCheckCircle className="h-16 w-16 text-green-500" />
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-green-500/20"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 2.5 }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                </div>
+              </motion.div>
+            </div>
+
+            <motion.h2
+              className="text-3xl font-bold text-gray-800 mb-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              Order Confirmed! 🎊
+            </motion.h2>
+
+            <motion.p
+              className="text-gray-600 mb-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              {`Thank you for your purchase, ${formValues.name}! We'll contact you shortly on `}
+              <span className="font-medium text-blue-600">
+                {formValues.mobile}
+              </span>
+              .
+            </motion.p>
+
+            <motion.div
+              className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-8 border border-blue-100 shadow-inner"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <div className="space-y-3">
+                <div>
+                  <p className="font-semibold text-blue-800 flex items-center gap-2">
+                    <FiTruck className="h-4 w-4" /> Delivery Address:
+                  </p>
+                  <p className="text-blue-700 pl-6">
+                    {formValues.addressLine1}
+                    <br />
+                    {formValues.addressLine2 && (
+                      <>
+                        {formValues.addressLine2}
+                        <br />
+                      </>
+                    )}
+                    {formValues.city}, {formValues.district}
+                    <br />
+                    {formValues.postalCode}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-blue-800 flex items-center gap-2">
+                    <FiClock className="h-4 w-4" /> Delivery Method:
+                  </p>
+                  <p className="text-blue-700 pl-6">
+                    {formValues.deliveryMethod === "air" ? (
+                      <span className="flex items-center gap-1">
+                        <FiZap className="h-4 w-4 text-yellow-500" />
+                        Air Cargo (1 week delivery)
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1">
+                        <FiAnchor className="h-4 w-4 text-blue-500" />
+                        Sea Cargo (1 month delivery)
+                      </span>
+                    )}
+                  </p>
+                </div>
+
+                {formValues.comments && (
+                  <div>
+                    <p className="font-semibold text-blue-800 flex items-center gap-2">
+                      <FiMessageSquare className="h-4 w-4" /> Your Comments:
+                    </p>
+                    <p className="text-blue-700 pl-6">{formValues.comments}</p>
+                  </div>
+                )}
+
+                {formValues.missingItems && (
+                  <div>
+                    <p className="font-semibold text-blue-800 flex items-center gap-2">
+                      <FiAlertTriangle className="h-4 w-4 text-yellow-500" />{" "}
+                      Missing Items:
+                    </p>
+                    <p className="text-blue-700 pl-6">
+                      {formValues.missingItems}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+            >
+              <Link
+                href="/"
+                className="inline-flex w-full items-center justify-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-3 px-6 rounded-lg transition-all shadow-lg hover:shadow-xl gap-2"
+              >
+                Continue Shopping <FiShoppingBag className="h-5 w-5" />
+              </Link>
+            </motion.div>
+          </motion.div>
+
+          {/* Order number badge */}
+          <motion.div
+            className="absolute top-4 right-4 bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.7 }}
+          >
+            Order #{Math.floor(Math.random() * 1000000)}
+          </motion.div>
+        </motion.div>
+
+        {/* Floating shopping cart icon */}
+        <motion.div
+          className="fixed bottom-8 right-8 bg-white p-4 rounded-full shadow-xl cursor-pointer"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => router.push("/orders")}
+        >
+          <FiPackage className="h-6 w-6 text-blue-600" />
         </motion.div>
       </div>
     );
@@ -266,7 +405,7 @@ const CheckoutPage = () => {
                           {product.name}
                         </h3>
                         <p className="text-sm font-semibold text-gray-800 ml-2">
-                          {product.price}
+                          {LkrFormat(Number(product.calculatedPrice))}
                         </p>
                       </div>
                       <p className="text-xs text-gray-500 mt-1">
@@ -313,7 +452,7 @@ const CheckoutPage = () => {
               <div className="p-6 border-t border-gray-200">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">${basePrice.toFixed(2)}</span>
+                  <span className="font-medium">{LkrFormat(basePrice)}</span>
                 </div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-gray-600">
@@ -330,7 +469,7 @@ const CheckoutPage = () => {
                 <div className="flex justify-between items-center pt-4 border-t border-gray-200">
                   <span className="text-lg font-semibold">Total</span>
                   <span className="text-lg font-bold text-blue-600">
-                    ${totalPrice.toFixed(2)}
+                    {LkrFormat(totalPrice)}
                   </span>
                 </div>
               </div>

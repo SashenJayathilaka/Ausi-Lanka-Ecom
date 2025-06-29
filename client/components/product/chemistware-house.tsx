@@ -16,6 +16,8 @@ import {
 import { RiPriceTag3Line, RiShoppingBasketLine } from "react-icons/ri";
 import ShippingCountdown from "../home/ShippingCountdown";
 import Bucket from "./bucket";
+import { toast } from "sonner";
+import { LkrFormat } from "@/utils/format";
 
 interface ScrapeResult {
   title: string;
@@ -81,6 +83,9 @@ const ChemistWareHouse = () => {
   const handlePaste = async () => {
     try {
       const clipboardText = await navigator.clipboard.readText();
+
+      toast.success("URL pasted from clipboard!");
+
       if (clipboardText) {
         setUrl(clipboardText);
         setShowCopied(true);
@@ -89,6 +94,8 @@ const ChemistWareHouse = () => {
         if (isValidUrl(clipboardText)) {
           await handleScrape(clipboardText);
         }
+
+        console.log(showCopied);
       }
     } catch (err) {
       console.error("Failed to read clipboard:", err);
@@ -186,6 +193,13 @@ const ChemistWareHouse = () => {
       setData(null);
     }
   };
+
+  const amount = 19395.0;
+  const formatted = `Rs. ${amount.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+  console.log(formatted); // Rs. 19,395.00
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -322,22 +336,33 @@ const ChemistWareHouse = () => {
 
             <motion.div variants={fadeIn("up", 0.4)} className="mt-8 max-w-2xl">
               <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1 relative">
+                <div className="flex-1 relative group">
+                  {/* Main Input Field */}
                   <input
                     type="text"
-                    className="w-full px-6 py-4 rounded-xl bg-white/20 backdrop-blur-sm border-2 border-white/30 focus:border-white/50 focus:ring-2 focus:ring-white/20 text-white placeholder-blue-100 font-medium text-lg"
+                    className="w-full px-6 py-4 rounded-xl bg-white/20 backdrop-blur-sm border-2 border-white/30 focus:border-white/50 focus:ring-4 focus:ring-white/10 text-white placeholder-blue-100/80 font-medium text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:bg-white/30 focus:shadow-2xl focus:bg-white/30"
                     placeholder="Paste product URL here..."
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleScrape()}
+                    aria-label="Product URL input"
                   />
-                  <button
+
+                  {/* Paste Button */}
+                  <motion.button
                     onClick={handlePaste}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 text-blue-100 hover:text-white transition-colors"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 text-blue-100 hover:text-white transition-colors bg-white/10 rounded-lg backdrop-blur-sm"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                     title="Paste from clipboard"
+                    aria-label="Paste URL from clipboard"
                   >
                     <FiClipboard className="h-5 w-5" />
-                  </button>
+                    <span className="sr-only">Paste</span>
+                  </motion.button>
+
+                  {/* Glow Effect (only when focused) */}
+                  <div className="absolute inset-0 rounded-xl pointer-events-none transition-all duration-300 group-focus-within:bg-blue-400/10 group-focus-within:shadow-[0_0_20px_5px_rgba(96,165,250,0.3)]" />
                 </div>
                 <button
                   onClick={() => handleScrape()}
@@ -355,13 +380,8 @@ const ChemistWareHouse = () => {
                 </button>
               </div>
 
-              <div className="mt-6 flex items-center justify-between">
-                <ShippingCountdown
-                  targetDate="2025-07-28T10:00:00"
-                  className="text-white font-medium"
-                />
-
-                {showCopied && (
+              <div className="mt-6 flex flex-col items-center justify-between">
+                {/*                 {showCopied && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -369,7 +389,11 @@ const ChemistWareHouse = () => {
                   >
                     URL pasted from clipboard!
                   </motion.div>
-                )}
+                )} */}
+                <ShippingCountdown
+                  targetDate="2025-07-28T10:00:00"
+                  className="text-white font-medium"
+                />
               </div>
             </motion.div>
           </div>
@@ -494,10 +518,10 @@ const ChemistWareHouse = () => {
 
                         <div className="flex items-baseline mb-6">
                           <span className="text-4xl font-extrabold text-indigo-600">
-                            {data.calculatedPrice}
+                            {LkrFormat(Number(data?.calculatedPrice || 0))}
                           </span>
                           <span className="ml-2 text-sm text-gray-500">
-                            AUD
+                            LKR
                           </span>
                         </div>
 
@@ -634,7 +658,6 @@ const ChemistWareHouse = () => {
 
               {/* Cart content with subtle pattern */}
               <div className="relative">
-                <div className="absolute inset-0 bg-[url('/assets/grid-pattern.svg')] bg-[size:60px_60px] opacity-[0.03]"></div>
                 <Bucket />
               </div>
 
