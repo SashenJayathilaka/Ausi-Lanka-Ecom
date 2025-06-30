@@ -1,10 +1,9 @@
-// src/trpc/router/checkout.ts
 import { db } from "@/db";
 import { orders, orderItems } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { z } from "zod";
 
-const createOrderInput = z.object({
+export const createOrderInput = z.object({
   name: z.string().min(1),
   mobile: z.string().min(10).max(20),
   deliveryMethod: z.enum(["sea", "air", "express"]),
