@@ -4,6 +4,7 @@
 import { useCartStore } from "@/store/useCartStore";
 import { LkrFormat } from "@/utils/format";
 import { fadeIn, listItem, staggerContainer } from "@/utils/motion";
+import { useAuth, useClerk } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -19,6 +20,8 @@ import { RiShoppingBag3Line } from "react-icons/ri";
 
 const Bucket = () => {
   const router = useRouter();
+  const clerk = useClerk();
+  const { isSignedIn } = useAuth();
   const products = useCartStore((state) => state.products);
   const removeProduct = useCartStore((state) => state.removeProduct);
   const clearCart = useCartStore((state) => state.clearCart);
@@ -56,18 +59,15 @@ const Bucket = () => {
       className="bg-white rounded-none shadow-xl flex flex-col h-full w-full border border-gray-100 overflow-hidden"
     >
       {/* Cart Header */}
-      <motion.div
-        className="p-6 bg-gradient-to-r from-blue-600 to-indigo-600"
-        variants={fadeIn("down", 0.2)}
-      >
+      <motion.div className="p-6 bg-transparent" variants={fadeIn("down", 0.2)}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-sm text-white">
+            <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-sm text-blue-800">
               <FiShoppingCart className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">Your Cart</h2>
-              <p className="text-blue-100 text-sm">
+              <h2 className="text-2xl font-bold text-blue-800">Your Cart</h2>
+              <p className="text-blue-800 text-sm">
                 {itemCount} {itemCount === 1 ? "item" : "items"}
               </p>
             </div>
@@ -83,7 +83,7 @@ const Bucket = () => {
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="text-white/80 hover:text-white text-sm flex items-center gap-1"
+              className="text-blue-800 hover:text-blue-800/80 text-sm flex items-center gap-1 cursor-pointer"
             >
               <FiTrash2 className="h-4 w-4" />
               <span>Clear</span>
@@ -289,7 +289,14 @@ const Bucket = () => {
               }}
               whileTap={{ scale: 0.98 }}
               className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3.5 px-4 rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
-              onClick={() => router.push("/checkout")}
+              onClick={(e) => {
+                if (!isSignedIn) {
+                  e.preventDefault();
+                  return clerk.openSignIn();
+                } else {
+                  router.push("/checkout");
+                }
+              }}
             >
               Proceed to Checkout
               <FiArrowRight className="h-5 w-5" />

@@ -782,7 +782,7 @@ const CheckoutPage = () => {
                   products.length === 0
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700"
-                } transition-colors flex items-center justify-center`}
+                } transition-colors flex items-center justify-center cursor-pointer`}
               >
                 {createOrder.isPending ? (
                   <>
@@ -809,7 +809,7 @@ const CheckoutPage = () => {
                     Processing...
                   </>
                 ) : (
-                  `Place Order ($${totalPrice.toFixed(2)})`
+                  `Place Order (${LkrFormat(totalPrice)})`
                 )}
               </button>
 
