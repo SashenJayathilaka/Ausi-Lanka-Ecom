@@ -12,7 +12,7 @@ export const AuthButton = () => {
           <UserButton.MenuItems>
             <UserButton.Link
               label="My Profile"
-              href="/users/current"
+              href="/history"
               labelIcon={<BiUser className="size-4" />}
             />
             <UserButton.Action label="manageAccount" />

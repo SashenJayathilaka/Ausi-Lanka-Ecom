@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FiClock } from "react-icons/fi";
+import { FiClock, FiPackage } from "react-icons/fi";
 
 type TimeLeft = {
   days: number;
@@ -51,23 +51,46 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
       {isSmall ? (
         <motion.div
           key={label}
-          className="bg-white/10 rounded-xl px-4 py-3 w-24 text-center shadow-md"
-          initial={{ opacity: 0, y: 10 }}
+          className="relative bg-white rounded-xl p-3 w-24 h-28 flex flex-col items-center justify-center border border-gray-100 overflow-hidden group"
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.5 }}
+          whileHover={{
+            scale: 1.03,
+            borderColor: "rgba(99,102,241,0.3)",
+          }}
         >
+          {/* Hover shine effect */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-indigo-50/0 via-indigo-50/40 to-indigo-50/0 opacity-0 group-hover:opacity-100 pointer-events-none"
+            initial={{ x: "-100%" }}
+            whileHover={{ x: "100%", transition: { duration: 1.2 } }}
+          />
+
+          {/* Time value */}
           <motion.div
             key={value}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="text-3xl font-semibold text-black font-mono"
+            className="relative z-10 text-4xl font-bold text-indigo-600 font-mono"
+            initial={{ y: 5, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 15,
+            }}
           >
             {value.toString().padStart(2, "0")}
           </motion.div>
-          <div className="text-sm text-gray-900 uppercase tracking-wider mt-1">
+
+          {/* Label */}
+          <motion.div
+            className="relative z-10 text-xs text-gray-500 uppercase tracking-wider mt-2 font-medium"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
             {label}
-          </div>
+          </motion.div>
         </motion.div>
       ) : (
         <motion.div
@@ -99,16 +122,83 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
   return (
     <>
       {isSmall ? (
-        <div className="flex flex-col items-center gap-6">
-          <h2 className="text-black text-2xl font-bold">
-            📦 Next Shipping In:
-          </h2>
-          <div className="flex gap-4">
-            {formatUnit("Days", timeLeft.days)}
-            {formatUnit("Hours", timeLeft.hours)}
-            {formatUnit("Minutes", timeLeft.minutes)}
-            {formatUnit("Seconds", timeLeft.seconds)}
-          </div>
+        <div className="relative py-12">
+          {/* Top fade */}
+          <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-white to-white/0 z-10 pointer-events-none" />
+
+          {/* Bottom fade */}
+          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-white/0 z-10 pointer-events-none" />
+
+          <motion.div
+            className="relative overflow-y-auto py-8 px-6"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="flex flex-col items-center">
+              <motion.div
+                className="flex items-center gap-3 mb-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                <motion.div
+                  animate={{
+                    y: [0, -3, 0],
+                    rotate: [0, 5, -5, 0],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                  }}
+                >
+                  <FiPackage className="h-6 w-6 text-indigo-500" />
+                </motion.div>
+                <h2 className="text-2xl font-bold text-gray-800">
+                  Next Shipping Dispatch
+                </h2>
+              </motion.div>
+
+              <motion.div
+                className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ staggerChildren: 0.1 }}
+              >
+                {formatUnit("Days", timeLeft.days)}
+                {formatUnit("Hrs", timeLeft.hours)}
+                {formatUnit("Min", timeLeft.minutes)}
+                {formatUnit("Sec", timeLeft.seconds)}
+              </motion.div>
+
+              {/* Progress indicator */}
+              <div className="w-full max-w-md relative h-1 bg-gray-100 rounded-full mb-6 overflow-hidden">
+                <motion.div
+                  className="absolute top-0 left-0 h-full bg-indigo-400 rounded-full"
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  transition={{
+                    duration: 1.5,
+                    ease: "linear",
+                    repeat: Infinity,
+                  }}
+                />
+              </div>
+
+              <motion.div
+                className="text-center text-gray-500 text-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+              >
+                Orders placed in{" "}
+                <span className="font-semibold text-indigo-600">
+                  {timeLeft.hours}h {timeLeft.minutes}m
+                </span>{" "}
+                will ship today
+              </motion.div>
+            </div>
+          </motion.div>
         </div>
       ) : (
         <motion.div

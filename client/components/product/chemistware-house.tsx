@@ -3,6 +3,7 @@
 
 import { useWindowSize } from "@/hooks/useWindowSize";
 import { useCartStore } from "@/store/useCartStore";
+import { LkrFormat } from "@/utils/format";
 import { fadeIn, staggerContainer, textVariant } from "@/utils/motion";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -14,10 +15,9 @@ import {
   FiX,
 } from "react-icons/fi";
 import { RiPriceTag3Line, RiShoppingBasketLine } from "react-icons/ri";
+import { toast } from "sonner";
 import ShippingCountdown from "../home/ShippingCountdown";
 import Bucket from "./bucket";
-import { toast } from "sonner";
-import { LkrFormat } from "@/utils/format";
 
 interface ScrapeResult {
   title: string;
@@ -171,8 +171,11 @@ const ChemistWareHouse = () => {
         retailer: retailer,
         calculatedPrice: result.calculatedPrice,
       });
+
+      toast.success("Product data analyze successfully!");
     } catch (error) {
       setError((error as Error).message || "An error occurred while scraping");
+      toast.error("Failed to analyze product data. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -530,7 +533,7 @@ const ChemistWareHouse = () => {
                             onClick={handleAddToBucket}
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
-                            className="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all"
+                            className="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all cursor-pointer"
                           >
                             <RiShoppingBasketLine className="h-6 w-6" />
                             <span className="font-semibold text-lg">
