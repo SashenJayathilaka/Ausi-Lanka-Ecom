@@ -163,7 +163,7 @@ const MonitorSection = () => {
                     <motion.div
                       key={index}
                       variants={fadeIn("up", index * 0.1)}
-                      className="relative pl-10"
+                      className="relative pl-12 mb-6" // Increased pl-10 to pl-12 and added mb-6 for vertical spacing
                     >
                       <div
                         className={`absolute left-0 top-0 w-10 h-10 rounded-full flex items-center justify-center ${
@@ -176,7 +176,9 @@ const MonitorSection = () => {
                       >
                         {step.icon}
                       </div>
-                      <div>
+                      <div className="ml-2">
+                        {" "}
+                        {/* Added ml-2 for additional horizontal spacing */}
                         <h4
                           className={`font-medium ${
                             step.status === "pending"
