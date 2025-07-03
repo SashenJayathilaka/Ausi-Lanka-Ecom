@@ -302,7 +302,7 @@ const OrderHistoryPageSectionsSuspense: React.FC = () => {
                 </div>
 
                 {/* Order items */}
-                <div className="p-6 border-b border-gray-100">
+                <div className="p-6 border-b border-gray-100 cursor-pointer">
                   <h4 className="text-sm font-medium text-gray-500 mb-3">
                     Order Items ({order.items.length})
                   </h4>
@@ -315,7 +315,7 @@ const OrderHistoryPageSectionsSuspense: React.FC = () => {
                         animate={{ opacity: 1 }}
                         whileHover={{ scale: 1.01 }}
                       >
-                        <div className="flex-shrink-0 w-16 h-16 bg-white rounded-md overflow-hidden border border-gray-200">
+                        <div className="flex-shrink-0 w-16 h-16 bg-white rounded-md overflow-hidden border border-gray-200 cursor-pointer">
                           <img
                             src={item.image}
                             alt={item.name}

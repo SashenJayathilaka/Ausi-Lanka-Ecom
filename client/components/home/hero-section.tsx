@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable jsx-a11y/alt-text */
 "use client";
 
 import { fadeIn, staggerContainer, textVariant } from "@/utils/motion";
@@ -92,7 +94,7 @@ const Hero = () => {
             className="flex flex-col sm:flex-row gap-4 max-w-md"
           >
             {/* Enhanced CTA section */}
-            <div className="flex-1 relative">
+            {/*             <div className="flex-1 relative">
               <input
                 type="email"
                 placeholder="Your email address"
@@ -101,7 +103,7 @@ const Hero = () => {
               <button className="absolute right-2 top-2 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 cursor-pointer transition-all hover:shadow-lg hover:shadow-blue-100 active:scale-95">
                 Get Started →
               </button>
-            </div>
+            </div> */}
             <button className="flex items-center justify-center gap-2 px-6 py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all text-gray-600 bg-white/80 backdrop-blur-sm">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
