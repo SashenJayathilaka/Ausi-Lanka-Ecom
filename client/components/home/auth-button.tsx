@@ -1,8 +1,9 @@
 "use client";
 
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { BiUser, BiUserCircle } from "react-icons/bi";
 import { motion } from "framer-motion";
+import { BiUserCircle } from "react-icons/bi";
+import { LuHistory } from "react-icons/lu";
 
 export const AuthButton = () => {
   return (
@@ -11,9 +12,9 @@ export const AuthButton = () => {
         <UserButton>
           <UserButton.MenuItems>
             <UserButton.Link
-              label="My Profile"
+              label="My Orders History"
               href="/history"
-              labelIcon={<BiUser className="size-4" />}
+              labelIcon={<LuHistory className="size-4" />}
             />
             <UserButton.Action label="manageAccount" />
           </UserButton.MenuItems>
@@ -34,5 +35,3 @@ export const AuthButton = () => {
     </>
   );
 };
-
-//main-sections.tsx
