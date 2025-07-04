@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer";
+import { calculate } from "../calculator/calculator.js";
 
 export const scrapeJBHIFIProduct = async (req, res) => {
   const productUrl = req.query.url;
@@ -118,12 +119,15 @@ export const scrapeJBHIFIProduct = async (req, res) => {
       );
     }
 
+    const calPrice = await calculate(productData.price, productUrl);
+
     res.json({
       title: productData.title,
       price: productData.price,
       image: productData.image || "Image not available",
       retailer: "JB Hi-Fi",
       url: productUrl,
+      calculatedPrice: calPrice,
     });
   } catch (err) {
     console.error("JB Hi-Fi scrape error:", err);

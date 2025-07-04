@@ -23,7 +23,7 @@ export const calculate = async (value, productUrl) => {
       throw new Error("No exchange rate available");
     }
 
-    // Calculate with current rate
+    // calculate with current rate
     let finalResult;
     const result = parseFloat(numericPart);
 
@@ -37,9 +37,17 @@ export const calculate = async (value, productUrl) => {
         finalResult = pharmacy * latestRate.rate;
         return Math.round(finalResult).toFixed(2);
       }
+    } else {
+      if ((result) => 10) {
+        const pharmacy = result * 1.5;
+        finalResult = pharmacy * latestRate.rate;
+        return Math.round(finalResult).toFixed(2);
+      } else {
+        const pharmacy = result * 1.4;
+        finalResult = pharmacy * latestRate.rate;
+        return Math.round(finalResult).toFixed(2);
+      }
     }
-
-    return 0;
   } catch (error) {
     console.error(`Calculation error for ${productUrl}:`, error);
     throw new Error(`Price conversion failed: ${error.message}`);

@@ -138,7 +138,7 @@ const ChemistWareHouse = () => {
       )}`;
       retailer = "Woolworths";
     } else if (targetUrl.includes("jbhifi.com.au")) {
-      apiEndpoint = `http://localhost:5000/api/jbhifi/scrape?url=${encodeURIComponent(
+      apiEndpoint = `http://localhost:5000/api/woolworths/scrape?url==${encodeURIComponent(
         targetUrl
       )}`;
       retailer = "JB Hi-Fi";
