@@ -7,6 +7,7 @@ import exchangeRate from "./models/exchangeRate.js";
 import colesRoutes from "./routes/colesRoutes.js";
 import jbhifiRoutes from "./routes/jbhifiRoutes.js";
 import chemistRoutes from "./routes/scrapeRoutes.js";
+import woolworthsRoutes from "./routes/woolworthsRoutes.js";
 import { fetchAndStoreExchangeRate } from "./services/exchangeService.js";
 
 const app = express();
@@ -34,6 +35,7 @@ app.use(express.json());
 app.use("/api/chemist", chemistRoutes);
 app.use("/api/coles", colesRoutes);
 app.use("/api/jbhifi", jbhifiRoutes);
+app.use("/api/woolworths", woolworthsRoutes);
 
 app.get("/api/rates/latest", async (req, res) => {
   try {
