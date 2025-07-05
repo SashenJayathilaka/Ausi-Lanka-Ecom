@@ -56,18 +56,20 @@ const Bucket = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
-      className="bg-white rounded-none shadow-xl flex flex-col h-full w-full border border-gray-100 overflow-hidden"
+      className="bg-white dark:bg-gray-800 rounded-none shadow-xl flex flex-col h-full w-full border border-gray-100 dark:border-gray-700 overflow-hidden"
     >
       {/* Cart Header */}
       <motion.div className="p-6 bg-transparent" variants={fadeIn("down", 0.2)}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-sm text-blue-800">
+            <div className="p-2.5 rounded-xl bg-white/10 dark:bg-gray-700/50 backdrop-blur-sm text-blue-800 dark:text-blue-400">
               <FiShoppingCart className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-blue-800">Your Cart</h2>
-              <p className="text-blue-800 text-sm">
+              <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-100">
+                Your Cart
+              </h2>
+              <p className="text-blue-800 dark:text-blue-200 text-sm">
                 {itemCount} {itemCount === 1 ? "item" : "items"}
               </p>
             </div>
@@ -83,7 +85,7 @@ const Bucket = () => {
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="text-blue-800 hover:text-blue-800/80 text-sm flex items-center gap-1 cursor-pointer"
+              className="text-blue-800 dark:text-blue-200 hover:text-blue-800/80 dark:hover:text-blue-300 text-sm flex items-center gap-1 cursor-pointer"
             >
               <FiTrash2 className="h-4 w-4" />
               <span>Clear</span>
@@ -94,7 +96,7 @@ const Bucket = () => {
 
       {/* Cart Content */}
       <motion.div
-        className="flex-1 overflow-y-auto bg-gray-50"
+        className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-700/20"
         variants={staggerContainer()}
         initial="hidden"
         animate="show"
@@ -104,13 +106,13 @@ const Bucket = () => {
             className="h-full flex flex-col items-center justify-center text-center p-8"
             variants={fadeIn("up", 0.4)}
           >
-            <div className="mb-6 p-5 bg-white rounded-2xl text-blue-400 shadow-lg border border-gray-200">
+            <div className="mb-6 p-5 bg-white dark:bg-gray-700 rounded-2xl text-blue-400 shadow-lg border border-gray-200 dark:border-gray-600">
               <RiShoppingBag3Line className="h-12 w-12" />
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">
               Your cart is empty
             </h3>
-            <p className="text-gray-500 max-w-md mb-6">
+            <p className="text-gray-500 dark:text-gray-400 max-w-md mb-6">
               {` Looks like you haven't added anything to your cart yet`}
             </p>
             <motion.button
@@ -119,7 +121,7 @@ const Bucket = () => {
                 boxShadow: "0 4px 12px rgba(59, 130, 246, 0.2)",
               }}
               whileTap={{ scale: 0.98 }}
-              className="px-6 py-3 bg-blue-600 text-white rounded-xl font-medium flex items-center gap-2"
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium flex items-center gap-2"
               onClick={() => router.push("/products")}
             >
               Browse Products
@@ -127,14 +129,14 @@ const Bucket = () => {
             </motion.button>
           </motion.div>
         ) : (
-          <motion.ul className="divide-y divide-gray-200">
+          <motion.ul className="divide-y divide-gray-200 dark:divide-gray-700">
             <AnimatePresence>
               {products.map((product, idx) => (
                 <motion.li
                   key={`${product.name}-${idx}`}
                   custom={idx}
                   variants={listItem}
-                  className="p-5 hover:bg-white transition-colors"
+                  className="p-5 hover:bg-white dark:hover:bg-gray-700/50 transition-colors"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{
@@ -148,7 +150,7 @@ const Bucket = () => {
                     <div className="relative flex-shrink-0">
                       {product.image ? (
                         <motion.div
-                          className="w-20 h-20 rounded-xl bg-white border border-gray-200 overflow-hidden"
+                          className="w-20 h-20 rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 overflow-hidden"
                           whileHover={{ scale: 1.03 }}
                         >
                           <img
@@ -158,13 +160,13 @@ const Bucket = () => {
                           />
                         </motion.div>
                       ) : (
-                        <div className="w-20 h-20 bg-gray-100 flex items-center justify-center rounded-xl text-gray-400 border border-gray-200">
+                        <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 flex items-center justify-center rounded-xl text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-gray-600">
                           <BsBoxSeam className="h-8 w-8" />
                         </div>
                       )}
                       {/* Retailer badge */}
                       {product.retailer && (
-                        <div className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md border border-gray-200">
+                        <div className="absolute -top-2 -right-2 bg-white dark:bg-gray-800 rounded-full p-1 shadow-md border border-gray-200 dark:border-gray-600">
                           <img
                             src={
                               product.retailer === "Chemist Warehouse"
@@ -185,13 +187,13 @@ const Bucket = () => {
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <h3 className="text-base font-semibold text-gray-900 line-clamp-2">
+                      <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
                         {product.name}
                       </h3>
-                      <p className="text-green-600 font-bold mt-1 text-lg">
+                      <p className="text-green-600 dark:text-green-400 font-bold mt-1 text-lg">
                         {LkrFormat(Number(product.calculatedPrice))}
                         {product.quantity! > 1 && (
-                          <span className="text-gray-500 ml-1 text-sm">
+                          <span className="text-gray-500 dark:text-gray-400 ml-1 text-sm">
                             × {product.quantity}
                           </span>
                         )}
@@ -201,7 +203,7 @@ const Bucket = () => {
                           href={product.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-blue-500 hover:underline mt-1 truncate block w-full"
+                          className="text-xs text-blue-500 dark:text-blue-400 hover:underline mt-1 truncate block w-full"
                         >
                           View original product
                         </a>
@@ -209,7 +211,7 @@ const Bucket = () => {
 
                       {/* Quantity Controls */}
                       <div className="flex items-center justify-between mt-3">
-                        <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                        <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                           <motion.button
                             onClick={() =>
                               handleQuantityChange(
@@ -219,11 +221,11 @@ const Bucket = () => {
                             }
                             whileHover={{ backgroundColor: "#f3f4f6" }}
                             whileTap={{ scale: 0.95 }}
-                            className="px-3 py-1.5 bg-gray-100 text-gray-700"
+                            className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 cursor-pointer"
                           >
                             <FiMinus className="h-4 w-4" />
                           </motion.button>
-                          <span className="px-3 font-medium text-gray-800">
+                          <span className="px-3 font-medium text-gray-800 dark:text-gray-200">
                             {product.quantity || 1}
                           </span>
                           <motion.button
@@ -235,7 +237,7 @@ const Bucket = () => {
                             }
                             whileHover={{ backgroundColor: "#f3f4f6" }}
                             whileTap={{ scale: 0.95 }}
-                            className="px-3 py-1.5 bg-gray-100 text-gray-700"
+                            className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 cursor-pointer"
                           >
                             <FiPlus className="h-4 w-4" />
                           </motion.button>
@@ -245,7 +247,7 @@ const Bucket = () => {
                           onClick={() => removeProduct(idx)}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
-                          className="text-gray-400 hover:text-red-500 p-1.5 transition-colors hover:bg-red-50 rounded-lg"
+                          className="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 p-1.5 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
                         >
                           <FiTrash2 className="h-5 w-5" />
                         </motion.button>
@@ -261,21 +263,25 @@ const Bucket = () => {
 
       {/* Cart Footer */}
       {products.length > 0 && (
-        <div className="border-t border-gray-200 p-6 bg-white">
+        <div className="border-t border-gray-200 dark:border-gray-700 p-6 bg-white dark:bg-gray-800">
           <div className="space-y-4 mb-6">
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Subtotal</span>
-              <span className="font-medium text-gray-900">
+              <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">
                 {LkrFormat(Number(totalPrice))}
               </span>
             </div>
-            <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-              <span className="text-gray-600">Shipping</span>
-              <span className="font-medium text-green-600">FREE</span>
+            <div className="flex justify-between items-center pb-3 border-b border-gray-200 dark:border-gray-700">
+              <span className="text-gray-600 dark:text-gray-400">Shipping</span>
+              <span className="font-medium text-green-600 dark:text-green-400">
+                FREE
+              </span>
             </div>
             <div className="flex justify-between items-center pt-3">
-              <span className="text-lg font-semibold text-gray-900">Total</span>
-              <span className="text-xl font-bold text-blue-600">
+              <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                Total
+              </span>
+              <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
                 {LkrFormat(Number(totalPrice))}
               </span>
             </div>
@@ -306,7 +312,7 @@ const Bucket = () => {
               onClick={() => router.push("/products")}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full border-2 border-blue-600 text-blue-600 py-3 px-4 rounded-xl font-medium hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
+              className="w-full border-2 border-blue-600 dark:border-blue-500 text-blue-600 dark:text-blue-400 py-3 px-4 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors flex items-center justify-center gap-2"
             >
               <BsArrowLeft className="h-4 w-4" />
               Continue Shopping

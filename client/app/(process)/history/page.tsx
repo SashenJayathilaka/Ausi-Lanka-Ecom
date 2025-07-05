@@ -10,7 +10,7 @@ const Page = () => {
 
   return (
     <HydrateClient>
-      <OrderHistoryPage />;
+      <OrderHistoryPage />
     </HydrateClient>
   );
 };

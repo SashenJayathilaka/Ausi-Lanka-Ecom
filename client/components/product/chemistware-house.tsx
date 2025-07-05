@@ -13,11 +13,18 @@ import {
   FiExternalLink,
   FiShoppingCart,
   FiX,
+  FiMoon,
+  FiSun,
 } from "react-icons/fi";
-import { RiPriceTag3Line, RiShoppingBasketLine } from "react-icons/ri";
+import {
+  RiClipboardLine,
+  RiPriceTag3Line,
+  RiShoppingBasketLine,
+} from "react-icons/ri";
 import { toast } from "sonner";
 import ShippingCountdown from "../home/ShippingCountdown";
 import Bucket from "./bucket";
+import { useTheme } from "next-themes";
 
 interface ScrapeResult {
   title: string;
@@ -32,6 +39,7 @@ const ChemistWareHouse = () => {
   const { width, height } = useWindowSize();
   const products = useCartStore((state) => state.products);
   const addProduct = useCartStore((state) => state.addProduct);
+  const { theme, setTheme } = useTheme();
 
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,6 +48,7 @@ const ChemistWareHouse = () => {
   const [showBucket, setShowBucket] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   // Supported retailers data with color schemes
   const supportedRetailers = [
@@ -48,37 +57,42 @@ const ChemistWareHouse = () => {
       url: "https://www.chemistwarehouse.com.au/",
       logo: "/assets/partner_chemistwarehouse.webp",
       color: "from-amber-500 to-amber-600",
-      bgColor: "bg-amber-100",
+      bgColor: "bg-amber-100 dark:bg-amber-900/30",
     },
     {
       name: "Coles",
       url: "https://www.coles.com.au/",
       logo: "/assets/coles.png",
       color: "from-red-500 to-red-600",
-      bgColor: "bg-red-100",
+      bgColor: "bg-red-100 dark:bg-red-900/30",
     },
     {
       name: "Woolworths",
       url: "https://www.woolworths.com.au/",
       logo: "/assets/woolworths.png",
       color: "from-green-600 to-green-700",
-      bgColor: "bg-green-100",
+      bgColor: "bg-green-100 dark:bg-green-900/30",
     },
     {
       name: "JB Hi-Fi",
       url: "https://www.jbhifi.com.au/",
       logo: "/assets/jbhifi.png",
       color: "from-blue-500 to-blue-600",
-      bgColor: "bg-blue-100",
+      bgColor: "bg-blue-100 dark:bg-blue-900/30",
     },
     {
       name: "Officeworks",
       url: "https://www.officeworks.com.au/",
       logo: "/assets/officeworks.png",
       color: "from-purple-500 to-purple-600",
-      bgColor: "bg-purple-100",
+      bgColor: "bg-purple-100 dark:bg-purple-900/30",
     },
   ];
+
+  useEffect(() => {
+    setMounted(true);
+    setIsLoading(false);
+  }, []);
 
   const handlePaste = async () => {
     try {
@@ -172,7 +186,7 @@ const ChemistWareHouse = () => {
         calculatedPrice: result.calculatedPrice,
       });
 
-      toast.success("Product data analyze successfully!");
+      toast.success("Product data analyzed successfully!");
     } catch (error) {
       setError((error as Error).message || "An error occurred while scraping");
       toast.error("Failed to analyze product data. Please try again.");
@@ -197,13 +211,6 @@ const ChemistWareHouse = () => {
     }
   };
 
-  const amount = 19395.0;
-  const formatted = `Rs. ${amount.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-  console.log(formatted); // Rs. 19,395.00
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "v") {
@@ -223,14 +230,10 @@ const ChemistWareHouse = () => {
     );
   };
 
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
-
-  if (isLoading) {
+  if (!mounted || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <AiOutlineLoading3Quarters className="animate-spin h-12 w-12 text-indigo-600" />
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
+        <AiOutlineLoading3Quarters className="animate-spin h-12 w-12 text-indigo-600 dark:text-indigo-400" />
       </div>
     );
   }
@@ -240,75 +243,24 @@ const ChemistWareHouse = () => {
       initial="hidden"
       animate="show"
       variants={staggerContainer()}
-      className="min-h-screen bg-gray-50 relative overflow-hidden"
+      className="min-h-screen bg-gray-50 dark:bg-gray-900 relative overflow-hidden"
     >
-      {/* Futuristic Glass Navigation */}
-      {/*       <motion.nav
-        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-200/50 shadow-sm"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
+      {/* Dark Mode Toggle Button */}
+      <button
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        className="fixed top-4 right-4 z-50 p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        aria-label="Toggle dark mode"
       >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <RiFlaskLine className="h-6 w-6 text-indigo-600" />
-              <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                PriceAlchemy
-              </span>
-            </div>
-
-            <div className="hidden md:flex items-center space-x-6">
-              <button
-                className={`px-3 py-2 rounded-lg font-medium ${
-                  activeTab === "scraper"
-                    ? "bg-indigo-100 text-indigo-700"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-                onClick={() => setActiveTab("scraper")}
-              >
-                Product Scraper
-              </button>
-              <button
-                className={`px-3 py-2 rounded-lg font-medium ${
-                  activeTab === "trends"
-                    ? "bg-indigo-100 text-indigo-700"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-                onClick={() => setActiveTab("trends")}
-              >
-                Price Trends
-              </button>
-              <button
-                className={`px-3 py-2 rounded-lg font-medium ${
-                  activeTab === "deals"
-                    ? "bg-indigo-100 text-indigo-700"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-                onClick={() => setActiveTab("deals")}
-              >
-                Hot Deals
-              </button>
-            </div>
-
-            <button
-              onClick={() => setShowBucket(true)}
-              className="relative p-2 rounded-full bg-white shadow-md border border-gray-200 hover:bg-gray-50"
-            >
-              <RiShoppingBasketLine className="h-5 w-5 text-gray-700" />
-              {products.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                  {products.length}
-                </span>
-              )}
-            </button>
-          </div>
-        </div>
-      </motion.nav> */}
+        {theme === "dark" ? (
+          <FiSun className="h-5 w-5 text-yellow-400" />
+        ) : (
+          <FiMoon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+        )}
+      </button>
 
       {/* Main Content */}
       <div className="pt-24 pb-16 container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Hero Section with Floating Elements */}
+        {/* Hero Section */}
         <motion.section
           className="relative rounded-3xl overflow-hidden mb-12"
           initial="hidden"
@@ -316,10 +268,9 @@ const ChemistWareHouse = () => {
           viewport={{ once: true }}
           variants={staggerContainer()}
         >
-          {/* Animated Gradient Background */}
           <div className="absolute inset-0 overflow-hidden z-0">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 opacity-90 animate-gradient-x"></div>
-            <div className="absolute inset-0 bg-[url('/assets/grid-pattern.svg')] bg-[length:60px_60px] opacity-10"></div>
+            <div className="absolute inset-0 bg-[url('/assets/grid-pattern.svg')] bg-[length:60px_60px] opacity-10 dark:opacity-5"></div>
             <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-indigo-400 rounded-full filter blur-[120px] opacity-30 animate-float"></div>
             <div className="absolute -top-32 -right-32 w-64 h-64 bg-purple-400 rounded-full filter blur-[120px] opacity-30 animate-float-delay"></div>
           </div>
@@ -332,7 +283,7 @@ const ChemistWareHouse = () => {
                 </span>
               </h1>
               <p className="text-xl text-blue-100 max-w-2xl">
-                {`    Extract prices, compare deals, and save money across Australia's
+                {`   Extract prices, compare deals, and save money across Australia's
                 top retailers`}
               </p>
             </motion.div>
@@ -340,7 +291,6 @@ const ChemistWareHouse = () => {
             <motion.div variants={fadeIn("up", 0.4)} className="mt-8 max-w-2xl">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative group">
-                  {/* Main Input Field */}
                   <input
                     type="text"
                     className="w-full px-6 py-4 rounded-xl bg-white/20 backdrop-blur-sm border-2 border-white/30 focus:border-white/50 focus:ring-4 focus:ring-white/10 text-white placeholder-blue-100/80 font-medium text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:bg-white/30 focus:shadow-2xl focus:bg-white/30"
@@ -350,8 +300,6 @@ const ChemistWareHouse = () => {
                     onKeyDown={(e) => e.key === "Enter" && handleScrape()}
                     aria-label="Product URL input"
                   />
-
-                  {/* Paste Button */}
                   <motion.button
                     onClick={handlePaste}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 text-blue-100 hover:text-white transition-colors bg-white/10 rounded-lg backdrop-blur-sm"
@@ -363,8 +311,6 @@ const ChemistWareHouse = () => {
                     <FiClipboard className="h-5 w-5" />
                     <span className="sr-only">Paste</span>
                   </motion.button>
-
-                  {/* Glow Effect (only when focused) */}
                   <div className="absolute inset-0 rounded-xl pointer-events-none transition-all duration-300 group-focus-within:bg-blue-400/10 group-focus-within:shadow-[0_0_20px_5px_rgba(96,165,250,0.3)]" />
                 </div>
                 <button
@@ -384,15 +330,6 @@ const ChemistWareHouse = () => {
               </div>
 
               <div className="mt-6 flex flex-col items-center justify-between">
-                {/*                 {showCopied && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-sm text-white font-medium bg-white/20 px-3 py-1 rounded-full"
-                  >
-                    URL pasted from clipboard!
-                  </motion.div>
-                )} */}
                 <ShippingCountdown
                   targetDate="2025-07-28T10:00:00"
                   className="text-white font-medium"
@@ -422,7 +359,7 @@ const ChemistWareHouse = () => {
                   rel="noopener noreferrer"
                   variants={fadeIn("up", 0.2 + index * 0.1)}
                   whileHover={{ y: -5 }}
-                  className={`group rounded-xl overflow-hidden shadow-md ${retailer.bgColor}`}
+                  className={`group rounded-xl overflow-hidden shadow-md ${retailer.bgColor} dark:border dark:border-gray-700/50`}
                 >
                   <div className="p-4 flex flex-col items-center">
                     <div className="w-16 h-16 mb-3 flex items-center justify-center">
@@ -432,7 +369,7 @@ const ChemistWareHouse = () => {
                         className="w-full h-full object-contain"
                       />
                     </div>
-                    <span className="text-sm font-medium text-gray-800 group-hover:text-gray-900 transition-colors">
+                    <span className="text-sm font-medium text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                       {retailer.name}
                     </span>
                   </div>
@@ -442,14 +379,14 @@ const ChemistWareHouse = () => {
 
             {/* Results Card */}
             <motion.div
-              className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200"
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700"
               initial="hidden"
               whileInView="show"
               variants={fadeIn("up", 0.4)}
             >
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-2xl font-bold text-gray-800 flex items-center">
-                  <RiPriceTag3Line className="mr-2 text-indigo-600" />
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+                  <RiPriceTag3Line className="mr-2 text-indigo-600 dark:text-indigo-400" />
                   Product Analysis
                 </h2>
               </div>
@@ -459,7 +396,7 @@ const ChemistWareHouse = () => {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="mb-6 p-4 bg-red-50 rounded-lg border border-red-200 flex items-start"
+                    className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700/50 flex items-start"
                   >
                     <div className="flex-shrink-0">
                       <svg
@@ -475,10 +412,10 @@ const ChemistWareHouse = () => {
                       </svg>
                     </div>
                     <div className="ml-3">
-                      <h3 className="text-sm font-medium text-red-800">
+                      <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
                         Error
                       </h3>
-                      <div className="mt-1 text-sm text-red-700">
+                      <div className="mt-1 text-sm text-red-700 dark:text-red-300">
                         <p>{error}</p>
                       </div>
                     </div>
@@ -489,11 +426,11 @@ const ChemistWareHouse = () => {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="border border-gray-200 rounded-xl overflow-hidden"
+                    className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden"
                   >
                     <div className="md:flex">
-                      <div className="md:w-1/3 bg-gray-50 p-6 flex items-center justify-center relative">
-                        <div className="absolute top-4 left-4 bg-white rounded-lg p-1 shadow-md z-10 border border-gray-200">
+                      <div className="md:w-1/3 bg-gray-50 dark:bg-gray-700/30 p-6 flex items-center justify-center relative">
+                        <div className="absolute top-4 left-4 bg-white dark:bg-gray-800 rounded-lg p-1 shadow-md z-10 border border-gray-200 dark:border-gray-600">
                           <img
                             src={getRetailerData(data.retailer).logo}
                             alt={data.retailer}
@@ -509,21 +446,21 @@ const ChemistWareHouse = () => {
                             whileHover={{ scale: 1.05 }}
                           />
                         ) : (
-                          <div className="w-full h-64 flex items-center justify-center text-gray-400">
+                          <div className="w-full h-64 flex items-center justify-center text-gray-400 dark:text-gray-500">
                             <FiShoppingCart className="h-16 w-16 opacity-30" />
                           </div>
                         )}
                       </div>
                       <div className="p-6 md:w-2/3">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
                           {data.title}
                         </h3>
 
                         <div className="flex items-baseline mb-6">
-                          <span className="text-4xl font-extrabold text-indigo-600">
+                          <span className="text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">
                             {LkrFormat(Number(data?.calculatedPrice || 0))}
                           </span>
-                          <span className="ml-2 text-sm text-gray-500">
+                          <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
                             LKR
                           </span>
                         </div>
@@ -533,7 +470,7 @@ const ChemistWareHouse = () => {
                             onClick={handleAddToBucket}
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
-                            className="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all cursor-pointer"
+                            className="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 dark:from-indigo-500 dark:to-indigo-600 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all cursor-pointer"
                           >
                             <RiShoppingBasketLine className="h-6 w-6" />
                             <span className="font-semibold text-lg">
@@ -548,7 +485,7 @@ const ChemistWareHouse = () => {
                               rel="noopener noreferrer"
                               whileHover={{ scale: 1.03 }}
                               whileTap={{ scale: 0.97 }}
-                              className="flex-1 border-2 border-gray-200 text-gray-700 py-4 px-6 rounded-lg flex items-center justify-center gap-2 shadow-sm hover:bg-gray-50 hover:border-indigo-200 transition-all"
+                              className="flex-1 border-2 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-4 px-6 rounded-lg flex items-center justify-center gap-2 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:border-indigo-200 dark:hover:border-indigo-400 transition-all"
                             >
                               <FiExternalLink className="h-5 w-5" />
                               <span className="font-medium">View Product</span>
@@ -562,17 +499,35 @@ const ChemistWareHouse = () => {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-center py-16 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300"
+                    className="text-center py-16 bg-gray-50 dark:bg-gray-700/30 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 relative"
                   >
-                    <div className="mx-auto h-24 w-24 text-gray-300 mb-6">
+                    <div className="mx-auto h-24 w-24 text-gray-300 dark:text-gray-500 mb-6">
                       <RiPriceTag3Line className="h-full w-full" />
                     </div>
-                    <h3 className="text-xl font-medium text-gray-700 mb-2">
+                    <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-2">
                       No product analyzed yet
                     </h3>
-                    <p className="mt-1 text-gray-600 max-w-md mx-auto">
+                    <p className="mt-1 text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-4">
                       Paste a product URL from any supported retailer above to
                       get started
+                    </p>
+
+                    <button
+                      onClick={handlePaste}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
+                    >
+                      {loading ? (
+                        <AiOutlineLoading3Quarters className="animate-spin h-6 w-6" />
+                      ) : (
+                        <>
+                          <RiClipboardLine className="mr-2" />
+                          Paste URL
+                        </>
+                      )}
+                    </button>
+
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                      Note: You may need to grant clipboard permissions
                     </p>
                   </motion.div>
                 )}
@@ -583,7 +538,7 @@ const ChemistWareHouse = () => {
           {/* Sidebar - Shopping Bucket */}
           <div className="lg:col-span-1">
             <motion.div
-              className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200/50 sticky top-8 backdrop-blur-sm bg-opacity-80"
+              className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50 sticky top-8 backdrop-blur-sm bg-opacity-80 dark:bg-opacity-80"
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, margin: "0px 0px -100px 0px" }}
@@ -606,17 +561,11 @@ const ChemistWareHouse = () => {
                 },
               }}
             >
-              {/* Floating background elements */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-100 rounded-full filter blur-[100px] opacity-10"></div>
-              </div>
-
-              {/* Header with gradient background */}
               <motion.div
-                className="p-6 border-b border-gray-200/50 bg-gradient-to-r from-blue-50 to-indigo-50 relative overflow-hidden"
+                className="p-6 border-b border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 relative overflow-hidden"
                 whileHover={{ backgroundPosition: "100% 50%" }}
               >
-                <div className="absolute inset-0 bg-[url('/assets/dot-pattern.svg')] bg-[size:20px_20px] opacity-10"></div>
+                <div className="absolute inset-0 bg-[url('/assets/dot-pattern.svg')] bg-[size:20px_20px] opacity-10 dark:opacity-5"></div>
                 <div className="relative z-10 flex items-center">
                   <motion.div
                     className="p-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md mr-4"
@@ -633,7 +582,7 @@ const ChemistWareHouse = () => {
                     <RiShoppingBasketLine className="h-6 w-6" />
                   </motion.div>
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
                       Your Collection
                       {products.length > 0 && (
                         <motion.span
@@ -650,7 +599,7 @@ const ChemistWareHouse = () => {
                         </motion.span>
                       )}
                     </h2>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                       {products.length > 0
                         ? "Your curated selection"
                         : "Ready for your favorites"}
@@ -659,20 +608,18 @@ const ChemistWareHouse = () => {
                 </div>
               </motion.div>
 
-              {/* Cart content with subtle pattern */}
               <div className="relative">
                 <Bucket />
               </div>
 
-              {/* Decorative footer */}
               {products.length > 0 && (
                 <motion.div
-                  className="p-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 border-t border-gray-200/50 text-center"
+                  className="p-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20 border-t border-gray-200/50 dark:border-gray-700/50 text-center"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
                 >
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     Free shipping on orders over $50
                   </p>
                 </motion.div>
@@ -714,17 +661,17 @@ const ChemistWareHouse = () => {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30 }}
-            className="fixed inset-0 z-50 bg-white lg:hidden"
+            className="fixed inset-0 z-50 bg-white dark:bg-gray-900 lg:hidden"
           >
             <div className="h-full flex flex-col">
-              <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-                <h2 className="text-xl font-bold text-gray-800 flex items-center">
-                  <RiShoppingBasketLine className="mr-2 text-indigo-600" />
+              <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
+                  <RiShoppingBasketLine className="mr-2 text-indigo-600 dark:text-indigo-400" />
                   Your Collection
                 </h2>
                 <button
                   onClick={() => setShowBucket(false)}
-                  className="p-2 text-gray-500 rounded-full hover:bg-gray-100"
+                  className="p-2 text-gray-500 dark:text-gray-400 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   <FiX className="h-5 w-5" />
                 </button>
@@ -744,7 +691,7 @@ const ChemistWareHouse = () => {
           [...Array(10)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute rounded-full bg-indigo-100 opacity-10"
+              className="absolute rounded-full bg-indigo-100 dark:bg-indigo-900/20 opacity-10"
               initial={{
                 x: Math.random() * width,
                 y: Math.random() * height,

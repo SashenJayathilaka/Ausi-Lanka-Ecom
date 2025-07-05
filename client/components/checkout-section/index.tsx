@@ -15,8 +15,10 @@ import {
   FiHome,
   FiMapPin,
   FiMessageSquare,
+  FiMinus,
   FiPackage,
   FiPhone,
+  FiPlus,
   FiShoppingBag,
   FiTruck,
   FiUser,
@@ -40,7 +42,6 @@ export const checkoutFormSchema = z.object({
 });
 
 const CheckoutPage = () => {
-  //const { user } = useUser();
   const clerk = useClerk();
   const { products, removeProduct, updateQuantity, clearCart } = useCartStore();
   const [orderSuccess, setOrderSuccess] = useState(false);
@@ -129,11 +130,13 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Header */}
-      <header className="bg-white shadow-sm py-4">
+      <header className="bg-white dark:bg-gray-800 shadow-sm py-4 transition-colors duration-300">
         <div className="container mx-auto px-4">
-          <h1 className="text-xl font-bold text-gray-800">Checkout</h1>
+          <h1 className="text-xl font-bold text-gray-800 dark:text-white">
+            Checkout
+          </h1>
         </div>
       </header>
 
@@ -145,25 +148,25 @@ const CheckoutPage = () => {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-xl shadow-md overflow-hidden mb-8"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-8 border border-gray-200 dark:border-gray-700 transition-colors duration-300"
             >
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                  <FiShoppingBag className="text-blue-500" />
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+                  <FiShoppingBag className="text-blue-500 dark:text-blue-400" />
                   Your Order ({products.length}{" "}
                   {products.length === 1 ? "item" : "items"})
                 </h2>
               </div>
-              <div className="divide-y divide-gray-200">
+              <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {products.map((product, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 * index }}
-                    className="p-6 flex"
+                    className="p-6 flex hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200"
                   >
-                    <div className="flex-shrink-0 h-20 w-20 rounded-lg overflow-hidden bg-gray-100">
+                    <div className="flex-shrink-0 h-20 w-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
                       {product.image ? (
                         <img
                           src={product.image}
@@ -171,53 +174,57 @@ const CheckoutPage = () => {
                           className="h-full w-full object-contain"
                         />
                       ) : (
-                        <div className="h-full w-full flex items-center justify-center text-gray-400">
+                        <div className="h-full w-full flex items-center justify-center text-gray-400 dark:text-gray-500">
                           <FiShoppingBag className="h-8 w-8" />
                         </div>
                       )}
                     </div>
                     <div className="ml-4 flex-1">
                       <div className="flex justify-between">
-                        <h3 className="text-sm font-medium text-gray-800 line-clamp-2">
+                        <h3 className="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-2">
                           {product.name}
                         </h3>
-                        <p className="text-sm font-semibold text-gray-800 ml-2">
+                        <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 ml-2">
                           {LkrFormat(Number(product.calculatedPrice))}
                         </p>
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         {product.retailer}
                       </p>
 
                       <div className="flex items-center mt-3">
-                        <button
+                        <motion.button
                           onClick={() =>
                             handleQuantityChange(
                               index,
                               (product.quantity || 1) - 1
                             )
                           }
-                          className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-l-md bg-gray-100 hover:bg-gray-200"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          className="w-8 h-8 flex items-center justify-center border border-gray-300 dark:border-gray-600 rounded-l-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-colors duration-200"
                         >
-                          -
-                        </button>
-                        <span className="w-10 h-8 flex items-center justify-center border-t border-b border-gray-300 bg-white">
+                          <FiMinus className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+                        </motion.button>
+                        <span className="w-10 h-8 flex items-center justify-center border-t border-b border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
                           {product.quantity || 1}
                         </span>
-                        <button
+                        <motion.button
                           onClick={() =>
                             handleQuantityChange(
                               index,
                               (product.quantity || 1) + 1
                             )
                           }
-                          className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-r-md bg-gray-100 hover:bg-gray-200"
+                          className="w-8 h-8 flex items-center justify-center border border-gray-300 dark:border-gray-600 rounded-r-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-colors duration-200"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
                         >
-                          +
-                        </button>
+                          <FiPlus className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+                        </motion.button>
                         <button
                           onClick={() => handleRemoveItem(index)}
-                          className="ml-4 text-xs text-red-500 hover:text-red-700"
+                          className="ml-4 text-xs text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors duration-200"
                         >
                           Remove
                         </button>
@@ -226,26 +233,32 @@ const CheckoutPage = () => {
                   </motion.div>
                 ))}
               </div>
-              <div className="p-6 border-t border-gray-200">
+              <div className="p-6 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">{LkrFormat(basePrice)}</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Subtotal
+                  </span>
+                  <span className="font-medium text-gray-800 dark:text-gray-200">
+                    {LkrFormat(basePrice)}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-gray-600">
+                  <span className="text-gray-600 dark:text-gray-400">
                     {deliveryMethod === "air" ? (
                       <>Air Cargo (1 week)</>
                     ) : (
                       <>Sea Cargo (1 month)</>
                     )}
                   </span>
-                  <span className="font-medium">
+                  <span className="font-medium text-gray-800 dark:text-gray-200">
                     {deliveryMethod === "air" ? "$10.00" : "$0.00"}
                   </span>
                 </div>
-                <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-                  <span className="text-lg font-semibold">Total</span>
-                  <span className="text-lg font-bold text-blue-600">
+                <div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <span className="text-lg font-semibold text-gray-800 dark:text-white">
+                    Total
+                  </span>
+                  <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
                     {LkrFormat(totalPrice)}
                   </span>
                 </div>
@@ -260,33 +273,33 @@ const CheckoutPage = () => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
               onSubmit={form.handleSubmit(onSubmit)}
-              className="bg-white rounded-xl shadow-md overflow-hidden p-6 sticky top-8"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden p-6 sticky top-8 border border-gray-200 dark:border-gray-700 transition-colors duration-300"
             >
-              <h2 className="text-lg font-semibold text-gray-800 mb-6">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-6">
                 Contact & Delivery Information
               </h2>
 
               <div className="mb-6">
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                 >
                   Full Name
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiUser className="h-5 w-5 text-gray-400" />
+                    <FiUser className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                   </div>
                   <input
                     type="text"
                     id="name"
                     {...form.register("name")}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                     placeholder="John Doe"
                   />
                 </div>
                 {form.formState.errors.name && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                     {form.formState.errors.name.message}
                   </p>
                 )}
@@ -295,26 +308,26 @@ const CheckoutPage = () => {
               <div className="mb-6">
                 <label
                   htmlFor="mobile"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                 >
                   Mobile Number
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiPhone className="h-5 w-5 text-gray-400" />
+                    <FiPhone className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                   </div>
                   <input
                     type="tel"
                     id="mobile"
                     {...form.register("mobile")}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                     placeholder="07XXXXXXXX"
                     pattern="^07[0-9]{8}$"
                     title="Enter a valid 10-digit Sri Lankan mobile number"
                   />
                 </div>
                 {form.formState.errors.mobile && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                     {form.formState.errors.mobile.message}
                   </p>
                 )}
@@ -322,7 +335,7 @@ const CheckoutPage = () => {
 
               {/* Sri Lankan Address Fields */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Delivery Address (Sri Lanka)
                 </label>
 
@@ -332,18 +345,18 @@ const CheckoutPage = () => {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FiHome className="h-5 w-5 text-gray-400" />
+                      <FiHome className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                     </div>
                     <input
                       type="text"
                       id="addressLine1"
                       {...form.register("addressLine1")}
-                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 mb-2"
+                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 mb-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                       placeholder="Address Line 1 (House No, Street)"
                     />
                   </div>
                   {form.formState.errors.addressLine1 && (
-                    <p className="mt-1 text-sm text-red-600">
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                       {form.formState.errors.addressLine1.message}
                     </p>
                   )}
@@ -355,13 +368,13 @@ const CheckoutPage = () => {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FiMapPin className="h-5 w-5 text-gray-400" />
+                      <FiMapPin className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                     </div>
                     <input
                       type="text"
                       id="addressLine2"
                       {...form.register("addressLine2")}
-                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                       placeholder="Address Line 2 (Optional)"
                     />
                   </div>
@@ -376,11 +389,11 @@ const CheckoutPage = () => {
                       type="text"
                       id="city"
                       {...form.register("city")}
-                      className="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                       placeholder="City"
                     />
                     {form.formState.errors.city && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                         {form.formState.errors.city.message}
                       </p>
                     )}
@@ -392,7 +405,7 @@ const CheckoutPage = () => {
                     <select
                       id="district"
                       {...form.register("district")}
-                      className="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                     >
                       <option value="">Select District</option>
                       {districts.map((district) => (
@@ -402,7 +415,7 @@ const CheckoutPage = () => {
                       ))}
                     </select>
                     {form.formState.errors.district && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                         {form.formState.errors.district.message}
                       </p>
                     )}
@@ -415,18 +428,18 @@ const CheckoutPage = () => {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FiGlobe className="h-5 w-5 text-gray-400" />
+                      <FiGlobe className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                     </div>
                     <input
                       type="text"
                       id="postalCode"
                       {...form.register("postalCode")}
-                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                       placeholder="Postal Code"
                     />
                   </div>
                   {form.formState.errors.postalCode && (
-                    <p className="mt-1 text-sm text-red-600">
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                       {form.formState.errors.postalCode.message}
                     </p>
                   )}
@@ -434,7 +447,7 @@ const CheckoutPage = () => {
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Delivery Method
                 </label>
                 <div className="grid grid-cols-2 gap-4">
@@ -448,32 +461,34 @@ const CheckoutPage = () => {
                     />
                     <label
                       htmlFor="sea-cargo"
-                      className={`flex flex-col items-center p-4 border rounded-lg cursor-pointer ${
+                      className={`flex flex-col items-center p-4 border rounded-lg cursor-pointer transition-colors duration-200 ${
                         form.watch("deliveryMethod") === "sea"
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-300"
+                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30"
+                          : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
                       }`}
                     >
                       <FiTruck
                         className={`h-6 w-6 ${
                           form.watch("deliveryMethod") === "sea"
-                            ? "text-blue-600"
-                            : "text-gray-400"
+                            ? "text-blue-600 dark:text-blue-400"
+                            : "text-gray-400 dark:text-gray-500"
                         }`}
                       />
                       <span
                         className={`mt-2 text-sm font-medium ${
                           form.watch("deliveryMethod") === "sea"
-                            ? "text-blue-700"
-                            : "text-gray-700"
+                            ? "text-blue-700 dark:text-blue-300"
+                            : "text-gray-700 dark:text-gray-300"
                         }`}
                       >
                         Sea Cargo
                       </span>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
                         1 month delivery
                       </span>
-                      <span className="text-xs font-medium mt-1">$0.00</span>
+                      <span className="text-xs font-medium mt-1 text-gray-800 dark:text-gray-200">
+                        $0.00
+                      </span>
                     </label>
                   </div>
                   <div>
@@ -486,32 +501,34 @@ const CheckoutPage = () => {
                     />
                     <label
                       htmlFor="air-cargo"
-                      className={`flex flex-col items-center p-4 border rounded-lg cursor-pointer ${
+                      className={`flex flex-col items-center p-4 border rounded-lg cursor-pointer transition-colors duration-200 ${
                         form.watch("deliveryMethod") === "air"
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-300"
+                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30"
+                          : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
                       }`}
                     >
                       <FiPackage
                         className={`h-6 w-6 ${
                           form.watch("deliveryMethod") === "air"
-                            ? "text-blue-600"
-                            : "text-gray-400"
+                            ? "text-blue-600 dark:text-blue-400"
+                            : "text-gray-400 dark:text-gray-500"
                         }`}
                       />
                       <span
                         className={`mt-2 text-sm font-medium ${
                           form.watch("deliveryMethod") === "air"
-                            ? "text-blue-700"
-                            : "text-gray-700"
+                            ? "text-blue-700 dark:text-blue-300"
+                            : "text-gray-700 dark:text-gray-300"
                         }`}
                       >
                         Air Cargo
                       </span>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
                         1 week delivery
                       </span>
-                      <span className="text-xs font-medium mt-1">+$10.00</span>
+                      <span className="text-xs font-medium mt-1 text-gray-800 dark:text-gray-200">
+                        +$10.00
+                      </span>
                     </label>
                   </div>
                 </div>
@@ -520,18 +537,18 @@ const CheckoutPage = () => {
               <div className="mb-6">
                 <label
                   htmlFor="comments"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                 >
                   Additional Comments (Optional)
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 pt-3 flex items-start pointer-events-none">
-                    <FiMessageSquare className="h-5 w-5 text-gray-400" />
+                    <FiMessageSquare className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                   </div>
                   <textarea
                     id="comments"
                     {...form.register("comments")}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                     placeholder="Any special instructions..."
                     rows={3}
                   />
@@ -541,14 +558,14 @@ const CheckoutPage = () => {
               <div className="mb-6">
                 <label
                   htmlFor="missingItems"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                 >
                   {`Items We Don't Have (Optional)`}
                 </label>
                 <textarea
                   id="missingItems"
                   {...form.register("missingItems")}
-                  className="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                   placeholder="List any items you couldn't find..."
                   rows={2}
                 />
@@ -557,11 +574,11 @@ const CheckoutPage = () => {
               <button
                 type="submit"
                 disabled={createOrder.isPending || products.length === 0}
-                className={`w-full py-3 px-6 rounded-lg font-medium text-white ${
+                className={`w-full py-3 px-6 rounded-lg font-medium text-white transition-colors duration-200 flex items-center justify-center cursor-pointer ${
                   products.length === 0
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
-                } transition-colors flex items-center justify-center cursor-pointer`}
+                    ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                }`}
               >
                 {createOrder.isPending ? (
                   <>
@@ -592,7 +609,7 @@ const CheckoutPage = () => {
                 )}
               </button>
 
-              <p className="mt-4 text-xs text-gray-500 text-center">
+              <p className="mt-4 text-xs text-gray-500 dark:text-gray-400 text-center">
                 By placing your order, you agree to our terms and conditions
               </p>
             </motion.form>

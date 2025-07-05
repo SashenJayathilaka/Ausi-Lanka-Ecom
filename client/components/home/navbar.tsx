@@ -8,18 +8,21 @@ import { useEffect, useState } from "react";
 import { FiHeart } from "react-icons/fi";
 import { HiMenu, HiSearch, HiShoppingCart, HiX } from "react-icons/hi";
 import { AuthButton } from "./auth-button";
+import { useTheme } from "next-themes";
+import { FiMoon, FiSun } from "react-icons/fi";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("#home");
   const [scrolled, setScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
   const cartItems = useCartStore((state) => state.products);
 
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/product", label: "Shop" },
-    { href: "/categories", label: "Categories" },
+    { href: "/history", label: "Orders History" },
     { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact" },
   ];
@@ -33,7 +36,6 @@ const Navbar = () => {
       }
     };
 
-    // Set active link based on current route
     if (typeof window !== "undefined") {
       setActiveLink(window.location.pathname);
       window.addEventListener("scroll", handleScroll);
@@ -48,7 +50,7 @@ const Navbar = () => {
 
   if (!isMounted) {
     return (
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-md h-16"></div>
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-md h-16"></div>
     );
   }
 
@@ -60,8 +62,8 @@ const Navbar = () => {
       viewport={{ once: true }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-md py-2 border-b border-gray-100"
-          : "bg-white/90 backdrop-blur-sm py-3"
+          ? "bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-md py-2 border-b border-gray-100 dark:border-gray-800"
+          : "bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm py-3"
       }`}
     >
       <div className="w-full flex justify-between items-center container mx-auto px-4 sm:px-6 lg:px-8 h-16">
@@ -75,8 +77,12 @@ const Navbar = () => {
               whileHover={{ scale: 1.1 }}
               className="flex items-center gap-1"
             >
-              <span className="text-2xl font-bold text-blue-600">Shop</span>
-              <span className="text-2xl font-bold text-gray-900">Hub</span>
+              <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                Shop
+              </span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                Hub
+              </span>
             </motion.div>
           </Link>
         </motion.div>
@@ -90,9 +96,9 @@ const Navbar = () => {
             <input
               type="text"
               placeholder="Search products..."
-              className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             />
-            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-1.5 rounded-full hover:bg-blue-700 transition-colors">
+            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 dark:bg-blue-500 text-white p-1.5 rounded-full hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
               <HiSearch className="h-4 w-4" />
             </button>
           </div>
@@ -112,10 +118,10 @@ const Navbar = () => {
               <Link
                 href={link.href}
                 onClick={() => setActiveLink(link.href)}
-                className={`text-sm font-medium relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-blue-600 after:transition-all after:duration-300 ${
+                className={`text-sm font-medium relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-blue-600 dark:after:bg-blue-400 after:transition-all after:duration-300 ${
                   activeLink === link.href
-                    ? "text-blue-600 after:w-full"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "text-blue-600 dark:text-blue-400 after:w-full"
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
                 }`}
               >
                 {link.label}
@@ -126,13 +132,28 @@ const Navbar = () => {
 
         {/* Right Side Items */}
         <div className="flex items-center gap-4">
+          {/* Theme Toggle */}
+          <motion.button
+            variants={fadeIn("left", 0.3)}
+            whileHover={{ scale: 1.05 }}
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+            aria-label="Toggle dark mode"
+          >
+            {theme === "dark" ? (
+              <FiSun className="h-5 w-5" />
+            ) : (
+              <FiMoon className="h-5 w-5" />
+            )}
+          </motion.button>
+
           {/* Search Icon - Mobile */}
           <motion.button
             variants={fadeIn("left", 0.3)}
             whileHover={{ scale: 1.05 }}
             className="md:hidden p-2"
           >
-            <HiSearch className="h-5 w-5 text-gray-700" />
+            <HiSearch className="h-5 w-5 text-gray-700 dark:text-gray-300" />
           </motion.button>
 
           {/* Wishlist */}
@@ -142,7 +163,7 @@ const Navbar = () => {
             className="relative hidden md:block"
           >
             <Link href="/wishlist" className="p-2 flex items-center">
-              <FiHeart className="h-5 w-5 text-gray-700" />
+              <FiHeart className="h-5 w-5 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors" />
               <span className="sr-only">Wishlist</span>
             </Link>
           </motion.div>
@@ -154,7 +175,7 @@ const Navbar = () => {
             className="relative"
           >
             <Link href="/cart" className="p-2 flex items-center">
-              <HiShoppingCart className="h-5 w-5 text-gray-700" />
+              <HiShoppingCart className="h-5 w-5 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" />
               {cartItems.length > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
@@ -180,9 +201,9 @@ const Navbar = () => {
             aria-label="Toggle menu"
           >
             {isMenuOpen ? (
-              <HiX className="h-6 w-6 text-gray-700" />
+              <HiX className="h-6 w-6 text-gray-700 dark:text-gray-300" />
             ) : (
-              <HiMenu className="h-6 w-6 text-gray-700" />
+              <HiMenu className="h-6 w-6 text-gray-700 dark:text-gray-300" />
             )}
           </motion.button>
         </div>
@@ -194,7 +215,7 @@ const Navbar = () => {
           variants={fadeIn("down", 0.2)}
           initial="hidden"
           animate="show"
-          className="md:hidden bg-white border-t border-gray-100 shadow-lg"
+          className="md:hidden bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 shadow-lg"
         >
           <motion.div
             variants={staggerContainer(0.1, 0.2)}
@@ -206,9 +227,9 @@ const Navbar = () => {
                 <input
                   type="text"
                   placeholder="Search products..."
-                  className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  className="w-full px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                 />
-                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-1.5 rounded-full hover:bg-blue-700 transition-colors">
+                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 dark:bg-blue-500 text-white p-1.5 rounded-full hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
                   <HiSearch className="h-4 w-4" />
                 </button>
               </div>
@@ -228,8 +249,8 @@ const Navbar = () => {
                   }}
                   className={`block text-sm font-medium py-2 px-2 rounded-lg ${
                     activeLink === link.href
-                      ? "bg-blue-50 text-blue-600"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      ? "bg-blue-50 dark:bg-gray-700 text-blue-600 dark:text-blue-400"
+                      : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
                   }`}
                 >
                   {link.label}
@@ -239,11 +260,11 @@ const Navbar = () => {
 
             <motion.div
               variants={fadeIn("up", 0.4)}
-              className="pt-2 border-t border-gray-100"
+              className="pt-2 border-t border-gray-100 dark:border-gray-700"
             >
               <Link
                 href="/wishlist"
-                className="flex items-center gap-2 text-sm font-medium py-2 px-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                className="flex items-center gap-2 text-sm font-medium py-2 px-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
                 <FiHeart className="h-5 w-5" />
                 <span>Wishlist</span>

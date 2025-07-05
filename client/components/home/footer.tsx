@@ -15,8 +15,18 @@ import {
 } from "react-icons/fa";
 import { FiMail, FiMapPin, FiPhone } from "react-icons/fi";
 import { RiCustomerService2Fill } from "react-icons/ri";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { BsMoonFill, BsSunFill } from "react-icons/bs";
 
 const Footer = () => {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const footerLinks = {
     shop: [
       { name: "All Products", href: "/products" },
@@ -55,8 +65,10 @@ const Footer = () => {
     { icon: <FaCcApplePay className="w-8 h-8" />, name: "Apple Pay" },
   ];
 
+  if (!mounted) return null;
+
   return (
-    <footer className="bg-gray-900 text-gray-300 pt-16 pb-8">
+    <footer className="bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 pt-16 pb-8 transition-colors duration-300">
       <motion.div
         variants={staggerContainer(0.1, 0.2)}
         initial="hidden"
@@ -70,13 +82,27 @@ const Footer = () => {
           <motion.div variants={fadeIn("right", 0.3)} className="lg:col-span-1">
             <motion.div
               variants={textVariant(0.2)}
-              className="flex items-center gap-2 mb-6"
+              className="flex items-center justify-between mb-6"
             >
-              <span className="text-2xl font-bold text-white">
-                Shop<span className="text-blue-400">Hub</span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                Shop
+                <span className="text-blue-600 dark:text-blue-400">Hub</span>
               </span>
+
+              {/* Theme Toggle */}
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-yellow-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                aria-label="Toggle dark mode"
+              >
+                {theme === "dark" ? <BsSunFill /> : <BsMoonFill />}
+              </button>
             </motion.div>
-            <motion.p variants={fadeIn("up", 0.4)} className="mb-6">
+
+            <motion.p
+              variants={fadeIn("up", 0.4)}
+              className="mb-6 text-gray-600 dark:text-gray-400"
+            >
               Your trusted partner for international shopping and seamless
               delivery to your doorstep.
             </motion.p>
@@ -86,18 +112,38 @@ const Footer = () => {
               className="flex gap-4 mb-8"
             >
               {[
-                { icon: <FaFacebookF />, color: "bg-blue-600" },
-                { icon: <FaTwitter />, color: "bg-blue-400" },
-                { icon: <FaInstagram />, color: "bg-pink-600" },
-                { icon: <FaPinterestP />, color: "bg-red-600" },
-                { icon: <FaYoutube />, color: "bg-red-700" },
+                {
+                  icon: <FaFacebookF />,
+                  color: "bg-blue-600",
+                  hover: "hover:bg-blue-700",
+                },
+                {
+                  icon: <FaTwitter />,
+                  color: "bg-blue-400",
+                  hover: "hover:bg-blue-500",
+                },
+                {
+                  icon: <FaInstagram />,
+                  color: "bg-pink-600",
+                  hover: "hover:bg-pink-700",
+                },
+                {
+                  icon: <FaPinterestP />,
+                  color: "bg-red-600",
+                  hover: "hover:bg-red-700",
+                },
+                {
+                  icon: <FaYoutube />,
+                  color: "bg-red-700",
+                  hover: "hover:bg-red-800",
+                },
               ].map((social, index) => (
                 <motion.a
                   key={index}
                   variants={fadeIn("right", index * 0.1)}
                   whileHover={{ y: -5 }}
                   href="#"
-                  className={`${social.color} w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-opacity-90 transition-all`}
+                  className={`${social.color} ${social.hover} w-10 h-10 rounded-full flex items-center justify-center text-white transition-all`}
                 >
                   {social.icon}
                 </motion.a>
@@ -106,16 +152,22 @@ const Footer = () => {
 
             <motion.div variants={fadeIn("up", 0.6)} className="space-y-3">
               <div className="flex items-center gap-3">
-                <FiPhone className="text-blue-400" />
-                <span>+94 76 123 4567</span>
+                <FiPhone className="text-blue-600 dark:text-blue-400" />
+                <span className="text-gray-600 dark:text-gray-400">
+                  +94 76 123 4567
+                </span>
               </div>
               <div className="flex items-center gap-3">
-                <FiMail className="text-blue-400" />
-                <span>support@shophub.lk</span>
+                <FiMail className="text-blue-600 dark:text-blue-400" />
+                <span className="text-gray-600 dark:text-gray-400">
+                  support@shophub.lk
+                </span>
               </div>
               <div className="flex items-start gap-3">
-                <FiMapPin className="text-blue-400 mt-1" />
-                <span>123 Commercial St, Colombo 01, Sri Lanka</span>
+                <FiMapPin className="text-blue-600 dark:text-blue-400 mt-1" />
+                <span className="text-gray-600 dark:text-gray-400">
+                  123 Commercial St, Colombo 01, Sri Lanka
+                </span>
               </div>
             </motion.div>
           </motion.div>
@@ -129,7 +181,7 @@ const Footer = () => {
               >
                 <motion.h3
                   variants={textVariant(0.2)}
-                  className="text-lg font-semibold text-white mb-6 uppercase tracking-wider"
+                  className="text-lg font-semibold text-gray-900 dark:text-white mb-6 uppercase tracking-wider"
                 >
                   {category}
                 </motion.h3>
@@ -142,7 +194,7 @@ const Footer = () => {
                     >
                       <a
                         href={link.href}
-                        className="hover:text-blue-400 transition-colors"
+                        className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       >
                         {link.name}
                       </a>
@@ -187,7 +239,7 @@ const Footer = () => {
               key={index}
               variants={fadeIn("up", index * 0.1)}
               whileHover={{ y: -5 }}
-              className="bg-gray-800 p-3 rounded-lg"
+              className="bg-gray-200 dark:bg-gray-800 p-3 rounded-lg shadow-sm dark:shadow-none"
               title={method.name}
             >
               {method.icon}
@@ -198,20 +250,29 @@ const Footer = () => {
         {/* Copyright */}
         <motion.div
           variants={fadeIn("up", 0.9)}
-          className="border-t border-gray-800 pt-8"
+          className="border-t border-gray-300 dark:border-gray-800 pt-8"
         >
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
               © {new Date().getFullYear()} ShopHub. All rights reserved.
             </p>
             <div className="flex gap-6">
-              <a href="#" className="text-gray-500 hover:text-white text-sm">
+              <a
+                href="#"
+                className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors"
+              >
                 Privacy Policy
               </a>
-              <a href="#" className="text-gray-500 hover:text-white text-sm">
+              <a
+                href="#"
+                className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors"
+              >
                 Terms of Service
               </a>
-              <a href="#" className="text-gray-500 hover:text-white text-sm">
+              <a
+                href="#"
+                className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors"
+              >
                 Sitemap
               </a>
             </div>

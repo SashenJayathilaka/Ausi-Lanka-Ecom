@@ -12,7 +12,8 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 
-// Enums
+export const userTypeEnum = pgEnum("user_type_enum", ["admin", "user"]);
+
 export const deliveryMethodEnum = pgEnum("delivery_method_enum", [
   "sea",
   "air",
@@ -27,7 +28,6 @@ export const orderStatusEnum = pgEnum("order_status_enum", [
   "cancelled",
 ]);
 
-// Users table
 export const users = pgTable(
   "users",
   {
@@ -36,13 +36,13 @@ export const users = pgTable(
     name: text("name").notNull(),
     emailId: text("email_id").notNull(),
     imageUrl: text("image_url"),
+    userType: userTypeEnum("user_type").default("user").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (t) => [uniqueIndex("clerk_id_idx").on(t.clerkId)]
 );
 
-// Orders table
 export const orders = pgTable(
   "orders",
   {
@@ -90,7 +90,6 @@ export const orderItems = pgTable(
   },
   (t) => [
     index("order_id_idx").on(t.orderId),
-    // Optional: prevent duplicate items per order
     uniqueIndex("unique_order_item").on(t.orderId, t.name),
   ]
 );
