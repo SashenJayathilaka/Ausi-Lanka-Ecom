@@ -16,17 +16,11 @@ export default function Home() {
         <Navbar />
         <Hero />
         <CompanyLogo />
-        <section id="about" className="w-full bg-gray-50 py-16 px-4 md:px-8">
-          <ShippingCountdown targetDate="2025-07-30T10:00:00" isSmall />
-        </section>
-        {/*    <PurposeSection /> */}
+        <ShippingCountdown targetDate="2025-07-30T10:00:00" isSmall />
         <FeaturesSection />
-        {/* <ScheduleSection /> */}
         <MonitorSection />
-        {/*   <PricingSection /> */}
         <ServicesSection />
         <TestimonialsSection />
-        {/*   <NewsletterSection /> */}
         <Footer />
       </div>
     </main>

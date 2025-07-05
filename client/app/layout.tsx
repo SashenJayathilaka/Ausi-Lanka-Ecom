@@ -1,3 +1,4 @@
+import { Providers } from "@/provider/ThemeProvider";
 import { TRPCProvider } from "@/trpc/client";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Metadata } from "next";
@@ -19,12 +20,14 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body className={jakarta.className}>
-          <TRPCProvider>
-            <Toaster />
-            {children}
-          </TRPCProvider>
+          <Providers>
+            <TRPCProvider>
+              <Toaster />
+              {children}
+            </TRPCProvider>
+          </Providers>
         </body>
       </html>
     </ClerkProvider>

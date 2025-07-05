@@ -51,7 +51,7 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
       {isSmall ? (
         <motion.div
           key={label}
-          className="relative bg-white rounded-xl p-3 w-24 h-28 flex flex-col items-center justify-center border border-gray-100 overflow-hidden group"
+          className="relative bg-white dark:bg-gray-800 rounded-xl p-3 w-24 h-28 flex flex-col items-center justify-center border border-gray-100 dark:border-gray-700 overflow-hidden group transition-colors duration-300"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -62,7 +62,7 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
         >
           {/* Hover shine effect */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-indigo-50/0 via-indigo-50/40 to-indigo-50/0 opacity-0 group-hover:opacity-100 pointer-events-none"
+            className="absolute inset-0 bg-gradient-to-r from-indigo-50/0 via-indigo-50/40 to-indigo-50/0 dark:via-indigo-900/20 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300"
             initial={{ x: "-100%" }}
             whileHover={{ x: "100%", transition: { duration: 1.2 } }}
           />
@@ -70,7 +70,7 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
           {/* Time value */}
           <motion.div
             key={value}
-            className="relative z-10 text-4xl font-bold text-indigo-600 font-mono"
+            className="relative z-10 text-4xl font-bold text-indigo-600 dark:text-indigo-400 font-mono transition-colors duration-300"
             initial={{ y: 5, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{
@@ -84,7 +84,7 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
 
           {/* Label */}
           <motion.div
-            className="relative z-10 text-xs text-gray-500 uppercase tracking-wider mt-2 font-medium"
+            className="relative z-10 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-2 font-medium transition-colors duration-300"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -102,7 +102,7 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
         >
           <motion.div
             key={value}
-            className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[60px] text-center"
+            className="bg-white/20 dark:bg-gray-700/50 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[60px] text-center transition-colors duration-300"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}
@@ -111,7 +111,7 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
               {value.toString().padStart(2, "0")}
             </span>
           </motion.div>
-          <span className="text-xs text-blue-100 mt-1 uppercase tracking-wider">
+          <span className="text-xs text-blue-100 dark:text-blue-300 mt-1 uppercase tracking-wider transition-colors duration-300">
             {label}
           </span>
         </motion.div>
@@ -122,12 +122,12 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
   return (
     <>
       {isSmall ? (
-        <div className="relative py-12">
+        <div className="relative py-12 bg-gray-50 dark:bg-gray-900 transition-colors duration-500">
           {/* Top fade */}
-          <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-white to-white/0 z-10 pointer-events-none" />
+          <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-white dark:from-gray-900 to-white/0 dark:to-gray-900/0 z-10 pointer-events-none transition-colors duration-500" />
 
           {/* Bottom fade */}
-          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-white/0 z-10 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white dark:from-gray-900 to-white/0 dark:to-gray-900/0 z-10 pointer-events-none transition-colors duration-500" />
 
           <motion.div
             className="relative overflow-y-auto py-8 px-6"
@@ -152,9 +152,9 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
                     repeat: Infinity,
                   }}
                 >
-                  <FiPackage className="h-6 w-6 text-indigo-500" />
+                  <FiPackage className="h-6 w-6 text-indigo-500 dark:text-indigo-400 transition-colors duration-300" />
                 </motion.div>
-                <h2 className="text-2xl font-bold text-gray-800">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white transition-colors duration-300">
                   Next Shipping Dispatch
                 </h2>
               </motion.div>
@@ -172,9 +172,9 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
               </motion.div>
 
               {/* Progress indicator */}
-              <div className="w-full max-w-md relative h-1 bg-gray-100 rounded-full mb-6 overflow-hidden">
+              <div className="w-full max-w-md relative h-1 bg-gray-100 dark:bg-gray-700 rounded-full mb-6 overflow-hidden transition-colors duration-300">
                 <motion.div
-                  className="absolute top-0 left-0 h-full bg-indigo-400 rounded-full"
+                  className="absolute top-0 left-0 h-full bg-indigo-400 dark:bg-indigo-500 rounded-full transition-colors duration-300"
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
                   transition={{
@@ -186,13 +186,13 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
               </div>
 
               <motion.div
-                className="text-center text-gray-500 text-sm"
+                className="text-center text-gray-500 dark:text-gray-400 text-sm transition-colors duration-300"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7 }}
               >
                 Orders placed in{" "}
-                <span className="font-semibold text-indigo-600">
+                <span className="font-semibold text-indigo-600 dark:text-indigo-400 transition-colors duration-300">
                   {timeLeft.hours}h {timeLeft.minutes}m
                 </span>{" "}
                 will ship today
@@ -207,8 +207,8 @@ const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <FiClock className="h-5 w-5 text-blue-200" />
-          <span className="text-sm text-blue-100 font-medium">
+          <FiClock className="h-5 w-5 text-blue-200 dark:text-blue-400 transition-colors duration-300" />
+          <span className="text-sm text-blue-100 dark:text-blue-300 font-medium transition-colors duration-300">
             Next shipping batch closes in:
           </span>
           <div className="flex gap-2 ml-2">
