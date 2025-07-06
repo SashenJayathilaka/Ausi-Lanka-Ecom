@@ -23,8 +23,8 @@ const Navbar = () => {
     { href: "/", label: "Home" },
     { href: "/product", label: "Shop" },
     { href: "/history", label: "Orders History" },
-    { href: "/about", label: "About Us" },
-    { href: "/contact", label: "Contact" },
+    /*     { href: "/about", label: "About Us" },
+    { href: "/contact", label: "Contact" }, */
   ];
 
   useEffect(() => {
