@@ -6,15 +6,16 @@ import { useCartStore } from "@/store/useCartStore";
 import { LkrFormat } from "@/utils/format";
 import { fadeIn, staggerContainer, textVariant } from "@/utils/motion";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import {
   FiClipboard,
   FiExternalLink,
-  FiShoppingCart,
-  FiX,
   FiMoon,
+  FiShoppingCart,
   FiSun,
+  FiX,
 } from "react-icons/fi";
 import {
   RiClipboardLine,
@@ -24,7 +25,6 @@ import {
 import { toast } from "sonner";
 import ShippingCountdown from "../home/ShippingCountdown";
 import Bucket from "./bucket";
-import { useTheme } from "next-themes";
 
 interface ScrapeResult {
   title: string;

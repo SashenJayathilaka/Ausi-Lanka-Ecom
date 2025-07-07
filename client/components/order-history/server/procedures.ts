@@ -5,6 +5,32 @@ import { and, desc, eq, lt, or } from "drizzle-orm";
 import { z } from "zod";
 
 export const getItemRouter = createTRPCRouter({
+  getUserType: protectedProcedure
+    .input(z.void()) // Explicitly declare no input expected
+    .output(
+      z.object({
+        userType: z.enum(["admin", "user"]).default("user"),
+      })
+    )
+    .query(async ({ ctx }) => {
+      const clerkUserId = ctx.user.id;
+
+      const user = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, clerkUserId))
+        .limit(1)
+        .then((rows) => rows[0]);
+
+      if (!user) {
+        console.error("No user found with clerkId:", clerkUserId);
+        throw new Error("User not found in database");
+      }
+
+      return {
+        userType: user.userType || "user",
+      };
+    }),
   getMany: protectedProcedure
     .input(
       z.object({

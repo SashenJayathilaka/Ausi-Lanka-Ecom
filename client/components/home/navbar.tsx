@@ -1,17 +1,18 @@
 "use client";
 
 import { useCartStore } from "@/store/useCartStore";
+import { trpc } from "@/trpc/client";
 import { fadeIn, staggerContainer } from "@/utils/motion";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FiHeart } from "react-icons/fi";
+import { FiHeart, FiMoon, FiSun } from "react-icons/fi";
 import { HiMenu, HiSearch, HiShoppingCart, HiX } from "react-icons/hi";
 import { AuthButton } from "./auth-button";
-import { useTheme } from "next-themes";
-import { FiMoon, FiSun } from "react-icons/fi";
 
 const Navbar = () => {
+  const { data } = trpc.getItem.getUserType.useQuery();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("#home");
   const [scrolled, setScrolled] = useState(false);
@@ -75,13 +76,13 @@ const Navbar = () => {
           <Link href="/" className="flex items-center">
             <motion.div
               whileHover={{ scale: 1.1 }}
-              className="flex items-center gap-1"
+              className="flex items-center gap-0"
             >
               <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                Shop
+                Ausi.
               </span>
               <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                Hub
+                Lk
               </span>
             </motion.div>
           </Link>
@@ -190,7 +191,7 @@ const Navbar = () => {
 
           {/* User Auth */}
           <motion.div variants={fadeIn("left", 0.3)}>
-            <AuthButton />
+            {data?.userType && <AuthButton data={data} />}
           </motion.div>
 
           {/* Mobile Menu Button */}
