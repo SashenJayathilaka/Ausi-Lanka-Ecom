@@ -4,8 +4,13 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 import { BiUserCircle } from "react-icons/bi";
 import { LuHistory } from "react-icons/lu";
+import { MdAdminPanelSettings } from "react-icons/md";
 
-export const AuthButton = () => {
+type AuthButtonType = {
+  data: { userType: "user" | "admin" };
+};
+
+export const AuthButton = ({ data }: AuthButtonType) => {
   return (
     <>
       <SignedIn>
@@ -16,6 +21,13 @@ export const AuthButton = () => {
               href="/history"
               labelIcon={<LuHistory className="size-4" />}
             />
+            {String(data?.userType) === "admin" && (
+              <UserButton.Link
+                label="Admin"
+                href="/admin"
+                labelIcon={<MdAdminPanelSettings className="size-4" />}
+              />
+            )}
             <UserButton.Action label="manageAccount" />
           </UserButton.MenuItems>
         </UserButton>

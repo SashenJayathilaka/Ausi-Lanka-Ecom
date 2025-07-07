@@ -265,7 +265,6 @@ const CheckoutPage = () => {
               </div>
             </motion.div>
           </div>
-
           {/* Contact Information */}
           <div className="lg:w-1/3">
             <motion.form
