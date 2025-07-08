@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { orders, orderItems } from "@/db/schema";
+import { feedback, orderItems, orders } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { z } from "zod";
 
@@ -26,6 +26,17 @@ export const createOrderInput = z.object({
       quantity: z.number().int().min(1),
     })
   ),
+});
+
+const feedbackSchema = z.object({
+  userId: z.string().uuid().optional(),
+  userName: z.string().min(1, "User name is required"),
+  rating: z
+    .number()
+    .int()
+    .min(1, "Rating must be at least 1")
+    .max(5, "Rating can’t be more than 5"),
+  feedback: z.string().optional(),
 });
 
 export const checkoutRouter = createTRPCRouter({
@@ -71,6 +82,32 @@ export const checkoutRouter = createTRPCRouter({
       return {
         orderId: order.id,
         message: "Order successfully placed!",
+      };
+    }),
+
+  submit: protectedProcedure
+    .input(feedbackSchema)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user.id;
+      const userName = ctx.user.name;
+      if (!userName) {
+        throw new Error("User not found");
+      }
+
+      const [newFeedback] = await db
+        .insert(feedback)
+        .values({
+          userId,
+          userName: userName,
+          rating: input.rating,
+          feedback: input.feedback,
+        })
+        .returning();
+
+      return {
+        success: true,
+        feedbackId: newFeedback.id,
+        message: "Thank you for your feedback!",
       };
     }),
 });
