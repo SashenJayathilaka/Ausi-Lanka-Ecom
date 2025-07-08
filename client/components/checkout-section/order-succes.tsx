@@ -1,9 +1,14 @@
 "use client";
 
+import { trpc } from "@/trpc/client";
+import { useClerk, useUser } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { FaStar } from "react-icons/fa";
 import {
   FiAlertTriangle,
   FiAnchor,
@@ -13,8 +18,10 @@ import {
   FiPackage,
   FiShoppingBag,
   FiTruck,
+  FiX,
   FiZap,
 } from "react-icons/fi";
+import { toast } from "sonner";
 import { z } from "zod";
 import { checkoutFormSchema } from ".";
 
@@ -22,12 +29,71 @@ type Props = {
   formValues: z.infer<typeof checkoutFormSchema>;
 };
 
+const feedbackSchema = z.object({
+  userId: z.string().uuid().optional(),
+  userName: z.string().min(1, "User name is required"),
+  rating: z
+    .number()
+    .int()
+    .min(1, "Rating must be at least 1")
+    .max(5, "Rating can’t be more than 5"),
+  feedback: z.string().optional(),
+});
+
 function OrderSuccess({ formValues }: Props) {
+  const clerk = useClerk();
+  const { user } = useUser();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+
+  const form = useForm<z.infer<typeof feedbackSchema>>({
+    resolver: zodResolver(feedbackSchema),
+    defaultValues: {
+      feedback: "",
+      rating: 1,
+      userId: user?.id, // or hardcoded for test
+      userName: String(user?.firstName),
+    },
+  });
+
+  const submitFeedback = trpc.checkout.submit.useMutation({
+    onSuccess: async (data) => {
+      toast.success(data.message);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setFeedbackSubmitted(true);
+      setIsSubmitting(false);
+    },
+    onError: (error) => {
+      console.log("🚀 ~ OrderSuccess ~ error:", error);
+      toast.error("Failed to place order");
+      if (error.data?.code === "UNAUTHORIZED") {
+        clerk.openSignIn();
+      }
+    },
+  });
+
+  const onSubmit = (data: z.infer<typeof feedbackSchema>) => {
+    setIsSubmitting(true);
+
+    if (data.rating === 0) {
+      toast.error("Please provide a rating.");
+      return;
+    }
+
+    if (isSubmitting) return;
+
+    submitFeedback.mutate(data);
+  };
 
   useEffect(() => {
     setMounted(true);
+    const timer = setTimeout(() => {
+      setShowFeedback(true);
+    }, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) {
@@ -256,6 +322,137 @@ function OrderSuccess({ formValues }: Props) {
           {`  (Check your spam folder if you don't see it)`}
         </p>
       </motion.div>
+
+      {/* Feedback overlay */}
+      <AnimatePresence>
+        {showFeedback && !feedbackSubmitted && (
+          <motion.form
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full relative"
+            >
+              <button
+                onClick={() => setShowFeedback(false)}
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              >
+                <FiX className="h-5 w-5" />
+              </button>
+
+              <div className="text-center mb-6">
+                <div className="flex justify-center mb-4">
+                  <FiMessageSquare className="h-8 w-8 text-blue-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+                  How was your experience?
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {`  We'd love your feedback to improve our service`}
+                </p>
+              </div>
+
+              {/* rating stars */}
+              <div className="flex justify-center gap-2 mb-4">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => form.setValue("rating", star)}
+                    className={`text-2xl cursor-pointer ${
+                      star <= form.watch("rating")
+                        ? "text-yellow-500"
+                        : "text-gray-300 dark:text-gray-500"
+                    }`}
+                  >
+                    <FaStar className="h-8 w-8" />
+                  </button>
+                ))}
+              </div>
+
+              {/* feedback textarea */}
+              <div className="mb-6">
+                <label
+                  htmlFor="feedback"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Any additional comments?
+                </label>
+                <textarea
+                  {...form.register("feedback")}
+                  id="feedback"
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  placeholder="What did you like or what can we improve?"
+                />
+              </div>
+
+              {/* buttons */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowFeedback(false)}
+                  className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                >
+                  Skip
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting || form.watch("rating") === 0}
+                  className={`flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors cursor-pointer ${
+                    isSubmitting || form.watch("rating") === 0
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                >
+                  {isSubmitting ? "Submitting..." : "Submit Feedback"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.form>
+        )}
+      </AnimatePresence>
+
+      {/* Feedback thank you message */}
+      <AnimatePresence>
+        {feedbackSubmitted && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full text-center"
+            >
+              <div className="flex justify-center mb-4">
+                <FiCheckCircle className="h-12 w-12 text-green-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+                Thank You for Your Feedback!
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
+                We appreciate you taking the time to help us improve.
+              </p>
+              <button
+                onClick={() => setFeedbackSubmitted(false)}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors cursor-pointer"
+              >
+                Continue
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

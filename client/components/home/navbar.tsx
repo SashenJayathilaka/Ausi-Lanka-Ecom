@@ -12,7 +12,11 @@ import { HiMenu, HiSearch, HiShoppingCart, HiX } from "react-icons/hi";
 import { AuthButton } from "./auth-button";
 
 const Navbar = () => {
-  const { data } = trpc.getItem.getUserType.useQuery();
+  const { data } = trpc.getItem.getUserType.useQuery(undefined, {
+    staleTime: Infinity, // 👈 Never refetch automatically
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("#home");
   const [scrolled, setScrolled] = useState(false);

@@ -93,3 +93,21 @@ export const orderItems = pgTable(
     uniqueIndex("unique_order_item").on(t.orderId, t.name),
   ]
 );
+
+export const feedback = pgTable(
+  "feedback",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .references(() => users.id)
+      .notNull(),
+    userName: text("user_name").notNull(),
+    rating: integer("rating").notNull(),
+    feedback: text("feedback"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("feedback_user_idx").on(t.userId),
+    index("feedback_rating_idx").on(t.rating),
+  ]
+);
