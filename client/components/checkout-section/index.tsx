@@ -99,7 +99,7 @@ const CheckoutPage = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             emailType: "internal-notification",
-            recipient: "ausilk27@gmail.com", // Your internal email
+            recipient: email, //TODO: Your internal email
             orderData: {
               orderId: data.orderId,
               mobile: data.orderData.mobile,
@@ -169,7 +169,7 @@ const CheckoutPage = () => {
     });
   };
 
-  if (orderSuccess) {
+  if (!orderSuccess) {
     const formValues = form.getValues();
     return <OrderSuccess formValues={formValues} />;
   }

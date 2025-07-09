@@ -75,17 +75,20 @@ function OrderSuccess({ formValues }: Props) {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof feedbackSchema>) => {
-    setIsSubmitting(true);
-
-    if (data.rating === 0) {
-      toast.error("Please provide a rating.");
-      return;
-    }
-
+  const onSubmit = async (data: z.infer<typeof feedbackSchema>) => {
+    // Prevent multiple submissions
     if (isSubmitting) return;
 
-    submitFeedback.mutate(data);
+    setIsSubmitting(true);
+
+    try {
+      await submitFeedback.mutateAsync(data);
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast.error("Failed to submit feedback");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   useEffect(() => {
