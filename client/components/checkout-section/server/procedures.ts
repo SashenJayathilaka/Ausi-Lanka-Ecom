@@ -81,6 +81,7 @@ export const checkoutRouter = createTRPCRouter({
 
       return {
         orderId: order.id,
+        orderData: order,
         message: "Order successfully placed!",
       };
     }),

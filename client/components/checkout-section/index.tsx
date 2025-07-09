@@ -43,8 +43,11 @@ export const checkoutFormSchema = z.object({
 
 const CheckoutPage = () => {
   const clerk = useClerk();
+  const { user } = useClerk();
   const { products, removeProduct, updateQuantity, clearCart } = useCartStore();
   const [orderSuccess, setOrderSuccess] = useState(false);
+
+  const email = user?.primaryEmailAddress?.emailAddress;
 
   const form = useForm<z.infer<typeof checkoutFormSchema>>({
     resolver: zodResolver(checkoutFormSchema),
@@ -63,10 +66,52 @@ const CheckoutPage = () => {
   });
 
   const createOrder = trpc.checkout.create.useMutation({
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       clearCart();
       setOrderSuccess(true);
       toast.success(data.message);
+
+      try {
+        // Send customer confirmation email
+        await fetch("/api/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            emailType: "customer-confirmation",
+            recipient: email,
+            orderData: {
+              orderId: data.orderId,
+              name: data.orderData.name,
+              createdAt: new Date().toISOString(),
+              totalAmount: data.orderData.totalAmount,
+              addressLine1: data.orderData.addressLine1,
+              addressLine2: data.orderData.addressLine2 || "",
+              city: data.orderData.city,
+              postalCode: data.orderData.postalCode,
+              mobile: data.orderData.mobile,
+            },
+          }),
+        });
+
+        // Send internal notification email
+        await fetch("/api/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            emailType: "internal-notification",
+            recipient: "ausilk27@gmail.com", // Your internal email
+            orderData: {
+              orderId: data.orderId,
+              mobile: data.orderData.mobile,
+              createdAt: new Date().toISOString(),
+            },
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to send emails:", error);
+        // Optionally show a toast notification
+        toast.error("Order placed but email notifications failed");
+      }
     },
     onError: (error) => {
       toast.error("Failed to place order");
@@ -124,7 +169,7 @@ const CheckoutPage = () => {
     });
   };
 
-  if (!orderSuccess) {
+  if (orderSuccess) {
     const formValues = form.getValues();
     return <OrderSuccess formValues={formValues} />;
   }
