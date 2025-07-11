@@ -70,7 +70,7 @@ export async function POST(req: Request) {
             hour: "2-digit",
             minute: "2-digit",
           }),
-          orderLink: `${process.env.NEXT_PUBLIC_APP_URL}/history`,
+          orderLink: `${process.env.NEXT_PUBLIC_APP_URL}/admin/${orderData.orderId}`,
           customerMobile: orderData.mobile || "Not provided",
         });
         subject = `[Internal] New Order #${orderData.orderId}`;

@@ -53,7 +53,7 @@ export const AusiOrderConfirmation = ({
           {/* Header with Logo */}
           <Section style={header}>
             <Img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaJvYBIP-VnArmeKBDWlGjdu-lyzqnycL0EQ&s"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaJvYBIP-VnArmeKBDWlGjdu-lyzqnycL0EQ&s" //TODO: Change Image Link
               width="120"
               alt="Ausi.Lk"
               style={logo}
@@ -67,7 +67,7 @@ export const AusiOrderConfirmation = ({
           {/* Order Summary */}
           <Section style={section}>
             <Text style={paragraph}>
-              {`Hello ${name}, we've received your order{" "}`}
+              {`Hello ${name}, we've received your order`}{" "}
               <strong>#{orderId}</strong> placed on <strong>{orderDate}</strong>
               .
             </Text>
@@ -77,8 +77,7 @@ export const AusiOrderConfirmation = ({
             </Text>
 
             <Text style={paragraph}>
-              <strong>Total Amount:</strong>
-              {LkrFormat(Number(totalAmount))}
+              <strong>Total Amount:</strong> {LkrFormat(Number(totalAmount))}
             </Text>
           </Section>
 
