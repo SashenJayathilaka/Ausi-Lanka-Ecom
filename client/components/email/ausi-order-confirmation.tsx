@@ -111,9 +111,9 @@ export const AusiOrderConfirmation = ({
             <Text style={paragraph}>
               <strong>Need help?</strong> Contact our customer support at{" "}
               <Link href="mailto:support@ausi.lk" style={link}>
-                support@ausi.lk
+                ausilk27@gmail.com
               </Link>{" "}
-              or call us at <strong>0112 345 678</strong>.
+              or call us at <strong>+94 776 753 242</strong>.
             </Text>
           </Section>
 

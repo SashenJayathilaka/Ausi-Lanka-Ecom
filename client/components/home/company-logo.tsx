@@ -116,7 +116,7 @@ const CompanyLogo = () => {
 
         {/* CTA button */}
         <div className="text-center mt-12">
-          <button className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg font-medium transition-colors shadow-sm hover:shadow-md">
+          <button className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg font-medium transition-colors shadow-sm hover:shadow-md cursor-pointer">
             Become a Partner
             <svg
               xmlns="http://www.w3.org/2000/svg"

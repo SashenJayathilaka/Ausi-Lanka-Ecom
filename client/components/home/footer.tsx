@@ -29,32 +29,32 @@ const Footer = () => {
 
   const footerLinks = {
     shop: [
-      { name: "All Products", href: "/products" },
-      { name: "New Arrivals", href: "/new-arrivals" },
-      { name: "Best Sellers", href: "/best-sellers" },
-      { name: "Special Offers", href: "/offers" },
-      { name: "Gift Cards", href: "/gift-cards" },
+      { name: "All Products", href: "/product" },
+      { name: "New Arrivals", href: "/product" },
+      { name: "Best Sellers", href: "/product" },
+      { name: "Special Offers", href: "/product" },
+      { name: "Gift Cards", href: "/product" },
     ],
     customer: [
-      { name: "My Account", href: "/account" },
-      { name: "Order Tracking", href: "/track-order" },
-      { name: "Wishlist", href: "/wishlist" },
-      { name: "Shipping Info", href: "/shipping" },
-      { name: "Returns & Exchanges", href: "/returns" },
+      { name: "My Account", href: "/history" },
+      { name: "Order Tracking", href: "/history" },
+      { name: "Wishlist", href: "/history" },
+      { name: "Shipping Info", href: "/cart" },
+      { name: "Returns & Exchanges", href: "/history" },
     ],
     about: [
-      { name: "About Us", href: "/about" },
-      { name: "Our Story", href: "/story" },
-      { name: "Careers", href: "/careers" },
-      { name: "Privacy Policy", href: "/privacy" },
-      { name: "Terms of Service", href: "/terms" },
+      { name: "About Us", href: "/" },
+      { name: "Our Story", href: "/" },
+      { name: "Careers", href: "/" },
+      { name: "Privacy Policy", href: "/" },
+      { name: "Terms of Service", href: "/" },
     ],
     contact: [
-      { name: "Contact Us", href: "/contact" },
-      { name: "Help Center", href: "/help" },
-      { name: "Live Chat", href: "/chat" },
-      { name: "FAQs", href: "/faqs" },
-      { name: "Feedback", href: "/feedback" },
+      { name: "Contact Us", href: "/" },
+      { name: "Help Center", href: "/" },
+      { name: "Live Chat", href: "/" },
+      { name: "FAQs", href: "/" },
+      { name: "Feedback", href: "/" },
     ],
   };
 
@@ -85,8 +85,8 @@ const Footer = () => {
               className="flex items-center justify-between mb-6"
             >
               <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                Shop
-                <span className="text-blue-600 dark:text-blue-400">Hub</span>
+                Ausi.
+                <span className="text-blue-600 dark:text-blue-400">Lk</span>
               </span>
 
               {/* Theme Toggle */}
@@ -154,13 +154,13 @@ const Footer = () => {
               <div className="flex items-center gap-3">
                 <FiPhone className="text-blue-600 dark:text-blue-400" />
                 <span className="text-gray-600 dark:text-gray-400">
-                  +94 76 123 4567
+                  +94 776 753 242
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <FiMail className="text-blue-600 dark:text-blue-400" />
                 <span className="text-gray-600 dark:text-gray-400">
-                  support@shophub.lk
+                  ausilk27@gmail.com
                 </span>
               </div>
               <div className="flex items-start gap-3">
@@ -223,7 +223,7 @@ const Footer = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all"
+            className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all cursor-pointer"
           >
             Contact Support
           </motion.button>

@@ -111,3 +111,14 @@ export const feedback = pgTable(
     index("feedback_rating_idx").on(t.rating),
   ]
 );
+
+export const nextShipment = pgTable("next_shipment", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  shipmentDate: timestamp("shipment_date").notNull(),
+  updatedBy: uuid("updated_by")
+    .notNull()
+    .references(() => users.id),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
