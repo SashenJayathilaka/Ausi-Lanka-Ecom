@@ -10,8 +10,11 @@ import {
   FiSearch,
   FiSettings,
 } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
 const FeaturesSection = () => {
+  const router = useRouter();
+
   const features = [
     {
       icon: <FiSearch className="w-8 h-8" />,
@@ -144,7 +147,10 @@ const FeaturesSection = () => {
             whileTap={{ scale: 0.95 }}
             className="relative bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 group"
           >
-            <span className="relative z-10 flex items-center justify-center gap-2">
+            <span
+              className="relative z-10 flex items-center justify-center gap-2 cursor-pointer"
+              onClick={() => router.push("/product")}
+            >
               Start Sourcing Today{" "}
               <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
             </span>

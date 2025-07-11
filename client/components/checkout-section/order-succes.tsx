@@ -63,8 +63,6 @@ function OrderSuccess({ formValues }: Props) {
     onSuccess: async (data) => {
       toast.success(data.message);
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      setFeedbackSubmitted(true);
-      setIsSubmitting(false);
     },
     onError: (error) => {
       console.log("🚀 ~ OrderSuccess ~ error:", error);
@@ -77,6 +75,7 @@ function OrderSuccess({ formValues }: Props) {
 
   const onSubmit = async (data: z.infer<typeof feedbackSchema>) => {
     // Prevent multiple submissions
+
     if (isSubmitting) return;
 
     setIsSubmitting(true);
@@ -88,6 +87,8 @@ function OrderSuccess({ formValues }: Props) {
       toast.error("Failed to submit feedback");
     } finally {
       setIsSubmitting(false);
+      setFeedbackSubmitted(true);
+      setShowFeedback(false);
     }
   };
 
@@ -344,7 +345,7 @@ function OrderSuccess({ formValues }: Props) {
             >
               <button
                 onClick={() => setShowFeedback(false)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"
               >
                 <FiX className="h-5 w-5" />
               </button>
@@ -357,7 +358,7 @@ function OrderSuccess({ formValues }: Props) {
                   How was your experience?
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
-                  {`  We'd love your feedback to improve our service`}
+                  {`We'd love your feedback to improve our service`}
                 </p>
               </div>
 
@@ -418,6 +419,11 @@ function OrderSuccess({ formValues }: Props) {
                 </button>
               </div>
             </motion.div>
+            {form.formState.errors.rating && (
+              <p className="text-red-500 text-sm mt-1 text-center">
+                {form.formState.errors.rating.message}
+              </p>
+            )}
           </motion.form>
         )}
       </AnimatePresence>

@@ -2,12 +2,15 @@
 
 import { fadeIn, staggerContainer, textVariant } from "@/utils/motion";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { BsShieldCheck, BsStack } from "react-icons/bs";
 import { FiSettings, FiTruck } from "react-icons/fi";
 import { HiOutlineGlobeAlt } from "react-icons/hi";
 import { RiCustomerService2Line } from "react-icons/ri";
 
 const ServicesSection = () => {
+  const router = useRouter();
+
   const services = [
     {
       icon: <BsStack className="w-8 h-8" />,
@@ -193,7 +196,10 @@ const ServicesSection = () => {
               whileTap={{ scale: 0.95 }}
               className="relative bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-700 dark:to-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 group"
             >
-              <span className="relative z-10 flex items-center justify-center gap-2">
+              <span
+                className="relative z-10 flex items-center justify-center gap-2 cursor-pointer"
+                onClick={() => router.push("/product")}
+              >
                 Get Started Now
               </span>
               <div className="absolute -z-0 w-full h-full rounded-lg bg-indigo-600/30 dark:bg-indigo-700/30 blur-xl top-0 left-0 group-hover:opacity-70 transition-opacity"></div>

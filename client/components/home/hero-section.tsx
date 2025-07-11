@@ -1,10 +1,15 @@
 "use client";
 
+import { LkrFormat } from "@/utils/format";
 import { fadeIn, staggerContainer, textVariant } from "@/utils/motion";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import { useState } from "react";
+import { FiX } from "react-icons/fi";
 
 const Hero = () => {
+  const [showVideoModal, setShowVideoModal] = useState(false);
+
   return (
     <section
       id="home"
@@ -94,7 +99,10 @@ const Hero = () => {
             variants={fadeIn("up", 0.5)}
             className="flex flex-col sm:flex-row gap-4 max-w-md"
           >
-            <button className="flex items-center justify-center gap-2 px-6 py-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-gray-600 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:shadow-sm">
+            <button
+              onClick={() => setShowVideoModal(true)}
+              className="flex items-center justify-center gap-2 px-6 py-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-gray-600 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:shadow-sm cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -173,13 +181,19 @@ const Hero = () => {
               className="absolute -bottom-6 -left-6 bg-white dark:bg-gray-800 p-3 rounded-xl shadow-md dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700 z-20 hover:scale-105 transition-transform"
             >
               <div className="w-24 h-24 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center transition-colors duration-500">
-                <span className="text-2xl">🥛</span>
+                <Image
+                  src="/assets/Swisse Beauty Collagen.webp"
+                  alt="image"
+                  width={50}
+                  height={50}
+                  unoptimized
+                />
               </div>
               <div className="mt-2 text-xs font-medium dark:text-gray-200">
-                A2 Milk
+                Collagen
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-500">
-                From $8.99
+                {LkrFormat(12342)}
               </div>
             </motion.div>
 
@@ -190,13 +204,21 @@ const Hero = () => {
               className="absolute -top-6 -right-6 bg-white dark:bg-gray-800 p-3 rounded-xl shadow-md dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700 z-20 hover:scale-105 transition-transform"
             >
               <div className="w-24 h-24 bg-orange-50 dark:bg-orange-900/20 rounded-lg flex items-center justify-center transition-colors duration-500">
-                <span className="text-2xl">🍯</span>
+                <span className="text-2xl">
+                  <Image
+                    src="/assets/product-11.png"
+                    alt="image"
+                    width={50}
+                    height={50}
+                    unoptimized
+                  />
+                </span>
               </div>
               <div className="mt-2 text-xs font-medium dark:text-gray-200">
-                Manuka Honey
+                Vegemite
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-500">
-                From $24.99
+                {LkrFormat(1477)}
               </div>
             </motion.div>
 
@@ -223,6 +245,44 @@ const Hero = () => {
           </div>
         </motion.div>
       </motion.div>
+
+      {/* Video Modal */}
+      <AnimatePresence>
+        {showVideoModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 20 }}
+              className="relative w-full max-w-4xl mx-4"
+            >
+              <button
+                onClick={() => setShowVideoModal(false)}
+                className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
+              >
+                <FiX className="h-6 w-6" />
+              </button>
+
+              <div className="aspect-w-16 aspect-h-9 bg-black rounded-xl overflow-hidden shadow-2xl">
+                {/* Replace with your actual YouTube video ID */}
+                <iframe
+                  className="w-full h-[500px]"
+                  src={`https://drive.google.com/file/d/1hBh6yQ982cJD2qXHfqTe9x6cTA6gXX7B/preview`}
+                  title="How It Works"
+                  allow="autoplay"
+                  frameBorder="0"
+                ></iframe>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
