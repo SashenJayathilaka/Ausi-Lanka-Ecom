@@ -169,7 +169,7 @@ const CheckoutPage = () => {
     });
   };
 
-  if (!orderSuccess) {
+  if (orderSuccess) {
     const formValues = form.getValues();
     return <OrderSuccess formValues={formValues} />;
   }

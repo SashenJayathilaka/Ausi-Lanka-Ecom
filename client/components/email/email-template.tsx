@@ -30,7 +30,7 @@ export const AusiNewOrderNotification = ({
         {/* Header with Logo */}
         <Section style={header}>
           <Img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaJvYBIP-VnArmeKBDWlGjdu-lyzqnycL0EQ&s"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaJvYBIP-VnArmeKBDWlGjdu-lyzqnycL0EQ&s" //TODO: Change Image Link
             width="150"
             alt="Ausi.Lk"
             style={logo}
