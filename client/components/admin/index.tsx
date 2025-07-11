@@ -3,8 +3,10 @@
 
 import { trpc } from "@/trpc/client";
 import { LkrFormat } from "@/utils/format";
+import { useRouter } from "next/router";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { FiAlertTriangle, FiLock, FiPackage } from "react-icons/fi";
 
 interface OrderDetailsProps {
   orderId: string;
@@ -13,7 +15,10 @@ interface OrderDetailsProps {
 const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
   return (
     <Suspense fallback={<OrderDetailsSkeleton />}>
-      <ErrorBoundary fallback={<p>Error...</p>}>
+      <ErrorBoundary
+        FallbackComponent={OrderErrorFallback}
+        onReset={() => window.location.reload()}
+      >
         <OrderDetailsContent orderId={orderId} />
       </ErrorBoundary>
     </Suspense>
@@ -43,7 +48,7 @@ const OrderDetailsContent = ({ orderId }: { orderId: string }) => {
 
         {/* Customer Information */}
         <div className="mb-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-          <h2 className="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-300">
+          <h2 className="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-300 underline">
             Customer Information
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -51,26 +56,28 @@ const OrderDetailsContent = ({ orderId }: { orderId: string }) => {
               <p className="font-medium text-gray-700 dark:text-gray-400">
                 Name
               </p>
-              <p className="dark:text-white">{order.name}</p>
+              <p className="dark:text-white font-semibold">{order.name}</p>
             </div>
             <div>
-              <p className="font-medium text-gray-700 dark:text-gray-400">
+              <p className="font-medium text-gray-700 dark:text-gray-400 ">
                 Mobile
               </p>
-              <p className="dark:text-white">{order.mobile}</p>
+              <p className="dark:text-white font-semibold">{order.mobile}</p>
             </div>
             <div>
               <p className="font-medium text-gray-700 dark:text-gray-400">
                 Email
               </p>
-              <p className="dark:text-white">{order.user?.emailId}</p>
+              <p className="dark:text-white font-semibold">
+                {order.user?.emailId}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Shipping Information */}
         <div className="mb-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-          <h2 className="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-300">
+          <h2 className="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-300 underline">
             Shipping Information
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -78,20 +85,24 @@ const OrderDetailsContent = ({ orderId }: { orderId: string }) => {
               <p className="font-medium text-gray-700 dark:text-gray-400">
                 Address
               </p>
-              <p className="dark:text-white">{order.addressLine1}</p>
+              <p className="dark:text-white font-semibold">
+                {order.addressLine1}
+              </p>
               {order.addressLine2 && (
-                <p className="dark:text-white">{order.addressLine2}</p>
+                <p className="dark:text-white font-semibold">
+                  {order.addressLine2}
+                </p>
               )}
-              <p className="dark:text-white">
+              <p className="dark:text-white font-semibold">
                 {order.city}, {order.postalCode}
               </p>
-              <p className="dark:text-white">{order.district}</p>
+              <p className="dark:text-white font-semibold">{order.district}</p>
             </div>
             <div>
               <p className="font-medium text-gray-700 dark:text-gray-400">
                 Delivery Method
               </p>
-              <p className="capitalize dark:text-white">
+              <p className="capitalize dark:text-white font-semibold">
                 {order.deliveryMethod}
               </p>
             </div>
@@ -142,12 +153,15 @@ const OrderDetailsContent = ({ orderId }: { orderId: string }) => {
                 </div>
                 <div className="md:w-1/6 mt-4 md:mt-0 text-right">
                   <p className="text-gray-700 dark:text-gray-400">
-                    Qty: {item.quantity}
+                    Qty:{" "}
+                    <span className="text-red-400 font-semibold">
+                      {item.quantity}
+                    </span>
                   </p>
                   <p className="text-gray-700 dark:text-gray-400">
                     ${item.price}
                   </p>
-                  <p className="font-medium dark:text-white">
+                  <p className="dark:text-white font-semibold">
                     {LkrFormat(Number(item.calculatedPrice))}
                   </p>
                 </div>
@@ -242,6 +256,57 @@ const OrderDetailsSkeleton = () => {
         <div className="flex justify-between items-center">
           <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
           <div className="h-8 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const OrderErrorFallback = ({
+  error,
+  resetErrorBoundary,
+}: {
+  error: Error;
+  resetErrorBoundary: () => void;
+}) => {
+  const router = useRouter();
+  const isAdminError = error.message.includes("Only admin users");
+  const isNotFound = error.message.includes("Order not found");
+
+  return (
+    <div className="max-w-md mx-auto p-6 text-center">
+      <div className="flex flex-col items-center space-y-4">
+        {isAdminError ? (
+          <FiLock className="w-12 h-12 text-red-500" />
+        ) : isNotFound ? (
+          <FiPackage className="w-12 h-12 text-yellow-500" />
+        ) : (
+          <FiAlertTriangle className="w-12 h-12 text-blue-500" />
+        )}
+
+        <h2 className="text-xl font-semibold">
+          {isAdminError
+            ? "Admin Access Required"
+            : isNotFound
+              ? "Order Not Found"
+              : "Something Went Wrong"}
+        </h2>
+
+        <p className="text-gray-600">{error.message}</p>
+
+        <div className="flex gap-2 pt-4">
+          <button
+            onClick={() => router.push("/")}
+            className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200"
+          >
+            Home
+          </button>
+          <button
+            onClick={resetErrorBoundary}
+            className="px-4 py-2 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     </div>

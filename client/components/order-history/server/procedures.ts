@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { orderItems, orders, users } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
 import { and, desc, eq, lt, or } from "drizzle-orm";
 import { z } from "zod";
 
@@ -86,13 +87,16 @@ export const getItemRouter = createTRPCRouter({
               .where(or(...orderIds.map((id) => eq(orderItems.orderId, id))))
           : [];
 
-      const itemsByOrderId = allItems.reduce((acc, item) => {
-        if (!acc[item.orderId]) {
-          acc[item.orderId] = [];
-        }
-        acc[item.orderId]!.push(item);
-        return acc;
-      }, {} as Record<string, (typeof allItems)[number][]>);
+      const itemsByOrderId = allItems.reduce(
+        (acc, item) => {
+          if (!acc[item.orderId]) {
+            acc[item.orderId] = [];
+          }
+          acc[item.orderId]!.push(item);
+          return acc;
+        },
+        {} as Record<string, (typeof allItems)[number][]>
+      );
 
       const user = await db.select().from(users).where(eq(users.id, userId));
 
@@ -120,15 +124,34 @@ export const getItemRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const { id: userId } = ctx.user;
 
+      // First verify the user is an admin
+      const user = await db
+        .select()
+        .from(users)
+        .where(and(eq(users.id, userId), eq(users.userType, "admin")))
+        .limit(1)
+        .then((rows) => rows[0]);
+
+      if (!user) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Only admin users can access order details",
+        });
+      }
+
+      // Proceed with order lookup if user is admin
       const order = await db
         .select()
         .from(orders)
-        .where(and(eq(orders.id, input.id), eq(orders.userId, userId)))
+        .where(eq(orders.id, input.id))
         .limit(1)
         .then((rows) => rows[0]);
 
       if (!order) {
-        throw new Error("Order not found");
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Order not found",
+        });
       }
 
       const items = await db
@@ -136,24 +159,15 @@ export const getItemRouter = createTRPCRouter({
         .from(orderItems)
         .where(eq(orderItems.orderId, order.id));
 
-      const user = await db
-        .select()
-        .from(users)
-        .where(eq(users.id, userId))
-        .limit(1)
-        .then((rows) => rows[0]);
-
       return {
         ...order,
         items,
-        user: user
-          ? {
-              id: user.id,
-              name: user.name,
-              emailId: user.emailId,
-              imageUrl: user.imageUrl,
-            }
-          : null,
+        user: {
+          id: user.id,
+          name: user.name,
+          emailId: user.emailId,
+          imageUrl: user.imageUrl,
+        },
       };
     }),
 });
