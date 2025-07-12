@@ -4,11 +4,16 @@ import { LkrFormat } from "@/utils/format";
 import { fadeIn, staggerContainer, textVariant } from "@/utils/motion";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
 
 const Hero = () => {
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [speed, setSpeed] = useState<number>();
+
+  useEffect(() => {
+    setSpeed(Math.floor(Math.random() * 90) + 10); // Generates a number between 10 and 99
+  }, []);
 
   return (
     <section
@@ -142,10 +147,14 @@ const Hero = () => {
             <div className="flex items-center gap-2">
               <div className="flex -space-x-2">
                 {[1, 2, 3].map((item) => (
-                  <div
+                  <Image
                     key={item}
+                    src={`https://randomuser.me/api/portraits/women/${speed! + item}.jpg`}
+                    alt="image"
+                    width={20}
+                    height={20}
                     className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 border-2 border-white dark:border-gray-800 transition-colors duration-500"
-                  ></div>
+                  />
                 ))}
               </div>
               <span className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-500">
