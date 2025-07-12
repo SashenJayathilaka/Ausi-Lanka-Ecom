@@ -7,11 +7,15 @@ type Props = {
 
 function Layout({ children }: Props) {
   return (
-    <main className="relative min-h-screen overflow-x-hidden">
-      <div className="absolute -top-28 -left-28 w-[500px] h-[500px] bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 rounded-full blur-[80px] -z-10"></div>
-      <div className="overflow-hidden">
+    <main className="relative min-h-screen overflow-hidden bg-white dark:bg-gray-900">
+      <div className="flex flex-col min-h-screen">
         <Navbar />
-        {children}
+        <div className="flex flex-1 pt-16">
+          {/*      <AppSidebar /> */}
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+            {children}
+          </div>
+        </div>
         <Footer />
       </div>
     </main>
