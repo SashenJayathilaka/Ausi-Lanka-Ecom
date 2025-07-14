@@ -12,7 +12,7 @@ import { HiMenu, HiSearch, HiShoppingCart, HiX } from "react-icons/hi";
 import { AuthButton } from "./auth-button";
 
 const Navbar = () => {
-  const { data } = trpc.getItem.getUserType.useQuery(undefined, {
+  const { data } = trpc.getUsers.getUserType.useQuery(undefined, {
     staleTime: Infinity, // 👈 Never refetch automatically
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -195,7 +195,7 @@ const Navbar = () => {
 
           {/* User Auth */}
           <motion.div variants={fadeIn("left", 0.3)}>
-            {data?.userType && <AuthButton data={data} />}
+            <AuthButton data={data || { userType: "user" }} />
           </motion.div>
 
           {/* Mobile Menu Button */}

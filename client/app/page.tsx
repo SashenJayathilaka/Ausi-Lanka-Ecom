@@ -10,7 +10,7 @@ import TestimonialsSection from "@/components/home/testimonials-section";
 import { trpc } from "@/trpc/server";
 
 export default function Home() {
-  void trpc.getItem.getUserType.prefetchInfinite();
+  void trpc.getUsers.getUserType.prefetchInfinite();
 
   return (
     <main className="relative min-h-screen overflow-x-hidden">

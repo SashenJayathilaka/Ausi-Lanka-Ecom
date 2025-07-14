@@ -1,216 +1,202 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useUser } from "@clerk/nextjs";
-import Link from "next/link";
 import { useState } from "react";
 import {
-  FaAddressBook,
-  FaBars,
-  FaCalendarAlt,
-  FaChartBar,
-  FaChartLine,
-  FaChartPie,
-  FaHome,
-  FaMapMarkedAlt,
-  FaQuestionCircle,
-  FaReceipt,
-  FaUser,
-  FaUsers,
-} from "react-icons/fa";
-import { Menu, MenuItem, Sidebar, menuClasses } from "react-pro-sidebar";
+  FiHome,
+  FiUsers,
+  FiSettings,
+  FiPieChart,
+  FiFileText,
+  FiShoppingCart,
+  FiMenu,
+  FiChevronLeft,
+  FiPlus,
+  FiSearch,
+} from "react-icons/fi";
 
-interface ItemProps {
-  title: string;
-  to: string;
-  icon: React.ReactNode;
-  selected: string;
-  setSelected: (title: string) => void;
-}
+export default function AdminSidebar() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState("Dashboard");
 
-const Item = ({ title, to, icon, selected, setSelected }: ItemProps) => {
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const toggleMobileSidebar = () => setMobileSidebarOpen(!mobileSidebarOpen);
+
+  const navItems = [
+    {
+      icon: <FiHome className="text-blue-500" />,
+      label: "Dashboard",
+      href: "#",
+    },
+    {
+      icon: <FiUsers className="text-purple-500" />,
+      label: "Users",
+      href: "/admin/users",
+    },
+    {
+      icon: <FiShoppingCart className="text-green-500" />,
+      label: "Products",
+      href: "#",
+    },
+    {
+      icon: <FiFileText className="text-yellow-500" />,
+      label: "Orders",
+      href: "/admin/orders",
+    },
+    {
+      icon: <FiPieChart className="text-red-500" />,
+      label: "Analytics",
+      href: "#",
+    },
+    {
+      icon: <FiSettings className="text-indigo-500" />,
+      label: "Settings",
+      href: "#",
+    },
+  ];
+
   return (
-    <MenuItem
-      active={selected === title}
-      className="text-gray-800 dark:text-gray-200 hover:text-white dark:hover:text-indigo-300"
-      onClick={() => setSelected(title)}
-      icon={icon}
-      component={<Link href={to} className="block w-full" />}
-    >
-      {title}
-    </MenuItem>
-  );
-};
+    <>
+      {/* Mobile sidebar backdrop */}
+      {mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-black bg-opacity-30 lg:hidden"
+          onClick={toggleMobileSidebar}
+        />
+      )}
 
-const AppSidebar = () => {
-  const { user } = useUser();
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState("Dashboard");
-
-  return (
-    <div className="h-screen sticky top-0 bg-white dark:bg-gray-900 shadow-md overflow-hidden border-none">
-      <Sidebar
-        collapsed={isCollapsed}
-        backgroundColor="inherit"
-        rootStyles={{
-          [`.${menuClasses.root}`]: {
-            padding: "5px",
-            backgroundColor: "inherit",
-          },
-          [`.${menuClasses.button}`]: {
-            "&:hover": {
-              backgroundColor: "transparent",
-              color: "#a5b4fc",
-            },
-          },
-          [`.${menuClasses.active}`]: {
-            color: "#818cf8",
-            backgroundColor: "rgba(99, 102, 241, 0.1)",
-          },
-        }}
+      {/* Desktop Sidebar */}
+      <aside
+        className={`hidden lg:block fixed top-16 h-[calc(100vh-4rem)] bg-white shadow-lg transition-all duration-300 ease-in-out z-10 border-r border-gray-100
+          ${sidebarOpen ? "w-64" : "w-20"}`}
       >
-        <Menu
-          menuItemStyles={{
-            button: {
-              padding: "5px 35px 5px 20px",
-              backgroundColor: "inherit",
-            },
-          }}
-        >
-          <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <FaBars /> : undefined}
-            className="my-2 text-white dark:text-gray-100"
-            component={<div />}
-          >
-            {!isCollapsed && (
-              <div className="flex justify-between items-center ml-4">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setIsCollapsed(!isCollapsed)}
-                    className="p-1 rounded-full hover:bg-indigo-600 dark:hover:bg-gray-700 text-white"
-                  >
-                    <FaBars />
-                  </button>
-                </div>
-              </div>
-            )}
-          </MenuItem>
-
-          {!isCollapsed && (
-            <div className="mb-6">
-              <div className="flex justify-center items-center">
-                <img
-                  alt="profile-user"
-                  className="w-24 h-24 cursor-pointer rounded-full border-4 border-indigo-300 dark:border-indigo-600"
-                  src={user?.imageUrl}
+        <div className="flex flex-col h-full">
+          {/* Search Bar (visible when expanded) */}
+          {sidebarOpen && (
+            <div className="p-4 border-b border-gray-100">
+              <div className="relative">
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-100 text-sm"
                 />
-              </div>
-              <div className="text-center">
-                <h2 className="text-xl font-bold mt-2 text-gray-900 dark:text-gray-100">
-                  {user?.fullName}
-                </h2>
-                <p className="text-sm text-indigo-700 dark:text-indigo-300">
-                  VP Fancy Admin
-                </p>
               </div>
             </div>
           )}
 
-          <div className={isCollapsed ? "" : "pl-10"}>
-            <Item
-              title="Dashboard"
-              to="/"
-              icon={<FaHome />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <p className="text-xs mt-4 mb-1 ml-5 text-indigo-900 dark:text-indigo-300">
-              Data
-            </p>
-            <Item
-              title="Manage Team"
-              to="/team"
-              icon={<FaUsers />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Contacts Information"
-              to="/contacts"
-              icon={<FaAddressBook />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Invoices Balances"
-              to="/invoices"
-              icon={<FaReceipt />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <p className="text-xs mt-4 mb-1 ml-5 text-indigo-900 dark:text-indigo-300">
-              Pages
-            </p>
-            <Item
-              title="Profile Form"
-              to="/form"
-              icon={<FaUser />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Calendar"
-              to="/calendar"
-              icon={<FaCalendarAlt />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="FAQ Page"
-              to="/faq"
-              icon={<FaQuestionCircle />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <p className="text-xs mt-4 mb-1 ml-5 text-indigo-900 dark:text-indigo-300">
-              Charts
-            </p>
-            <Item
-              title="Bar Chart"
-              to="/bar"
-              icon={<FaChartBar />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Pie Chart"
-              to="/pie"
-              icon={<FaChartPie />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Line Chart"
-              to="/line"
-              icon={<FaChartLine />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Geography Chart"
-              to="/geography"
-              icon={<FaMapMarkedAlt />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+          {/* Collapse Button */}
+          <div className="p-4 flex items-center justify-between border-b border-gray-100">
+            {sidebarOpen && (
+              <h2 className="text-lg font-semibold text-gray-700">Admin</h2>
+            )}
+            <button
+              onClick={toggleSidebar}
+              className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            >
+              <FiChevronLeft
+                className={`transition-transform ${!sidebarOpen && "rotate-180"}`}
+              />
+            </button>
           </div>
-        </Menu>
-      </Sidebar>
-    </div>
-  );
-};
 
-export default AppSidebar;
+          {/* Navigation Items */}
+          <nav className="flex-1 overflow-y-auto">
+            <ul className="space-y-1 p-2">
+              {navItems.map((item) => (
+                <li key={item.label}>
+                  <a
+                    href={item.href}
+                    onClick={() => setActiveItem(item.label)}
+                    className={`flex items-center p-3 rounded-lg transition-all ${sidebarOpen ? "px-4" : "px-3 justify-center"}
+                      ${activeItem === item.label ? "bg-blue-50 text-blue-600" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
+                  >
+                    <span className="text-lg">{item.icon}</span>
+                    {sidebarOpen && (
+                      <span className="ml-3 font-medium">{item.label}</span>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Create Button */}
+          <div className="p-4 border-t border-gray-100">
+            <button
+              className={`flex items-center w-full p-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors
+              ${sidebarOpen ? "px-4" : "px-3 justify-center"}`}
+            >
+              <FiPlus className="text-lg" />
+              {sidebarOpen && (
+                <span className="ml-3 font-medium">Create New</span>
+              )}
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* Mobile Sidebar */}
+      <aside
+        className={`lg:hidden fixed top-16 h-[calc(100vh-4rem)] bg-white shadow-xl transition-all duration-300 ease-in-out z-20
+          ${mobileSidebarOpen ? "w-72 translate-x-0" : "-translate-x-full"}`}
+      >
+        <div className="flex flex-col h-full">
+          <div className="p-4 border-b border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-700">Admin Panel</h2>
+          </div>
+
+          {/* Search Bar */}
+          <div className="p-4 border-b border-gray-100">
+            <div className="relative">
+              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search..."
+                className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-100 text-sm"
+              />
+            </div>
+          </div>
+
+          <nav className="flex-1 overflow-y-auto">
+            <ul className="space-y-1 p-2">
+              {navItems.map((item) => (
+                <li key={item.label}>
+                  <a
+                    href={item.href}
+                    onClick={() => {
+                      setActiveItem(item.label);
+                      toggleMobileSidebar();
+                    }}
+                    className={`flex items-center p-3 px-4 rounded-lg transition-all
+                      ${activeItem === item.label ? "bg-blue-50 text-blue-600" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
+                  >
+                    <span className="text-lg">{item.icon}</span>
+                    <span className="ml-3 font-medium">{item.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="p-4 border-t border-gray-100">
+            <button className="flex items-center w-full p-3 px-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+              <FiPlus className="text-lg" />
+              <span className="ml-3 font-medium">Create New</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* Mobile sidebar toggle button */}
+      <div className="fixed top-20 left-4 z-10 lg:hidden">
+        <button
+          onClick={toggleMobileSidebar}
+          className="p-2 rounded-lg bg-white shadow-md text-gray-700 hover:bg-gray-50"
+        >
+          <FiMenu className="text-lg" />
+        </button>
+      </div>
+    </>
+  );
+}
