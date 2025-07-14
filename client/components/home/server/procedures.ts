@@ -5,7 +5,6 @@ import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 
 export const nextShipmentRouter = createTRPCRouter({
-  // Get all upcoming shipments
   getMany: baseProcedure.query(async () => {
     const data = await db
       .select()
@@ -14,7 +13,6 @@ export const nextShipmentRouter = createTRPCRouter({
     return data;
   }),
 
-  // Get the next upcoming shipment (single record)
   getNext: baseProcedure.query(async () => {
     const [data] = await db
       .select()
@@ -24,7 +22,6 @@ export const nextShipmentRouter = createTRPCRouter({
     return data;
   }),
 
-  // Create a new shipment record
   create: baseProcedure
     .input(
       z.object({
@@ -45,7 +42,6 @@ export const nextShipmentRouter = createTRPCRouter({
       return newShipment;
     }),
 
-  // Update an existing shipment
   update: baseProcedure
     .input(
       z.object({
@@ -69,7 +65,6 @@ export const nextShipmentRouter = createTRPCRouter({
       return updatedShipment;
     }),
 
-  // Delete a shipment
   delete: baseProcedure
     .input(z.object({ id: z.string().uuid() }))
     .mutation(async ({ input }) => {
