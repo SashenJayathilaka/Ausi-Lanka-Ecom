@@ -55,7 +55,6 @@ export const getUsers = createTRPCRouter({
           userList.length > 0 ? userList[userList.length - 1].clerkId : null,
       };
     }),
-
   getUserType: protectedProcedure
     .input(z.void())
     .output(

@@ -36,7 +36,7 @@ export default function AdminSidebar() {
     {
       icon: <FiShoppingCart className="text-green-500" />,
       label: "Products",
-      href: "#",
+      href: "/admin/product",
     },
     {
       icon: <FiFileText className="text-yellow-500" />,
@@ -67,7 +67,7 @@ export default function AdminSidebar() {
 
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden lg:block fixed top-16 h-[calc(100vh-4rem)] bg-white shadow-lg transition-all duration-300 ease-in-out z-10 border-r border-gray-100
+        className={`hidden lg:block fixed top-16 h-[calc(100vh-4rem)] bg-white shadow-lg transition-all duration-300 ease-in-out z-10 border-r border-gray-100 mt-16
           ${sidebarOpen ? "w-64" : "w-20"}`}
       >
         <div className="flex flex-col h-full">

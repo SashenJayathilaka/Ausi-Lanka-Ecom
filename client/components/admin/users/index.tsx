@@ -22,13 +22,11 @@ type UserFormData = z.infer<typeof userSchema>;
 
 const AdminUsers = () => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Suspense fallback={<LoadingSpinner />}>
-        <ErrorBoundary fallback={<ErrorFallback />}>
-          <UsersAdminPageSectionsSuspense />
-        </ErrorBoundary>
-      </Suspense>
-    </div>
+    <Suspense fallback={<LoadingSpinner />}>
+      <ErrorBoundary fallback={<ErrorFallback />}>
+        <UsersAdminPageSectionsSuspense />
+      </ErrorBoundary>
+    </Suspense>
   );
 };
 
