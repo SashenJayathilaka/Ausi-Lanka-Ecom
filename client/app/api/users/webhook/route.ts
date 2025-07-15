@@ -60,7 +60,7 @@ export async function POST(req: Request) {
     await db.insert(users).values({
       clerkId: data.id,
       name: `${data.first_name} ${data.last_name}`,
-      emailId: data.email_addresses[0]?.id || "",
+      emailId: data.email_addresses[0].email_address || "",
       imageUrl: data.image_url || "",
     });
   }
