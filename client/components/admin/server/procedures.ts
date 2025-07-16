@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { orderItems, orders, users } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import { and, desc, eq, lt, or } from "drizzle-orm";
+import { and, desc, eq, inArray, lt, or } from "drizzle-orm";
 import { z } from "zod";
 
 export const getItemsForAdminRouter = createTRPCRouter({
@@ -22,19 +22,22 @@ export const getItemsForAdminRouter = createTRPCRouter({
       const { cursor, limit } = input;
       const { id: userId } = ctx.user;
 
-      const user = await db
+      // Verify admin status
+      const adminUser = await db
         .select()
         .from(users)
         .where(and(eq(users.id, userId), eq(users.userType, "admin")))
         .limit(1)
         .then((rows) => rows[0]);
 
-      if (!user) {
+      if (!adminUser) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "Only admin users can access order details",
         });
       }
+
+      // Get orders with pagination
       const ordersData = await db
         .select()
         .from(orders)
@@ -64,35 +67,59 @@ export const getItemsForAdminRouter = createTRPCRouter({
           }
         : null;
 
+      // Get all unique user IDs from the orders
+      const userIds = [...new Set(items.map((order) => order.userId))];
+
+      // Fetch all users associated with these orders in a single query
+      const orderUsers =
+        userIds.length > 0
+          ? await db
+              .select({
+                id: users.id,
+                name: users.name,
+                emailId: users.emailId,
+                imageUrl: users.imageUrl,
+              })
+              .from(users)
+              .where(inArray(users.id, userIds))
+          : [];
+
+      // Create a map of users by their ID for quick lookup
+      const usersById = orderUsers.reduce(
+        (acc, user) => {
+          acc[user.id] = user;
+          return acc;
+        },
+        {} as Record<string, (typeof orderUsers)[number]>
+      );
+
+      // Get all order items for these orders in a single query
       const orderIds = items.map((order) => order.id);
       const allItems =
         orderIds.length > 0
           ? await db
               .select()
               .from(orderItems)
-              .where(or(...orderIds.map((id) => eq(orderItems.orderId, id))))
+              .where(inArray(orderItems.orderId, orderIds))
           : [];
 
+      // Group items by order ID
       const itemsByOrderId = allItems.reduce(
         (acc, item) => {
           if (!acc[item.orderId]) {
             acc[item.orderId] = [];
           }
-          acc[item.orderId]!.push(item);
+          acc[item.orderId].push(item);
           return acc;
         },
         {} as Record<string, (typeof allItems)[number][]>
       );
 
+      // Combine all data
       const result = items.map((order) => ({
         ...order,
         items: itemsByOrderId[order.id] || [],
-        user: {
-          id: user.id,
-          name: user.name,
-          emailId: user.emailId,
-          imageUrl: user.imageUrl,
-        },
+        user: usersById[order.userId] || null, // The user who placed the order
       }));
 
       return {
@@ -197,5 +224,48 @@ export const getItemsForAdminRouter = createTRPCRouter({
         products: formattedResults,
         nextCursor,
       };
+    }),
+  updateOrderStatus: protectedProcedure
+    .input(
+      z.object({
+        orderId: z.string().uuid(),
+        status: z.enum([
+          "pending",
+          "confirmed",
+          "shipped",
+          "delivered",
+          "cancelled",
+        ]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.userType !== "admin") {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Only admins can update order status",
+        });
+      }
+
+      const [updatedOrder] = await db
+        .update(orders)
+        .set({
+          status: input.status,
+          updatedAt: new Date(),
+        })
+        .where(eq(orders.id, input.orderId))
+        .returning({
+          id: orders.id,
+          status: orders.status,
+          updatedAt: orders.updatedAt,
+        });
+
+      if (!updatedOrder) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Order not found",
+        });
+      }
+
+      return updatedOrder;
     }),
 });

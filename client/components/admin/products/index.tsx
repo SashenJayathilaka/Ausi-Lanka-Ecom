@@ -5,6 +5,7 @@ import { trpc } from "@/trpc/client";
 import React, { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import Image from "next/image";
+import { LkrFormat } from "@/utils/format";
 
 const AdminOrders = () => {
   return (
@@ -38,7 +39,6 @@ const ProductAdminPageSectionsSuspense: React.FC = () => {
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
-  // Group products by name to count duplicates
   const productCounts = data.pages[0].products.reduce(
     (acc, product) => {
       acc[product.name] = (acc[product.name] || 0) + product.quantity;
@@ -68,16 +68,13 @@ const ProductAdminPageSectionsSuspense: React.FC = () => {
                   Count
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Price
+                  $ Price
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   Retailer
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Calculated Price
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Actions
+                  Calculated Price Rs
                 </th>
               </tr>
             </thead>
@@ -124,15 +121,7 @@ const ProductAdminPageSectionsSuspense: React.FC = () => {
                     {product.retailer}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                    ${product.calculatedPrice}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3">
-                      Edit
-                    </button>
-                    <button className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
-                      Delete
-                    </button>
+                    {LkrFormat(Number(product.calculatedPrice))}
                   </td>
                 </tr>
               ))}

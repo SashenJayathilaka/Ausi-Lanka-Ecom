@@ -53,6 +53,11 @@ export default function AdminSidebar() {
       label: "Settings",
       href: "#",
     },
+    {
+      icon: <FiSettings className="text-indigo-500" />,
+      label: "Shipments",
+      href: "/admin/shipment",
+    },
   ];
 
   return (
