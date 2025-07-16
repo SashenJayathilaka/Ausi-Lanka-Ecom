@@ -3,7 +3,9 @@
 
 import { DEFAULT_LIMIT } from "@/constants/constants";
 import { trpc } from "@/trpc/client";
-import React, { Suspense } from "react";
+import { LkrFormat } from "@/utils/format";
+import { useRouter } from "next/navigation";
+import React, { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import {
   FiCalendar,
@@ -13,9 +15,8 @@ import {
   FiTruck,
   FiUser,
 } from "react-icons/fi";
+import { toast } from "sonner";
 import { OrderWithItemsAndUser } from "../type";
-import { useRouter } from "next/navigation";
-import { LkrFormat } from "@/utils/format";
 
 const OrderAdminDetails = () => {
   return (
@@ -29,19 +30,46 @@ const OrderAdminDetails = () => {
 
 export default OrderAdminDetails;
 
-const OrderCard = ({ order }: { order: OrderWithItemsAndUser }) => {
+const OrderCard = ({
+  order,
+  onStatusUpdate,
+}: {
+  order: OrderWithItemsAndUser;
+  onStatusUpdate: (orderId: string, newStatus: string) => void;
+}) => {
   const router = useRouter();
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const statusOptions = [
+    { value: "pending", label: "Pending" },
+    { value: "confirmed", label: "Confirmed" },
+    { value: "shipped", label: "Shipped" },
+    { value: "delivered", label: "Delivered" },
+    { value: "cancelled", label: "Cancelled" },
+  ];
+
+  const handleStatusChange = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const newStatus = e.target.value;
+    setIsUpdating(true);
+    try {
+      await onStatusUpdate(order.id, newStatus);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
-    <div
-      className="border rounded-lg p-6 mb-6 dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
-      onClick={() =>
-        router.push(`${process.env.NEXT_PUBLIC_APP_URL}/admin/${order.id}`)
-      }
-    >
+    <div className="border rounded-lg p-6 mb-6 dark:border-gray-700 dark:bg-gray-800">
       {/* Order Header */}
       <div className="flex justify-between items-start mb-4">
-        <div>
+        <div
+          onClick={() =>
+            router.push(`${process.env.NEXT_PUBLIC_APP_URL}/admin/${order.id}`)
+          }
+          className="cursor-pointer hover:underline"
+        >
           <h3 className="font-medium text-lg dark:text-white">
             Order #{order.id}
           </h3>
@@ -50,20 +78,35 @@ const OrderCard = ({ order }: { order: OrderWithItemsAndUser }) => {
             {new Date(order.createdAt).toLocaleString()}
           </p>
         </div>
-        <span
-          className={`px-3 py-1 rounded-full text-sm ${
-            order.status === "pending"
-              ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-              : order.status === "delivered"
-                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-          }`}
-        >
-          {order.status}
-        </span>
+        <div className="flex items-center">
+          {isUpdating ? (
+            <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse"></div>
+          ) : (
+            <select
+              value={order.status}
+              onChange={handleStatusChange}
+              className={`px-3 py-1 rounded-full text-sm cursor-pointer ${
+                order.status === "pending"
+                  ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                  : order.status === "delivered"
+                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                    : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+              } border-none focus:ring-2 focus:ring-blue-500`}
+            >
+              {statusOptions.map((option) => (
+                <option
+                  key={option.value}
+                  value={option.value}
+                  className="bg-white dark:bg-gray-800 dark:text-white"
+                >
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
       </div>
 
-      {/* Customer and Order Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div className="bg-white dark:bg-gray-700 p-4 rounded-lg">
           <h4 className="font-medium mb-3 dark:text-white flex items-center underline">
@@ -214,10 +257,36 @@ const OrderCard = ({ order }: { order: OrderWithItemsAndUser }) => {
 };
 
 const OrderAdminPageSectionsSuspense: React.FC = () => {
+  const utils = trpc.useUtils();
   const [data] = trpc.getAdminItems.getMany.useSuspenseInfiniteQuery(
     { limit: DEFAULT_LIMIT },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
+
+  const updateStatusMutation = trpc.getAdminItems.updateOrderStatus.useMutation(
+    {
+      onSuccess: (updatedOrder) => {
+        // Invalidate the orders query to refresh the list
+        utils.getAdminItems.getMany.invalidate();
+        toast.success(`Order status updated to ${updatedOrder.status}`);
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    }
+  );
+
+  const handleStatusUpdate = (orderId: string, newStatus: string) => {
+    updateStatusMutation.mutate({
+      orderId,
+      status: newStatus as
+        | "pending"
+        | "confirmed"
+        | "shipped"
+        | "delivered"
+        | "cancelled",
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -228,7 +297,6 @@ const OrderAdminPageSectionsSuspense: React.FC = () => {
       <div className="mb-6">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold dark:text-white">All Orders</h2>
-          {/* Add filters/search here if needed */}
         </div>
       </div>
 
@@ -236,13 +304,15 @@ const OrderAdminPageSectionsSuspense: React.FC = () => {
         {data.pages.map((page, i) => (
           <div key={i}>
             {page.items.map((order) => (
-              <OrderCard key={order.id} order={order} />
+              <OrderCard
+                key={order.id}
+                order={order}
+                onStatusUpdate={handleStatusUpdate}
+              />
             ))}
           </div>
         ))}
       </div>
-
-      {/* Load more button can be added here */}
     </div>
   );
 };
