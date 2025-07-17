@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FiClock, FiPackage } from "react-icons/fi";
+import { ErrorBoundary } from "react-error-boundary";
+import { trpc } from "@/trpc/client";
 
 type TimeLeft = {
   days: number;
@@ -12,19 +14,51 @@ type TimeLeft = {
 };
 
 interface ShippingCountdownProps {
-  targetDate: string; // ISO date string
   isSmall?: boolean;
   className?: string;
 }
 
-const ShippingCountdown: React.FC<ShippingCountdownProps> = ({
-  targetDate,
+const ShippingCountdown = ({ className, isSmall }: ShippingCountdownProps) => {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <ErrorBoundary fallback={<ErrorFallback />}>
+        <ShippingCountdownSuspenses isSmall={isSmall} className={className} />
+      </ErrorBoundary>
+    </Suspense>
+  );
+};
+
+const LoadingSpinner = () => (
+  <div className="flex justify-center items-center h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+);
+
+const ErrorFallback = () => (
+  <div className="flex justify-center items-center h-screen">
+    <div className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 p-4 rounded-lg">
+      Failed to load shipment data
+    </div>
+  </div>
+);
+
+const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
   isSmall,
   className,
 }) => {
+  const { data: targetDate } = trpc.getNextShipmentRouter.getNext.useQuery(
+    undefined,
+    {
+      staleTime: Infinity, // 👈 Never refetch automatically
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    }
+  );
+
   const calculateTimeLeft = useCallback((): TimeLeft => {
     const now = new Date();
-    const difference = +new Date(targetDate) - +now;
+    const difference =
+      +new Date(targetDate?.shipmentDate || "2025-07-30T10:00:00") - +now;
     if (difference <= 0) {
       return { days: 0, hours: 0, minutes: 0, seconds: 0 };
     }

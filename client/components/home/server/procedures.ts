@@ -1,11 +1,16 @@
 import { db } from "@/db";
 import { nextShipment } from "@/db/schema";
-import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+import {
+  baseProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 
 export const nextShipmentRouter = createTRPCRouter({
-  getMany: baseProcedure.query(async () => {
+  getMany: protectedProcedure.query(async () => {
     const data = await db
       .select()
       .from(nextShipment)
@@ -19,44 +24,56 @@ export const nextShipmentRouter = createTRPCRouter({
       .from(nextShipment)
       .orderBy(desc(nextShipment.shipmentDate))
       .limit(1);
-    return data;
+    return data ?? null;
   }),
 
-  create: baseProcedure
+  create: protectedProcedure
     .input(
       z.object({
         shipmentDate: z.date(),
-        updatedBy: z.string().uuid(),
         notes: z.string().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.userType !== "admin") {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found in database",
+        });
+      }
+
       const [newShipment] = await db
         .insert(nextShipment)
         .values({
           shipmentDate: input.shipmentDate,
-          updatedBy: input.updatedBy,
+          updatedBy: ctx.user.id,
           notes: input.notes,
         })
         .returning();
       return newShipment;
     }),
 
-  update: baseProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string().uuid(),
         shipmentDate: z.date().optional(),
-        updatedBy: z.string().uuid().optional(),
         notes: z.string().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.userType !== "admin") {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found in database",
+        });
+      }
+
       const [updatedShipment] = await db
         .update(nextShipment)
         .set({
           shipmentDate: input.shipmentDate,
-          updatedBy: input.updatedBy,
+          updatedBy: ctx.user.id,
           notes: input.notes,
           updatedAt: new Date(),
         })
