@@ -7,25 +7,28 @@ import Navbar from "@/components/home/navbar";
 import ServicesSection from "@/components/home/services-section";
 import ShippingCountdown from "@/components/home/ShippingCountdown";
 import TestimonialsSection from "@/components/home/testimonials-section";
-import { trpc } from "@/trpc/server";
+import { HydrateClient, trpc } from "@/trpc/server";
 
 export default function Home() {
   void trpc.getUsers.getUserType.prefetchInfinite();
+  void trpc.getNextShipmentRouter.getNext.prefetch();
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden">
-      <div className="absolute -top-28 -left-28 w-[500px] h-[500px] bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 rounded-full blur-[80px] -z-10"></div>
-      <div className="overflow-hidden">
-        <Navbar />
-        <Hero />
-        <CompanyLogo />
-        <ShippingCountdown targetDate="2025-07-30T10:00:00" isSmall />
-        <FeaturesSection />
-        <MonitorSection />
-        <ServicesSection />
-        <TestimonialsSection />
-        <Footer />
-      </div>
-    </main>
+    <HydrateClient>
+      <main className="relative min-h-screen overflow-x-hidden">
+        <div className="absolute -top-28 -left-28 w-[500px] h-[500px] bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 rounded-full blur-[80px] -z-10"></div>
+        <div className="overflow-hidden">
+          <Navbar />
+          <Hero />
+          <CompanyLogo />
+          <ShippingCountdown isSmall />
+          <FeaturesSection />
+          <MonitorSection />
+          <ServicesSection />
+          <TestimonialsSection />
+          <Footer />
+        </div>
+      </main>
+    </HydrateClient>
   );
 }
