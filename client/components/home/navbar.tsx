@@ -6,12 +6,26 @@ import { fadeIn, staggerContainer } from "@/utils/motion";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { FiHeart, FiMoon, FiSun } from "react-icons/fi";
 import { HiMenu, HiSearch, HiShoppingCart, HiX } from "react-icons/hi";
 import { AuthButton } from "./auth-button";
+import { LoadingSpinner } from "./ShippingCountdown";
+import { ErrorBoundary } from "react-error-boundary";
 
 const Navbar = () => {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <ErrorBoundary fallback={<p>Error</p>}>
+        <NavBarSuspenses />
+      </ErrorBoundary>
+    </Suspense>
+  );
+};
+
+export default Navbar;
+
+const NavBarSuspenses: React.FC = ({}) => {
   const { data } = trpc.getUsers.getUserType.useQuery(undefined, {
     staleTime: Infinity, // 👈 Never refetch automatically
     refetchOnWindowFocus: false,
@@ -195,7 +209,7 @@ const Navbar = () => {
 
           {/* User Auth */}
           <motion.div variants={fadeIn("left", 0.3)}>
-            <AuthButton data={data || { userType: "user" }} />
+            <AuthButton data={{ userType: data?.userType || "guest" }} />
           </motion.div>
 
           {/* Mobile Menu Button */}
@@ -281,5 +295,3 @@ const Navbar = () => {
     </motion.nav>
   );
 };
-
-export default Navbar;

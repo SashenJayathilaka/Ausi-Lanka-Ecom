@@ -7,7 +7,7 @@ import { LuHistory } from "react-icons/lu";
 import { MdAdminPanelSettings } from "react-icons/md";
 
 type AuthButtonType = {
-  data: { userType: "user" | "admin" };
+  data: { userType: "user" | "admin" | "guest" };
 };
 
 export const AuthButton = ({ data }: AuthButtonType) => {
