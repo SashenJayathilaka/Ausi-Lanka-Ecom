@@ -59,30 +59,43 @@ export const getUsers = createTRPCRouter({
     .input(z.void())
     .output(
       z.object({
-        userType: z.enum(["admin", "user"]).default("user"),
+        userType: z.enum(["admin", "user", "guest"]).default("guest"),
       })
     )
     .query(async ({ ctx }) => {
-      const clerkUserId = ctx.user.id;
-
-      const user = await db
-        .select()
-        .from(users)
-        .where(eq(users.id, clerkUserId))
-        .limit(1)
-        .then((rows) => rows[0]);
-
-      if (!user) {
-        console.error("No user found with clerkId:", clerkUserId);
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "User not found in database",
-        });
+      // If user is not authenticated, return guest type
+      if (!ctx.user?.id) {
+        return {
+          userType: "guest" as const,
+        };
       }
 
-      return {
-        userType: user.userType || "user",
-      };
+      const clerkUserId = ctx.user.id;
+
+      try {
+        const user = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, clerkUserId))
+          .limit(1)
+          .then((rows) => rows[0]);
+
+        if (!user) {
+          console.error("No user found with clerkId:", clerkUserId);
+          return {
+            userType: "guest" as const,
+          };
+        }
+
+        return {
+          userType: user.userType || "user",
+        };
+      } catch (error) {
+        console.error("Error fetching user type:", error);
+        return {
+          userType: "guest" as const,
+        };
+      }
     }),
   updateUser: protectedProcedure
     .input(
