@@ -1,3 +1,4 @@
+import { orderAnalyticsRouter } from "@/components/admin/analytics/server/procedures";
 import { getItemsForAdminRouter } from "@/components/admin/server/procedures";
 import { checkoutRouter } from "@/components/checkout-section/server/procedures";
 import { nextShipmentRouter } from "@/components/home/server/procedures";
@@ -11,6 +12,7 @@ export const appRouter = createTRPCRouter({
   getAdminItems: getItemsForAdminRouter,
   getUsers: getUsers,
   getNextShipmentRouter: nextShipmentRouter,
+  orderAnalyticsRouter: orderAnalyticsRouter,
 });
 
 export type AppRouter = typeof appRouter;

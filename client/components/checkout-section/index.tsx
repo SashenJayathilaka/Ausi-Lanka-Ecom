@@ -99,7 +99,7 @@ const CheckoutPage = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             emailType: "internal-notification",
-            recipient: email, //TODO: Your internal email
+            recipient: "ausilk27@gmail.com", //TODO: Your internal email
             orderData: {
               orderId: data.orderId,
               mobile: data.orderData.mobile,

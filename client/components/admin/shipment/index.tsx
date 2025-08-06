@@ -40,7 +40,7 @@ const LoadingSpinner = () => (
 
 const ErrorFallback = () => (
   <div className="flex justify-center items-center h-screen">
-    <div className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 p-4 rounded-lg">
+    <div className="bg-red-100 text-red-800 p-4 rounded-lg">
       Failed to load shipment data
     </div>
   </div>
@@ -64,7 +64,7 @@ const ShipmentManagementSection = () => {
 
   const { data: nextShipment, isLoading } =
     trpc.getNextShipmentRouter.getNext.useQuery(undefined, {
-      staleTime: Infinity, // 👈 Never refetch automatically
+      staleTime: Infinity,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     });
@@ -107,8 +107,6 @@ const ShipmentManagementSection = () => {
   };
 
   const onSubmit = async (data: ShipmentFormData) => {
-    console.log("Submitting form with:", data); // Add this line
-
     if (!currentUser?.id) {
       toast.error("User not authenticated");
       return;
@@ -168,8 +166,8 @@ const ShipmentManagementSection = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+      <div className="bg-white rounded-lg shadow p-6">
+        <h1 className="text-2xl font-bold mb-6 text-gray-900">
           Next Shipment Date
         </h1>
 
@@ -178,14 +176,14 @@ const ShipmentManagementSection = () => {
             <input type="hidden" {...form.register("id")} />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Shipment Date
               </label>
               <input
                 type="datetime-local"
                 id="shipmentDate"
                 {...form.register("shipmentDate")}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 min={formatInputDate(new Date())}
               />
               {form.formState.errors.shipmentDate && (
@@ -196,13 +194,13 @@ const ShipmentManagementSection = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Notes (Optional)
               </label>
               <textarea
                 {...form.register("notes")}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
               {form.formState.errors.notes && (
                 <p className="mt-1 text-sm text-red-600">
@@ -215,7 +213,7 @@ const ShipmentManagementSection = () => {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 Cancel
               </button>
@@ -239,23 +237,21 @@ const ShipmentManagementSection = () => {
         ) : nextShipment ? (
           <div className="space-y-4">
             <div>
-              <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+              <h2 className="text-lg font-medium text-gray-900">
                 Current Next Shipment Date
               </h2>
-              <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+              <p className="mt-1 text-sm text-gray-600">
                 {formatDate(new Date(nextShipment.shipmentDate))}
               </p>
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-xs text-gray-500">
                 Last updated by: {formatDate(new Date(nextShipment.updatedAt))}
               </p>
             </div>
 
             {nextShipment.notes && (
               <div>
-                <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-                  Notes
-                </h2>
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                <h2 className="text-lg font-medium text-gray-900">Notes</h2>
+                <p className="mt-1 text-sm text-gray-600">
                   {nextShipment.notes}
                 </p>
               </div>
@@ -272,9 +268,7 @@ const ShipmentManagementSection = () => {
           </div>
         ) : (
           <div className="text-center py-8">
-            <p className="text-gray-500 dark:text-gray-400 mb-4">
-              No upcoming shipment date set
-            </p>
+            <p className="text-gray-500 mb-4">No upcoming shipment date set</p>
             <button
               onClick={handleEditClick}
               className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"

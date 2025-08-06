@@ -21,7 +21,7 @@ import { OrderWithItemsAndUser } from "../type";
 const OrderAdminDetails = () => {
   return (
     <Suspense fallback={<OrderAdminSkeleton />}>
-      <ErrorBoundary fallback={<p>Eoor...</p>}>
+      <ErrorBoundary fallback={<p>Error...</p>}>
         <OrderAdminPageSectionsSuspense />
       </ErrorBoundary>
     </Suspense>
@@ -61,7 +61,7 @@ const OrderCard = ({
   };
 
   return (
-    <div className="border rounded-lg p-6 mb-6 dark:border-gray-700 dark:bg-gray-800">
+    <div className="border rounded-lg p-6 mb-6 bg-white">
       {/* Order Header */}
       <div className="flex justify-between items-start mb-4">
         <div
@@ -70,34 +70,32 @@ const OrderCard = ({
           }
           className="cursor-pointer hover:underline"
         >
-          <h3 className="font-medium text-lg dark:text-white">
-            Order #{order.id}
-          </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+          <h3 className="font-medium text-lg">Order #{order.id}</h3>
+          <p className="text-sm text-gray-500 flex items-center">
             <FiCalendar className="mr-1" />
             {new Date(order.createdAt).toLocaleString()}
           </p>
         </div>
         <div className="flex items-center">
           {isUpdating ? (
-            <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse"></div>
+            <div className="h-8 w-24 bg-gray-200 rounded-md animate-pulse"></div>
           ) : (
             <select
               value={order.status}
               onChange={handleStatusChange}
               className={`px-3 py-1 rounded-full text-sm cursor-pointer ${
                 order.status === "pending"
-                  ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                  ? "bg-yellow-100 text-yellow-800"
                   : order.status === "delivered"
-                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                    : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-gray-100 text-gray-800"
               } border-none focus:ring-2 focus:ring-blue-500`}
             >
               {statusOptions.map((option) => (
                 <option
                   key={option.value}
                   value={option.value}
-                  className="bg-white dark:bg-gray-800 dark:text-white"
+                  className="bg-white"
                 >
                   {option.label}
                 </option>
@@ -108,64 +106,59 @@ const OrderCard = ({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg">
-          <h4 className="font-medium mb-3 dark:text-white flex items-center underline">
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h4 className="font-medium mb-3 flex items-center underline">
             <FiUser className="mr-2" /> Customer
           </h4>
-          <p className="dark:text-white font-semibold">{order.name}</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center mt-1 font-semibold">
+          <p className="font-semibold">{order.name}</p>
+          <p className="text-sm text-gray-500 flex items-center mt-1 font-semibold">
             <FiPhone className="mr-1" /> {order.mobile}
           </p>
           {order.user?.emailId && (
-            <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold">
+            <p className="text-sm text-gray-500 font-semibold">
               {order.user.emailId}
             </p>
           )}
         </div>
 
-        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg">
-          <h4 className="font-medium mb-3 dark:text-white flex items-center underline">
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h4 className="font-medium mb-3 flex items-center underline">
             <FiDollarSign className="mr-2" /> Order Summary
           </h4>
-          <p className="dark:text-white font-semibold">
+          <p className="font-semibold">
             Total: {LkrFormat(Number(order.totalAmount))}
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-semibold">
+          <p className="text-sm text-gray-500 mt-1 font-semibold">
             {order.items.length} item{order.items.length !== 1 ? "s" : ""}
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center mt-1 font-semibold">
+          <p className="text-sm text-gray-500 flex items-center mt-1 font-semibold">
             <FiTruck className="mr-1" /> {order.deliveryMethod} delivery
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg">
-          <h4 className="font-medium mb-3 dark:text-white flex items-center underline">
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h4 className="font-medium mb-3 flex items-center underline">
             <FiMapPin className="mr-2" /> Shipping
           </h4>
-          <p className="dark:text-white font-semibold">{order.addressLine1}</p>
+          <p className="font-semibold">{order.addressLine1}</p>
           {order.addressLine2 && (
-            <p className="dark:text-white font-semibold">
-              {order.addressLine2}
-            </p>
+            <p className="font-semibold">{order.addressLine2}</p>
           )}
-          <p className="dark:text-white font-semibold">
+          <p className="font-semibold">
             {order.city}, {order.district}
           </p>
-          <p className="dark:text-white font-semibold">{order.postalCode}</p>
+          <p className="font-semibold">{order.postalCode}</p>
         </div>
       </div>
 
       {/* Order Items */}
-      {/* Order Items */}
       <div className="mb-6">
-        <h4 className="font-medium mb-3 dark:text-white underline">
-          Order Items
-        </h4>
-        <div className="bg-white dark:bg-gray-700 rounded-lg overflow-hidden">
+        <h4 className="font-medium mb-3 underline">Order Items</h4>
+        <div className="bg-gray-50 rounded-lg overflow-hidden">
           {order.items.map((item) => (
             <div
               key={item.id}
-              className="flex items-center p-4 border-b dark:border-gray-600 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+              className="flex items-center p-4 border-b hover:bg-gray-100 transition-colors"
             >
               <img
                 src={item.image}
@@ -179,7 +172,7 @@ const OrderCard = ({
               />
               <div className="flex-1">
                 <h5
-                  className="font-medium dark:text-white hover:underline"
+                  className="font-medium hover:underline"
                   style={{ cursor: item.url ? "pointer" : "default" }}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -188,11 +181,11 @@ const OrderCard = ({
                 >
                   {item.name}
                 </h5>
-                <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold">
+                <p className="text-sm text-gray-500 font-semibold">
                   {LkrFormat(Number(item.calculatedPrice))} × {item.quantity}
                 </p>
                 <div className="mt-1 flex items-center">
-                  <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded mr-2">
+                  <span className="text-xs bg-gray-100 px-2 py-1 rounded mr-2">
                     {item.retailer}
                   </span>
                   {item.url && (
@@ -200,7 +193,7 @@ const OrderCard = ({
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-semibold"
+                      className="text-xs text-blue-600 hover:underline font-semibold"
                       onClick={(e) => e.stopPropagation()}
                     >
                       View Product
@@ -209,7 +202,7 @@ const OrderCard = ({
                 </div>
               </div>
               <div className="text-right">
-                <p className="dark:text-white font-semibold">
+                <p className="font-semibold">
                   {LkrFormat(parseFloat(item.calculatedPrice) * item.quantity)}
                 </p>
               </div>
@@ -221,32 +214,28 @@ const OrderCard = ({
       {/* Comments (if any) */}
       {order.comments && (
         <div className="mb-6">
-          <h4 className="font-medium mb-2 dark:text-white">
-            Customer Comments
-          </h4>
-          <p className="bg-white dark:bg-gray-700 p-4 rounded-lg dark:text-white">
-            {order.comments}
-          </p>
+          <h4 className="font-medium mb-2">Customer Comments</h4>
+          <p className="bg-gray-50 p-4 rounded-lg">{order.comments}</p>
         </div>
       )}
 
       {/* Order Total */}
       <div className="flex justify-end">
-        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg w-full md:w-1/3">
+        <div className="bg-gray-50 p-4 rounded-lg w-full md:w-1/3">
           <div className="flex justify-between mb-2">
-            <span className="text-gray-500 dark:text-gray-400">Subtotal</span>
-            <span className="dark:text-white font-semibold">
+            <span className="text-gray-500">Subtotal</span>
+            <span className="font-semibold">
               {LkrFormat(Number(order.totalAmount))}
             </span>
           </div>
           <div className="flex justify-between mb-2">
-            <span className="text-gray-500 dark:text-gray-400">Shipping</span>
-            <span className="dark:text-white">0.00</span>
+            <span className="text-gray-500">Shipping</span>
+            <span>0.00</span>
           </div>
-          <div className="border-t dark:border-gray-600 my-2"></div>
+          <div className="border-t my-2"></div>
           <div className="flex justify-between font-medium">
-            <span className="dark:text-white">Total</span>
-            <span className="dark:text-white font-bold">
+            <span>Total</span>
+            <span className="font-bold">
               {LkrFormat(Number(order.totalAmount))}
             </span>
           </div>
@@ -266,7 +255,6 @@ const OrderAdminPageSectionsSuspense: React.FC = () => {
   const updateStatusMutation = trpc.getAdminItems.updateOrderStatus.useMutation(
     {
       onSuccess: (updatedOrder) => {
-        // Invalidate the orders query to refresh the list
         utils.getAdminItems.getMany.invalidate();
         toast.success(`Order status updated to ${updatedOrder.status}`);
       },
@@ -290,13 +278,11 @@ const OrderAdminPageSectionsSuspense: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 dark:text-white">
-        Orders Management
-      </h1>
+      <h1 className="text-2xl font-bold mb-6">Orders Management</h1>
 
       <div className="mb-6">
         <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold dark:text-white">All Orders</h2>
+          <h2 className="text-xl font-semibold">All Orders</h2>
         </div>
       </div>
 
@@ -323,60 +309,51 @@ const OrderAdminSkeleton = () => {
       <div className="animate-pulse">
         {/* Header Skeleton */}
         <div className="mb-8">
-          <div className="h-8 w-1/4 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
-          <div className="h-6 w-1/3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div className="h-8 w-1/4 bg-gray-200 rounded mb-4"></div>
+          <div className="h-6 w-1/3 bg-gray-200 rounded"></div>
         </div>
 
         {/* Order Cards Skeleton - Shows 3 skeleton cards */}
         {[...Array(3)].map((_, i) => (
-          <div
-            key={i}
-            className="border rounded-lg p-6 mb-6 dark:border-gray-700 dark:bg-gray-800"
-          >
+          <div key={i} className="border rounded-lg p-6 mb-6 bg-white">
             {/* Order Header Skeleton */}
             <div className="flex justify-between items-start mb-4">
               <div>
-                <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                <div className="h-6 w-32 bg-gray-200 rounded mb-2"></div>
                 <div className="flex items-center">
-                  <div className="h-4 w-4 bg-gray-200 dark:bg-gray-700 rounded-full mr-2"></div>
-                  <div className="h-4 w-40 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  <div className="h-4 w-4 bg-gray-200 rounded-full mr-2"></div>
+                  <div className="h-4 w-40 bg-gray-200 rounded"></div>
                 </div>
               </div>
-              <div className="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+              <div className="h-6 w-20 bg-gray-200 rounded-full"></div>
             </div>
 
             {/* Customer and Order Summary Skeleton */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-white dark:bg-gray-700 p-4 rounded-lg"
-                >
+                <div key={i} className="bg-gray-50 p-4 rounded-lg">
                   <div className="flex items-center mb-3">
-                    <div className="h-5 w-5 bg-gray-200 dark:bg-gray-600 rounded-full mr-2"></div>
-                    <div className="h-5 w-24 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                    <div className="h-5 w-5 bg-gray-200 rounded-full mr-2"></div>
+                    <div className="h-5 w-24 bg-gray-200 rounded"></div>
                   </div>
-                  <div className="h-4 w-full bg-gray-200 dark:bg-gray-600 rounded mb-2"></div>
-                  <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                  <div className="h-4 w-full bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 w-3/4 bg-gray-200 rounded"></div>
                 </div>
               ))}
             </div>
 
             {/* Order Items Skeleton */}
             <div className="mb-6">
-              <div className="h-5 w-24 bg-gray-200 dark:bg-gray-600 rounded mb-3"></div>
-              <div className="bg-white dark:bg-gray-700 rounded-lg overflow-hidden">
+              <div className="h-5 w-24 bg-gray-200 rounded mb-3"></div>
+              <div className="bg-gray-50 rounded-lg overflow-hidden">
                 {[...Array(2)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center p-4 border-b dark:border-gray-600 last:border-b-0"
-                  >
-                    <div className="w-16 h-16 bg-gray-200 dark:bg-gray-600 rounded mr-4"></div>
+                  <div key={i} className="flex items-center p-4 border-b">
+                    <div className="w-16 h-16 bg-gray-200 rounded mr-4"></div>
                     <div className="flex-1">
-                      <div className="h-5 w-3/4 bg-gray-200 dark:bg-gray-600 rounded mb-2"></div>
-                      <div className="h-4 w-1/2 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                      <div className="h-5 w-3/4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
                     </div>
-                    <div className="h-5 w-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                    <div className="h-5 w-12 bg-gray-200 rounded"></div>
                   </div>
                 ))}
               </div>
@@ -384,17 +361,17 @@ const OrderAdminSkeleton = () => {
 
             {/* Order Total Skeleton */}
             <div className="flex justify-end">
-              <div className="bg-white dark:bg-gray-700 p-4 rounded-lg w-full md:w-1/3">
+              <div className="bg-gray-50 p-4 rounded-lg w-full md:w-1/3">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="flex justify-between mb-2">
-                    <div className="h-4 w-16 bg-gray-200 dark:bg-gray-600 rounded"></div>
-                    <div className="h-4 w-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                    <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                    <div className="h-4 w-12 bg-gray-200 rounded"></div>
                   </div>
                 ))}
-                <div className="border-t dark:border-gray-600 my-2"></div>
+                <div className="border-t my-2"></div>
                 <div className="flex justify-between">
-                  <div className="h-5 w-16 bg-gray-200 dark:bg-gray-600 rounded"></div>
-                  <div className="h-5 w-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                  <div className="h-5 w-16 bg-gray-200 rounded"></div>
+                  <div className="h-5 w-12 bg-gray-200 rounded"></div>
                 </div>
               </div>
             </div>
