@@ -90,7 +90,15 @@ const OrderDetailsContent = ({ orderId }: { orderId: string }) => {
             </div>
             <div>
               <p className="font-medium text-gray-700">Comments</p>
-              <p>{order.comments || "No comments provided"}</p>
+              <p className="font-semibold">
+                {order.comments || "No comments provided"}
+              </p>
+            </div>
+            <div>
+              <p className="font-medium text-gray-700">Missing Items</p>
+              <p className="font-semibold">
+                {order.missingItems || "No Missing Items provided"}
+              </p>
             </div>
           </div>
         </div>

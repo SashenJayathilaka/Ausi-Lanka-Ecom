@@ -16,7 +16,6 @@ const PORT = process.env.PORT || 5000;
 
 dotenv.config();
 
-// Connect to MongoDB
 mongoose
   .connect(process.env.MONGODB_URI, {
     retryWrites: true,

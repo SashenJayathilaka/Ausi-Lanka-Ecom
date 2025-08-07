@@ -218,7 +218,12 @@ const OrderCard = ({
           <p className="bg-gray-50 p-4 rounded-lg">{order.comments}</p>
         </div>
       )}
-
+      {order.missingItems && (
+        <div className="mb-6">
+          <h4 className="font-medium mb-2">Missing Items</h4>
+          <p className="bg-gray-50 p-4 rounded-lg">{order.missingItems}</p>
+        </div>
+      )}
       {/* Order Total */}
       <div className="flex justify-end">
         <div className="bg-gray-50 p-4 rounded-lg w-full md:w-1/3">
