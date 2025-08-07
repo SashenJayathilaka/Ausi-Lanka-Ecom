@@ -168,9 +168,11 @@ fetch("https://api.auslanka.com.au/api/v1/orders", {
 
 ## 📜 License
 
-**MIT License (Restricted)**  
-Free for personal and educational use.  
-Commercial or derivative use requires written permission from **Aus Lanka Pty Ltd**.
+This project is licensed under the MIT License, with commercial use restrictions:
+
+⚠️ Unauthorized commercial use, replication, resale, or redistribution of this codebase is strictly prohibited without written permission from Aus Lanka. This repository is public solely for operational deployment.
+
+© 2025 Aus Lanka. All rights reserved.
 
 ---
 
