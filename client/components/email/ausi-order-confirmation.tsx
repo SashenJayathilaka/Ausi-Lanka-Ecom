@@ -53,7 +53,7 @@ export const AusiOrderConfirmation = ({
           {/* Header with Logo */}
           <Section style={header}>
             <Img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaJvYBIP-VnArmeKBDWlGjdu-lyzqnycL0EQ&s" //TODO: Change Image Link
+              src="https://github.com/user-attachments/assets/516cf644-e5cd-4b18-943b-b611770a9e6b" //TODO: Change Image Link
               width="120"
               alt="Ausi.Lk"
               style={logo}

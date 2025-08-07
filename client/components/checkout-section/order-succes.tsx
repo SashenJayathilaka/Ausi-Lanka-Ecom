@@ -74,8 +74,6 @@ function OrderSuccess({ formValues }: Props) {
   });
 
   const onSubmit = async (data: z.infer<typeof feedbackSchema>) => {
-    // Prevent multiple submissions
-
     if (isSubmitting) return;
 
     setIsSubmitting(true);

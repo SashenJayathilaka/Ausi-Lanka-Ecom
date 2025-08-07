@@ -57,7 +57,7 @@ export async function POST(req: Request) {
           trackOrderLink: `${process.env.NEXT_PUBLIC_APP_URL}/history`,
         });
         subject = `Your Ausi.Lk Order #${orderData.orderId}`;
-        fromEmail = "Acme <onboarding@resend.dev>";
+        fromEmail = "Ausi.lk <noreply@ausi.shop>";
         break;
 
       case "internal-notification":
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
           customerMobile: orderData.mobile || "Not provided",
         });
         subject = `[Internal] New Order #${orderData.orderId}`;
-        fromEmail = "Acme <onboarding@resend.dev>";
+        fromEmail = "Ausi.lk <noreply@ausi.shop>";
         break;
 
       default:

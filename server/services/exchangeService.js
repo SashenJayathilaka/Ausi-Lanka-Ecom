@@ -1,7 +1,10 @@
 import axios from "axios";
-import ExchangeRate from "../models/exchangeRate.js"; // Note: case sensitivity matters!
+import dotenv from "dotenv";
+import ExchangeRate from "../models/exchangeRate.js";
 
-const API_KEY = "1d4442ca3ac322d5a3cb9c2c";
+dotenv.config();
+
+const API_KEY = process.env.EXCHANGE_API_KEY;
 const BASE_URL = "https://v6.exchangerate-api.com/v6";
 
 async function fetchAndStoreExchangeRate() {
