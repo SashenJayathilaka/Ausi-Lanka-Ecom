@@ -12,8 +12,11 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
+import { Suspense } from "react";
 import { Bar } from "react-chartjs-2";
-import { FiLoader } from "react-icons/fi";
+import { ErrorBoundary } from "react-error-boundary";
+import ChartError from "./chartError";
+import ChartLoading from "./chartLoading";
 
 // Register ChartJS components
 ChartJS.register(
@@ -26,23 +29,21 @@ ChartJS.register(
 );
 
 export const DistrictSalesBarChart = () => {
-  const { data, isLoading, error } =
+  return (
+    <Suspense fallback={<ChartLoading />}>
+      <ErrorBoundary fallback={<ChartError />}>
+        <DistrictSalesBarChartSuspense />
+      </ErrorBoundary>
+    </Suspense>
+  );
+};
+
+const DistrictSalesBarChartSuspense = () => {
+  const { data, error } =
     trpc.orderAnalyticsRouter.getSalesByDistrict.useQuery();
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <FiLoader className="animate-spin text-gray-500 text-2xl" />
-      </div>
-    );
-  }
-
   if (error) {
-    return (
-      <div className="bg-red-50 text-red-600 p-4 rounded">
-        Error loading district sales data: {error.message}
-      </div>
-    );
+    return <ChartError />;
   }
 
   // Create a map of all districts with default values

@@ -2,10 +2,12 @@
 
 import { trpc } from "@/trpc/client";
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
+import { Suspense } from "react";
 import { Pie } from "react-chartjs-2";
-import { FiLoader } from "react-icons/fi";
+import { ErrorBoundary } from "react-error-boundary";
+import ChartError from "./chartError";
+import ChartLoading from "./chartLoading";
 
-// Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const statusColors: Record<string, string> = {
@@ -25,23 +27,29 @@ const statusLabels: Record<string, string> = {
 };
 
 export const OrderStatusPieChart = () => {
-  const { data, isLoading, error } =
+  return (
+    <Suspense fallback={<ChartLoading />}>
+      <ErrorBoundary fallback={<ChartError />}>
+        <OrderStatusPieChartSuspense />
+      </ErrorBoundary>
+    </Suspense>
+  );
+};
+
+const OrderStatusPieChartSuspense = () => {
+  const { data, error } =
     trpc.orderAnalyticsRouter.getStatusDistribution.useQuery();
 
-  if (isLoading) {
+  /*   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <FiLoader className="animate-spin text-gray-500 text-2xl" />
       </div>
     );
-  }
+  } */
 
   if (error) {
-    return (
-      <div className="bg-red-50 text-red-600 p-4 rounded">
-        Error loading order status data: {error.message}
-      </div>
-    );
+    return <ChartError />;
   }
 
   // Transform data for ChartJS

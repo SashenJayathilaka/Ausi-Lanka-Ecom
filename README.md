@@ -2,7 +2,7 @@
   <img src="https://github.com/user-attachments/assets/516cf644-e5cd-4b18-943b-b611770a9e6b" alt="Aus Lanka Logo" width="250"/>
 </p>
 
-<h1 align="center">Aus Lanka Delivery</h1>
+<h1 align="center">Ausi.LK</h1>
 <h3 align="center">Your Gateway to Authentic Sri Lankan Groceries in Australia</h3>
 
 <div align="center">
@@ -19,11 +19,11 @@
 
 ## 🚀 About the Business
 
-**Aus Lanka Delivery** is a real, Melbourne-based online grocery delivery business focused on serving Sri Lankans living in Australia. We bring the flavors of home — from authentic spices to homecooked meals — right to your doorstep.
+**Ausi.Lk Delivery** is a real, Melbourne-based online grocery delivery business focused on serving Sri Lankans living in Australia. We bring the flavors of home from authentic spices to homecooked meals. right to your doorstep.
 
 > This is not a demo. This is our actual production platform serving real customers across Australia.
 
-### 📊 Current Business Snapshot (2025)
+## 📊 Current Business Snapshot (2025)
 
 - 🛒 **5,000+ active customers**
 - 🤝 **200+ verified suppliers**
@@ -51,30 +51,95 @@
 
 ```mermaid
 graph TD
-    A[Next.js Frontend] --> B[Node.js API]
-    B --> C[Neon PostgreSQL]
-    B --> D[Redis]
-    A --> F[AWS S3]
-    B --> G[Resend Email]
-    B --> H[Twilio SMS]
+    %% Frontend Section
+    A[Next.js Frontend\nHosted on Vercel] -->|tRPC| B[Next.js API Routes]
+    A -->|Auth| K[Clerk Auth]
 
+    %% Backend Services
+    B -->|Emails| R[Resend]
+    B -->|External APIs| D[Currency Rate APIs]
+
+    %% Node.js Backend (Separate Service)
+    N[Node.js Backend\nAWS EC2] -->|Scraping| C[Puppeteer]
+    N -->|DB| E[(MongoDB)]
+    A -->|API Calls| N
+
+    %% Development Tools
+    subgraph Development
+        F[Nodemon] -->|Hot Reload| N
+        G[Ngrok] -->|Webhooks| N
+    end
+
+    %% Key Packages
+    subgraph NextJS_Stack
+        B -->|Emails| L[Resend SDK]
+        B -->|DB| M[Drizzle + Neon]
+        A -->|State| H[Zustand]
+        A -->|Forms| I[React Hook Form]
+        A -->|TRPC| J[tRPC]
+    end
+
+    subgraph NodeJS_Stack
+        N -->|HTTP| O[Express]
+        N -->|Scheduling| P[node-cron]
+        N -->|DB| Q[Mongoose]
+        N -->|Requests| S[Axios]
+    end
+
+    %% Styling
+    style A fill:#000000,color:#ffffff
+    style B fill:#0070f3,color:#ffffff
+    style N fill:#539E43,color:#ffffff
+    style C fill:#40B5A4,color:#000000
+    style D fill:#FFD700,color:#000000
+    style E fill:#13AA52,color:#ffffff
+    style K fill:#5C6BC0,color:#ffffff
+    style R fill:#6D4AFF,color:#ffffff
+
+    classDef pkg fill:#191970,stroke:#ddd;
+    class H,I,J,L,M,O,P,Q,S pkg;
 ```
 
-# 🛠️ Technical Stack
+## Current Implementation Details
 
-**Frontend**: Next.js 14 (App Router), Tailwind CSS, Shadcn UI  
-**Backend**: Node.js 20, Express.js, Drizzle ORM  
-**Authentication**: [Clerk.dev](https://clerk.dev)  
-**Database**: [Neon (PostgreSQL 15+)](https://neon.tech)  
-**Payments**: [Stripe](https://stripe.com)  
-**Storage**: AWS S3 + CloudFront  
-**Monitoring**: [Datadog](https://www.datadoghq.com)  
-**CI/CD**: GitHub Actions  
-**Hosting**: AWS EC2 (t3.xlarge)
+### Node.js Backend Services
+
+1. **Web Scraping**:
+
+   - Uses `puppeteer` (v24.10.2)
+   - Scheduled via `node-cron` (v4.1.1)
+
+2. **Currency Rate Updates**:
+
+   - Fetched using `axios` (v1.10.0)
+   - Stored in MongoDB via `mongoose` (v8.16.1)
+
+3. **API Server**:
+   - Built with `express` (v5.1.0)
+   - CORS enabled via `cors` (v2.8.5)
+
+### Frontend-Backend Communication
+
+- Next.js makes API calls to Node.js backend
+- No direct file storage integration (AWS S3 removed)
+- Authentication handled entirely by Clerk
+
+### Planned Future Additions
+
+- Twilio integration (not currently implemented)
+
+## 🛠️ Technical Stack
+
+- **Frontend**: Next.js 14 (App Router), Tailwind CSS
+- **Backend**: Node.js 20, Express.js, Drizzle ORM
+- **Authentication**: [Clerk.dev](https://clerk.dev)
+- **Database**: [Neon (PostgreSQL 15+)](https://neon.tech)
+- **CI/CD**: GitHub Actions
+- **Hosting**: AWS EC2 (t3.xlarge)
 
 ---
 
-# 👨‍💻 For Developers
+## 👨‍💻 For Developers
 
 ## 🧰 Installation
 
@@ -89,12 +154,12 @@ graph TD
 
 ```bash
 # Clone project
-git clone https://github.com/auslanka/delivery-app.git
-cd delivery-app
+git clone https://github.com/SashenJayathilaka/Ausi-Lanka-Ecom
+cd Ausi-Lanka-Ecom
 
 # Install packages
 npm install
-cd apps/frontend && npm install
+cd apps/frontend && bun install
 cd ../backend && npm install
 
 # Environment setup
@@ -106,7 +171,7 @@ npx drizzle-kit generate:pg
 npm run db:migrate
 
 # Start development servers (in 2 terminals)
-npm run dev:frontend
+bun run dev:frontend
 npm run dev:backend
 ```
 
@@ -125,7 +190,7 @@ npm run db:migrate:prod
 pm2 start ecosystem.config.js --env production
 ```
 
----
+<!-- ---
 
 ## 📚 API Access
 
@@ -152,7 +217,7 @@ fetch("https://api.auslanka.com.au/api/v1/orders", {
 });
 ```
 
----
+--- -->
 
 ## 🔐 Security Commitment
 
@@ -179,21 +244,22 @@ This project is licensed under the MIT License, with commercial use restrictions
 ## 📞 Contact Us
 
 **Head Office:**  
-Level 5, 121 King Street, Melbourne VIC 3000, Australia
+95 weeden drive vermont south 3133 VIC, Australia
 
 **Business Hours:**  
 Mon–Fri: 9AM – 5PM AEST
 
-- 📧 Orders: [orders@auslanka.com.au](mailto:orders@auslanka.com.au)
-- 🤝 Partnerships: [partnerships@auslanka.com.au](mailto:partnerships@auslanka.com.au)
-- ☎️ Customer Support: 1300 AUS LANKA (287 526)
+- 📧 Orders: [orders@auslanka.com.au](mailto:ausilk27@gmail.com)
+- 🤝 Partnerships: [partnerships@auslanka.com.au](mailto:ausilk27@gmail.com)
+- ☎️ Customer Support: +94 77 675 3242
 
 ---
 
 ## 🌐 Follow us:
 
-- 📸 [Instagram: @auslanka_official](https://instagram.com/auslanka_official)
-- 👍 [Facebook: facebook.com/auslankagrocery](https://facebook.com/auslankagrocery)
+<!-- - 📸 [Instagram: @auslanka_official](https://instagram.com/auslanka_official) -->
+
+- 👍 [Facebook: facebook.com/auslankagrocery](https://www.facebook.com/people/Ausilk/61555664871422/?_rdr)
 
 ---
 

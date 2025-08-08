@@ -330,10 +330,7 @@ const ChemistWareHouse = () => {
               </div>
 
               <div className="mt-6 flex flex-col items-center justify-between">
-                <ShippingCountdown
-                  targetDate="2025-07-28T10:00:00"
-                  className="text-white font-medium"
-                />
+                <ShippingCountdown className="text-white font-medium" />
               </div>
             </motion.div>
           </div>

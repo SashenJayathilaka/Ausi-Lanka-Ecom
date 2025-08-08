@@ -1,12 +1,14 @@
 "use client";
 
 import { trpc } from "@/trpc/client";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Pie } from "react-chartjs-2";
-import { FiLoader } from "react-icons/fi";
 import { LkrFormat } from "@/utils/format";
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
+import { Suspense } from "react";
+import { Pie } from "react-chartjs-2";
+import { ErrorBoundary } from "react-error-boundary";
+import ChartError from "./chartError";
+import ChartLoading from "./chartLoading";
 
-// Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const retailerColors = [
@@ -23,30 +25,26 @@ const retailerColors = [
 ];
 
 export const RetailerSalesPieChart = () => {
-  const { data, isLoading, error } =
+  return (
+    <Suspense fallback={<ChartLoading />}>
+      <ErrorBoundary fallback={<ChartError />}>
+        <RetailerSalesPieChartSuspense />
+      </ErrorBoundary>
+    </Suspense>
+  );
+};
+
+const RetailerSalesPieChartSuspense = () => {
+  const { data, error } =
     trpc.orderAnalyticsRouter.getSalesByRetailer.useQuery();
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <FiLoader className="animate-spin text-gray-500 text-2xl" />
-      </div>
-    );
-  }
-
   if (error) {
-    return (
-      <div className="bg-red-50 text-red-600 p-4 rounded">
-        Error loading retailer data: {error.message}
-      </div>
-    );
+    return <ChartError />;
   }
 
-  // Get top 5 retailers (or all if less than 5)
   const topRetailers = data?.slice(0, 5) || [];
   const others = data?.slice(5) || [];
 
-  // Calculate "Others" total if needed
   const othersTotal = others.reduce(
     (sum, retailer) => sum + Number(retailer.totalSales),
     0

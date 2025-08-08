@@ -1,20 +1,21 @@
-// src/components/MonthlySalesBarChart.tsx
 "use client";
 
 import { trpc } from "@/trpc/client";
+import { LkrFormat } from "@/utils/format";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
+import { Suspense, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { FiLoader } from "react-icons/fi";
-import { LkrFormat } from "@/utils/format";
-import { useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import ChartError from "./chartError";
+import ChartLoading from "./chartLoading";
 
 // Register ChartJS components
 ChartJS.register(
@@ -27,29 +28,30 @@ ChartJS.register(
 );
 
 export const MonthlySalesBarChart = () => {
+  return (
+    <Suspense fallback={<ChartLoading />}>
+      <ErrorBoundary fallback={<ChartError />}>
+        <MonthlySalesBarChartSuspense />
+      </ErrorBoundary>
+    </Suspense>
+  );
+};
+
+const MonthlySalesBarChartSuspense = () => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [monthsToShow, setMonthsToShow] = useState(12);
 
-  const { data, isLoading, error } =
-    trpc.orderAnalyticsRouter.getMonthlySales.useQuery({
-      year: selectedYear,
-      months: monthsToShow,
-    });
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <FiLoader className="animate-spin text-gray-500 text-2xl" />
-      </div>
-    );
-  }
+  const { data, error } = trpc.orderAnalyticsRouter.getMonthlySales.useQuery({
+    year: selectedYear,
+    months: monthsToShow,
+  });
 
   if (error) {
     return (
-      <div className="bg-red-50 text-red-600 p-4 rounded">
-        Error loading monthly sales data: {error.message}
-      </div>
+      <ChartError
+        message={`Error loading monthly sales data: ${error.message}`}
+      />
     );
   }
 

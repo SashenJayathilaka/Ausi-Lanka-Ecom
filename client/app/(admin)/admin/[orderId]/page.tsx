@@ -1,6 +1,8 @@
 import OrderDetails from "@/components/admin";
 import { HydrateClient, trpc } from "@/trpc/server";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{ orderId: string }>;
 };
