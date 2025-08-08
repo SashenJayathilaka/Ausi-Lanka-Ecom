@@ -1,36 +1,16 @@
 "use client";
 
 import { useCartStore } from "@/store/useCartStore";
-import { trpc } from "@/trpc/client";
 import { fadeIn, staggerContainer } from "@/utils/motion";
-import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import { Suspense, useEffect, useState } from "react";
-import { FiHeart, FiMoon, FiSun } from "react-icons/fi";
 import { HiMenu, HiSearch, HiShoppingCart, HiX } from "react-icons/hi";
-import { AuthButton } from "./auth-button";
-import { LoadingSpinner } from "./ShippingCountdown";
-import { ErrorBoundary } from "react-error-boundary";
+import { FiHeart, FiMoon, FiSun } from "react-icons/fi";
+import { AuthButton } from "../auth-button";
 
-const Navbar = () => {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <ErrorBoundary fallback={<p>Error</p>}>
-        <NavBarSuspenses />
-      </ErrorBoundary>
-    </Suspense>
-  );
-};
-
-export default Navbar;
-
-const NavBarSuspenses: React.FC = ({}) => {
-  const { data } = trpc.getUsers.getUserType.useQuery(undefined, {
-    staleTime: Infinity, // 👈 Never refetch automatically
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
+const SessionNot = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("#home");
   const [scrolled, setScrolled] = useState(false);
@@ -42,12 +22,7 @@ const NavBarSuspenses: React.FC = ({}) => {
     { href: "/", label: "Home" },
     { href: "/product", label: "Shop" },
     { href: "/history", label: "Orders History" },
-    String(data?.userType) === "admin"
-      ? { href: "/admin", label: "Admin" }
-      : { href: "/", label: "" },
-    // { href: "/about", label: "About Us" },
-    // { href: "/contact", label: "Contact" },
-  ].filter(Boolean);
+  ];
 
   useEffect(() => {
     setIsMounted(true);
@@ -212,7 +187,7 @@ const NavBarSuspenses: React.FC = ({}) => {
 
           {/* User Auth */}
           <motion.div variants={fadeIn("left", 0.3)}>
-            <AuthButton data={{ userType: data?.userType || "guest" }} />
+            <AuthButton data={{ userType: "guest" }} />
           </motion.div>
 
           {/* Mobile Menu Button */}
@@ -298,3 +273,5 @@ const NavBarSuspenses: React.FC = ({}) => {
     </motion.nav>
   );
 };
+
+export default SessionNot;

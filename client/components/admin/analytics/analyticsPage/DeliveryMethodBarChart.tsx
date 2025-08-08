@@ -1,18 +1,20 @@
-// src/components/DeliveryMethodBarChart.tsx
 "use client";
 
 import { trpc } from "@/trpc/client";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
+import { Suspense } from "react";
 import { Bar } from "react-chartjs-2";
-import { FiLoader } from "react-icons/fi";
+import { ErrorBoundary } from "react-error-boundary";
+import ChartError from "./chartError";
+import ChartLoading from "./chartLoading";
 
 // Register ChartJS components
 ChartJS.register(
@@ -37,23 +39,21 @@ const methodLabels: Record<string, string> = {
 };
 
 export const DeliveryMethodBarChart = () => {
-  const { data, isLoading, error } =
+  return (
+    <Suspense fallback={<ChartLoading />}>
+      <ErrorBoundary fallback={<ChartError />}>
+        <DeliveryMethodBarChartSuspense />
+      </ErrorBoundary>
+    </Suspense>
+  );
+};
+
+const DeliveryMethodBarChartSuspense = () => {
+  const { data, error } =
     trpc.orderAnalyticsRouter.getDeliveryMethodDistribution.useQuery();
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <FiLoader className="animate-spin text-gray-500 text-2xl" />
-      </div>
-    );
-  }
-
   if (error) {
-    return (
-      <div className="bg-red-50 text-red-600 p-4 rounded">
-        Error loading delivery method data: {error.message}
-      </div>
-    );
+    return <ChartError />;
   }
 
   // Transform data for ChartJS
