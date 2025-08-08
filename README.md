@@ -159,25 +159,24 @@ cd Ausi-Lanka-Ecom
 
 # Install packages
 npm install
-cd apps/frontend && bun install
-cd ../backend && npm install
+cd client && bun install
+cd server && npm install
 
 # Environment setup
 cp .env.example .env
 # Fill in your credentials
 
 # Database migration
-npx drizzle-kit generate:pg
-npm run db:migrate
+bun drizzle-kit push
 
 # Start development servers (in 2 terminals)
-bun run dev:frontend
-npm run dev:backend
+client/ bun run dev:all
+backend/ /npm run dev
 ```
 
 ---
 
-## 📦 Deployment Guide (AWS EC2 + Neon)
+<!-- ## 📦 Deployment Guide (AWS EC2 + Neon)
 
 ```bash
 # Build all apps
@@ -188,7 +187,7 @@ npm run db:migrate:prod
 
 # Launch using PM2
 pm2 start ecosystem.config.js --env production
-```
+``` -->
 
 <!-- ---
 
@@ -227,7 +226,7 @@ fetch("https://api.auslanka.com.au/api/v1/orders", {
 - 🧪 Penetration testing quarterly
 - ✅ SOC 2 Type I Compliant
 
-📩 **Report vulnerabilities**: [security@auslanka.com.au](mailto:security@auslanka.com.au)
+📩 **Report vulnerabilities**: [security@auslanka.com.au](mailto:ausilk27@gmail.com)
 
 ---
 
