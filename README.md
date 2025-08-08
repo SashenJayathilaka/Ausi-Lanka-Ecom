@@ -57,11 +57,11 @@ graph TD
 
     %% Backend Services
     B -->|Emails| R[Resend]
-    B -->|External APIs| D[Currency Rate APIs]
 
     %% Node.js Backend (Separate Service)
     N[Node.js Backend\nAWS EC2] -->|Scraping| C[Puppeteer]
     N -->|DB| E[(MongoDB)]
+    N -->|External APIs| D[Currency Rate APIs]
     A -->|API Calls| N
 
     %% Development Tools
