@@ -1,5 +1,8 @@
 import puppeteer from "puppeteer";
+import dotenv from "dotenv";
 import { calculate } from "../calculator/calculator.js";
+
+dotenv.config();
 
 export const scrapeProduct = async (req, res) => {
   const productUrl = req.query.url;
@@ -10,8 +13,7 @@ export const scrapeProduct = async (req, res) => {
 
   try {
     const browser = await puppeteer.launch({
-      executablePath:
-        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      executablePath: process.env.CHROME_PATH,
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
