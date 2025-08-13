@@ -32,6 +32,9 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.get("/", (req, res) => {
+  res.send("<h1>Welcome to the Ausi Lanka E-commerce API</h1>");
+});
 app.use("/api/chemist", chemistRoutes);
 app.use("/api/coles", colesRoutes);
 app.use("/api/jbhifi", jbhifiRoutes);
