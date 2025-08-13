@@ -137,27 +137,27 @@ const ChemistWareHouse = () => {
     let retailer = "";
 
     if (targetUrl.includes("chemistwarehouse.com.au")) {
-      apiEndpoint = `http://localhost:5000/api/chemist/scrape?url=${encodeURIComponent(
+      apiEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/chemist/scrape?url=${encodeURIComponent(
         targetUrl
       )}`;
       retailer = "Chemist Warehouse";
     } else if (targetUrl.includes("coles.com.au")) {
-      apiEndpoint = `http://localhost:5000/api/coles/scrape?url=${encodeURIComponent(
+      apiEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/coles/scrape?url=${encodeURIComponent(
         targetUrl
       )}`;
       retailer = "Coles";
     } else if (targetUrl.includes("woolworths.com.au")) {
-      apiEndpoint = `http://localhost:5000/api/woolworths/scrape?url=${encodeURIComponent(
+      apiEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/woolworths/scrape?url=${encodeURIComponent(
         targetUrl
       )}`;
       retailer = "Woolworths";
     } else if (targetUrl.includes("jbhifi.com.au")) {
-      apiEndpoint = `http://localhost:5000/api/woolworths/scrape?url==${encodeURIComponent(
+      apiEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/woolworths/scrape?url==${encodeURIComponent(
         targetUrl
       )}`;
       retailer = "JB Hi-Fi";
     } else if (targetUrl.includes("officeworks.com.au")) {
-      apiEndpoint = `http://localhost:5000/api/officeworks/scrape?url=${encodeURIComponent(
+      apiEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/officeworks/scrape?url=${encodeURIComponent(
         targetUrl
       )}`;
       retailer = "Officeworks";
