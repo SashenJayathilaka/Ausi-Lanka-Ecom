@@ -6,15 +6,12 @@ import { useCartStore } from "@/store/useCartStore";
 import { LkrFormat } from "@/utils/format";
 import { fadeIn, staggerContainer, textVariant } from "@/utils/motion";
 import { AnimatePresence, motion } from "framer-motion";
-import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import {
   FiClipboard,
   FiExternalLink,
-  FiMoon,
   FiShoppingCart,
-  FiSun,
   FiX,
 } from "react-icons/fi";
 import {
@@ -39,7 +36,6 @@ const ChemistWareHouse = () => {
   const { width, height } = useWindowSize();
   const products = useCartStore((state) => state.products);
   const addProduct = useCartStore((state) => state.addProduct);
-  const { theme, setTheme } = useTheme();
 
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -246,7 +242,7 @@ const ChemistWareHouse = () => {
       className="min-h-screen bg-gray-50 dark:bg-gray-900 relative overflow-hidden"
     >
       {/* Dark Mode Toggle Button */}
-      <button
+      {/*       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         className="fixed top-4 right-4 z-50 p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
         aria-label="Toggle dark mode"
@@ -257,7 +253,7 @@ const ChemistWareHouse = () => {
           <FiMoon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
         )}
       </button>
-
+ */}
       {/* Main Content */}
       <div className="pt-24 pb-16 container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
