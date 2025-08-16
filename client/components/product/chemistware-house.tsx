@@ -22,6 +22,7 @@ import {
 import { toast } from "sonner";
 import ShippingCountdown from "../home/ShippingCountdown";
 import Bucket from "./bucket";
+import { trpc } from "@/trpc/client";
 
 interface ScrapeResult {
   title: string;
@@ -43,6 +44,7 @@ const ChemistWareHouse = () => {
   const [error, setError] = useState<string | null>(null);
   const [showBucket, setShowBucket] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
+  console.log("🚀 ~ ChemistWareHouse ~ showCopied:", showCopied);
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
@@ -85,38 +87,46 @@ const ChemistWareHouse = () => {
     },
   ];
 
+  const scrapeMutation = trpc.productScrapeRouter.scrapeProduct.useMutation();
+
   useEffect(() => {
     setMounted(true);
     setIsLoading(false);
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handlePaste = async () => {
     try {
       const clipboardText = await navigator.clipboard.readText();
+      if (!clipboardText) {
+        toast.error("No text found in clipboard");
+        return;
+      }
 
-      toast.success("URL pasted from clipboard!");
+      setUrl(clipboardText);
+      setShowCopied(true);
+      setTimeout(() => setShowCopied(false), 2000);
 
-      if (clipboardText) {
-        setUrl(clipboardText);
-        setShowCopied(true);
-        setTimeout(() => setShowCopied(false), 2000);
-
-        if (isValidUrl(clipboardText)) {
-          await handleScrape(clipboardText);
-        }
-
-        console.log(showCopied);
+      if (isValidUrl(clipboardText)) {
+        await handleScrape(clipboardText);
+      } else {
+        toast.warning("Clipboard doesn't contain a supported retailer URL");
       }
     } catch (err) {
       console.error("Failed to read clipboard:", err);
-      setError("Couldn't access clipboard. Please paste manually.");
+      toast.error("Couldn't access clipboard. Please paste manually.");
     }
   };
 
-  const isValidUrl = (url: string) => {
-    return supportedRetailers.some((retailer) =>
-      url.includes(new URL(retailer.url).hostname)
-    );
+  const isValidUrl = (urlString: string) => {
+    try {
+      const urlObj = new URL(urlString);
+      return supportedRetailers.some(
+        (retailer) => urlObj.hostname === new URL(retailer.url).hostname
+      );
+    } catch {
+      return false;
+    }
   };
 
   const handleScrape = async (scrapeUrl?: string) => {
@@ -125,67 +135,32 @@ const ChemistWareHouse = () => {
     setData(null);
 
     if (!targetUrl.trim()) {
-      setError("Please enter a product URL.");
+      toast.error("Please enter a product URL.");
       return;
     }
 
-    let apiEndpoint;
-    let retailer = "";
-
-    if (targetUrl.includes("chemistwarehouse.com.au")) {
-      apiEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/chemist/scrape?url=${encodeURIComponent(
-        targetUrl
-      )}`;
-      retailer = "Chemist Warehouse";
-    } else if (targetUrl.includes("coles.com.au")) {
-      apiEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/coles/scrape?url=${encodeURIComponent(
-        targetUrl
-      )}`;
-      retailer = "Coles";
-    } else if (targetUrl.includes("woolworths.com.au")) {
-      apiEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/woolworths/scrape?url=${encodeURIComponent(
-        targetUrl
-      )}`;
-      retailer = "Woolworths";
-    } else if (targetUrl.includes("jbhifi.com.au")) {
-      apiEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/woolworths/scrape?url==${encodeURIComponent(
-        targetUrl
-      )}`;
-      retailer = "JB Hi-Fi";
-    } else if (targetUrl.includes("officeworks.com.au")) {
-      apiEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/officeworks/scrape?url=${encodeURIComponent(
-        targetUrl
-      )}`;
-      retailer = "Officeworks";
-    } else {
-      setError(
-        "Unsupported retailer. We support: Chemist Warehouse, Coles, Woolworths, JB Hi-Fi, and Officeworks."
-      );
+    if (!isValidUrl(targetUrl)) {
+      toast.error("Unsupported retailer URL");
       return;
     }
 
     setLoading(true);
     try {
-      const response = await fetch(apiEndpoint);
-      const result = await response.json();
+      const result = await scrapeMutation.mutateAsync({ url: targetUrl });
 
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to fetch product data");
+      if (result.success && result.data) {
+        setData(result.data);
+        toast.success("Product data analyzed successfully!");
+      } else {
+        throw new Error(result.error || "Failed to scrape product");
       }
-
-      setData({
-        title: result.title || "No title found",
-        price: result.price || "No price found",
-        image: result.image || null,
-        url: targetUrl,
-        retailer: retailer,
-        calculatedPrice: result.calculatedPrice,
-      });
-
-      toast.success("Product data analyzed successfully!");
     } catch (error) {
-      setError((error as Error).message || "An error occurred while scraping");
-      toast.error("Failed to analyze product data. Please try again.");
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "An error occurred while scraping";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -204,6 +179,7 @@ const ChemistWareHouse = () => {
 
       setUrl("");
       setData(null);
+      toast.success("Product added to your collection!");
     }
   };
 
@@ -216,8 +192,7 @@ const ChemistWareHouse = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [handlePaste]);
 
   const getRetailerData = (retailer: string) => {
     return (
@@ -241,19 +216,6 @@ const ChemistWareHouse = () => {
       variants={staggerContainer()}
       className="min-h-screen bg-gray-50 dark:bg-gray-900 relative overflow-hidden"
     >
-      {/* Dark Mode Toggle Button */}
-      {/*       <button
-        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        className="fixed top-4 right-4 z-50 p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        aria-label="Toggle dark mode"
-      >
-        {theme === "dark" ? (
-          <FiSun className="h-5 w-5 text-yellow-400" />
-        ) : (
-          <FiMoon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
-        )}
-      </button>
- */}
       {/* Main Content */}
       <div className="pt-24 pb-16 container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
@@ -279,7 +241,7 @@ const ChemistWareHouse = () => {
                 </span>
               </h1>
               <p className="text-xl text-blue-100 max-w-2xl">
-                {`   Extract prices, compare deals, and save money across Australia's
+                {`Extract prices, compare deals, and save money across Australia's
                 top retailers`}
               </p>
             </motion.div>
@@ -298,6 +260,7 @@ const ChemistWareHouse = () => {
                   />
                   <motion.button
                     onClick={handlePaste}
+                    type="button"
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 text-blue-100 hover:text-white transition-colors bg-white/10 rounded-lg backdrop-blur-sm"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}

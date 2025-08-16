@@ -3,7 +3,7 @@
 
 import { useCartStore } from "@/store/useCartStore";
 import { LkrFormat } from "@/utils/format";
-import { fadeIn, staggerContainer } from "@/utils/motion";
+import { fadeIn } from "@/utils/motion";
 import { motion } from "framer-motion";
 import { FiArrowRight, FiPackage, FiShoppingCart } from "react-icons/fi";
 
@@ -89,10 +89,9 @@ const AvailableInSriLanka = () => {
       </div>
 
       <motion.div
-        variants={staggerContainer(0.1, 0.2)}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: false, amount: 0.25 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
         className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
       >
         {/* Section header */}

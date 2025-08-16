@@ -1,8 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { LkrFormat } from "@/utils/format";
+import { fadeIn } from "@/utils/motion";
 import { AnimatePresence, motion } from "framer-motion";
-import { FiArrowRight, FiClock, FiStar } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import { FiArrowRight, FiClock, FiStar, FiUsers } from "react-icons/fi";
 
 type Promotion = {
   id: string;
@@ -12,10 +15,10 @@ type Promotion = {
   url: string;
   retailer: string;
   originalPrice?: number;
-  discount?: string;
   badge?: "BESTSELLER" | "LIMITED" | "POPULAR" | "NEW";
   rating?: number;
   timeLeft?: string;
+  recentBuyers?: { name: string; avatar: string }[];
 };
 
 const trendingPromotions: Promotion[] = [
@@ -24,50 +27,68 @@ const trendingPromotions: Promotion[] = [
     title: "Premium Ceylon Tea (500g)",
     price: 2499,
     originalPrice: 2999,
-    discount: "17% OFF",
     badge: "BESTSELLER",
     rating: 4.8,
     timeLeft: "2 days left",
-    image: "/images/ceylon-tea.jpg",
+    image:
+      "https://scownspharmacy.com.au/cdn/shop/products/SWISSEUL_BVITC_MANHONCHEW120TAB_1.jpg?v=1635946295",
     url: "/promotions/ceylon-tea",
     retailer: "Ausi.Lk",
+    recentBuyers: [
+      { name: "Kamal", avatar: "/avatars/1.jpg" },
+      { name: "Nimal", avatar: "/avatars/2.jpg" },
+      { name: "Sunil", avatar: "/avatars/3.jpg" },
+    ],
   },
   {
     id: "2",
     title: "Authentic Kottu Roti Kit",
     price: 1895,
     originalPrice: 2295,
-    discount: "15% OFF",
     badge: "LIMITED",
     rating: 4.5,
     timeLeft: "1 day left",
-    image: "/images/kottu-kit.jpg",
+    image:
+      "https://scownspharmacy.com.au/cdn/shop/products/SWISSEUL_BVITC_MANHONCHEW120TAB_1.jpg?v=1635946295",
     url: "/promotions/kottu-roti-kit",
     retailer: "Ausi.Lk",
+    recentBuyers: [
+      { name: "Priya", avatar: "/avatars/4.jpg" },
+      { name: "Saman", avatar: "/avatars/5.jpg" },
+    ],
   },
   {
     id: "3",
     title: "Traditional Hoppers (6 Pack)",
     price: 1499,
     originalPrice: 1799,
-    discount: "12% OFF",
     rating: 4.2,
-    image: "/images/hoppers.jpg",
+    image:
+      "https://scownspharmacy.com.au/cdn/shop/products/SWISSEUL_BVITC_MANHONCHEW120TAB_1.jpg?v=1635946295",
     url: "/promotions/hoppers-pack",
     retailer: "Ausi.Lk",
+    recentBuyers: [
+      { name: "Anil", avatar: "/avatars/6.jpg" },
+      { name: "Mala", avatar: "/avatars/7.jpg" },
+      { name: "Raj", avatar: "/avatars/8.jpg" },
+    ],
   },
   {
     id: "4",
     title: "String Hopper Bundle",
     price: 1299,
     originalPrice: 1599,
-    discount: "19% OFF",
     badge: "POPULAR",
     rating: 4.7,
     timeLeft: "3 days left",
-    image: "/images/string-hoppers.jpg",
+    image:
+      "https://scownspharmacy.com.au/cdn/shop/products/SWISSEUL_BVITC_MANHONCHEW120TAB_1.jpg?v=1635946295",
     url: "/promotions/string-hopper-bundle",
     retailer: "Ausi.Lk",
+    recentBuyers: [
+      { name: "Lakshmi", avatar: "/avatars/9.jpg" },
+      { name: "Dinesh", avatar: "/avatars/10.jpg" },
+    ],
   },
 ];
 
@@ -89,6 +110,43 @@ const Badge = ({ type }: { type: Promotion["badge"] }) => {
       {type}
     </motion.span>
   ) : null;
+};
+
+const RecentBuyers = ({ buyers }: { buyers: Promotion["recentBuyers"] }) => {
+  const [speed, setSpeed] = useState<number>();
+
+  useEffect(() => {
+    setSpeed(Math.floor(Math.random() * 90) + 10); // Generates a number between 10 and 99
+  }, []);
+
+  if (!buyers || buyers.length === 0) return null;
+
+  return (
+    <motion.div
+      className="flex items-center mt-3"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.4 }}
+    >
+      <div className="flex -space-x-2">
+        {buyers.slice(0, 3).map((buyer, index) => (
+          <img
+            key={index}
+            className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-800"
+            src={`https://ui-avatars.com/api/?name=${buyer.name}&background=random&size=256&rounded=true&bold=true&color=fff&font-size=0.5&length=1&speed=${speed}`}
+            alt={buyer.name}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "/avatars/default.jpg";
+            }}
+          />
+        ))}
+      </div>
+      <div className="ml-2 text-xs text-gray-600 dark:text-gray-300">
+        <FiUsers className="inline mr-1" />
+        {buyers.length}+ recently bought
+      </div>
+    </motion.div>
+  );
 };
 
 export default function TrendingNow() {
@@ -158,7 +216,6 @@ export default function TrendingNow() {
 
         {/* Promotions grid */}
         <motion.div
-          // variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
@@ -168,7 +225,6 @@ export default function TrendingNow() {
             {trendingPromotions.map((promo) => (
               <motion.div
                 key={promo.id}
-                //variants={itemVariants}
                 whileHover="hover"
                 className="group"
                 layout
@@ -196,16 +252,6 @@ export default function TrendingNow() {
                     {/* Top badges */}
                     <div className="absolute top-3 left-3 flex flex-col items-start gap-2">
                       <Badge type={promo.badge} />
-                      {promo.discount && (
-                        <motion.span
-                          className="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold"
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.2 }}
-                        >
-                          {promo.discount}
-                        </motion.span>
-                      )}
                     </div>
 
                     {/* Bottom badges */}
@@ -274,12 +320,17 @@ export default function TrendingNow() {
                       )}
                     </motion.div>
 
+                    {/* Recent buyers */}
+                    {promo.recentBuyers && (
+                      <RecentBuyers buyers={promo.recentBuyers} />
+                    )}
+
                     {/* Retailer */}
                     <motion.div
                       className="mt-4 flex justify-between items-center"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ delay: 0.4 }}
+                      transition={{ delay: 0.5 }}
                     >
                       <span className="text-sm text-gray-500 dark:text-gray-400">
                         {promo.retailer}
@@ -299,13 +350,7 @@ export default function TrendingNow() {
         </motion.div>
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="mt-16 text-center"
-        >
+        <motion.div variants={fadeIn("up", 0.5)} className="mt-16 text-center">
           <motion.a
             href="/promotions"
             className="inline-flex items-center px-6 py-3 bg-amber-600 hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-800 text-white rounded-lg font-medium shadow-lg hover:shadow-amber-200/50 dark:hover:shadow-amber-900/30"

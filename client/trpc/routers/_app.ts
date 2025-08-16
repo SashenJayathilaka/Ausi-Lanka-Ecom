@@ -5,6 +5,7 @@ import { nextShipmentRouter } from "@/components/home/server/procedures";
 import { getItemRouter } from "@/components/order-history/server/procedures";
 import { getUsers } from "@/components/product/server/procedures";
 import { createTRPCRouter } from "../init";
+import { scrapeRouter } from "@/components/server/procedures";
 
 export const appRouter = createTRPCRouter({
   checkout: checkoutRouter,
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   getUsers: getUsers,
   getNextShipmentRouter: nextShipmentRouter,
   orderAnalyticsRouter: orderAnalyticsRouter,
+  productScrapeRouter: scrapeRouter,
 });
 
 export type AppRouter = typeof appRouter;

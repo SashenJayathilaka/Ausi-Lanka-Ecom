@@ -1,6 +1,10 @@
 import { db } from "@/db";
-import { orderItems, orders, users } from "@/db/schema";
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { inStock, orderItems, orders, trendingItems, users } from "@/db/schema";
+import {
+  baseProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { and, desc, eq, inArray, lt, or } from "drizzle-orm";
 import { z } from "zod";
@@ -22,7 +26,6 @@ export const getItemsForAdminRouter = createTRPCRouter({
       const { cursor, limit } = input;
       const { id: userId } = ctx.user;
 
-      // Verify admin status
       const adminUser = await db
         .select()
         .from(users)
@@ -267,5 +270,445 @@ export const getItemsForAdminRouter = createTRPCRouter({
       }
 
       return updatedOrder;
+    }),
+
+  // Add get, update , delete procedures for trending items
+  getAllTrendingItems: baseProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).default(10),
+        cursor: z.string().uuid().nullish(),
+      })
+    )
+    .output(
+      z.object({
+        items: z.array(
+          z.object({
+            id: z.string().uuid(),
+            name: z.string(),
+            price: z.string(),
+            image: z.string(),
+            rating: z.number(),
+            url: z.string().nullable(),
+            retailer: z.string(),
+            calculatedPrice: z.string(),
+            quantity: z.number().int(),
+            badge: z
+              .enum(["BESTSELLER", "LIMITED", "POPULAR", "NEW"])
+              .nullable(),
+            createdAt: z.date(),
+          })
+        ),
+        nextCursor: z.string().uuid().nullish(),
+      })
+    )
+    .query(async ({ input }) => {
+      const baseQuery = db
+        .select()
+        .from(trendingItems)
+        .orderBy(desc(trendingItems.createdAt), desc(trendingItems.id))
+        .limit(input.limit + 1);
+
+      if (input.cursor) {
+        baseQuery.where(
+          or(
+            lt(
+              trendingItems.createdAt,
+              db
+                .select({ createdAt: trendingItems.createdAt })
+                .from(trendingItems)
+                .where(eq(trendingItems.id, input.cursor))
+            ),
+            and(
+              eq(
+                trendingItems.createdAt,
+                db
+                  .select({ createdAt: trendingItems.createdAt })
+                  .from(trendingItems)
+                  .where(eq(trendingItems.id, input.cursor))
+              ),
+              lt(trendingItems.id, input.cursor)
+            )
+          )
+        );
+      }
+
+      const results = await baseQuery;
+
+      let nextCursor = null;
+      if (results.length > input.limit) {
+        const lastItem = results[input.limit - 1];
+        nextCursor = lastItem.id;
+      }
+
+      const formattedResults = results.slice(0, input.limit).map((item) => ({
+        ...item,
+        price: item.price.toString(),
+        calculatedPrice: item.calculatedPrice.toString(),
+      }));
+
+      return {
+        items: formattedResults,
+        nextCursor,
+      };
+    }),
+
+  createTrendingItem: protectedProcedure
+    .input(
+      z.object({
+        name: z.string().min(1),
+        price: z.string().min(1),
+        image: z.string().min(1),
+        rating: z.number().min(0).max(5),
+        url: z.string().optional(),
+        retailer: z.string().min(1),
+        calculatedPrice: z.string().min(1),
+        quantity: z.number().min(1),
+        badge: z.enum(["BESTSELLER", "LIMITED", "POPULAR", "NEW"]).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.userType !== "admin") {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Unauthorized: Admin access required",
+        });
+      }
+
+      const [newItem] = await db
+        .insert(trendingItems)
+        .values({
+          userId: ctx.user.id,
+          name: input.name,
+          price: input.price,
+          image: input.image,
+          rating: input.rating,
+          url: input.url,
+          retailer: input.retailer,
+          calculatedPrice: input.calculatedPrice,
+          quantity: input.quantity,
+          badge: input.badge,
+        })
+        .returning();
+
+      return {
+        ...newItem,
+        price: newItem.price.toString(),
+        calculatedPrice: newItem.calculatedPrice.toString(),
+      };
+    }),
+
+  updateTrendingItem: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+        name: z.string().min(1).optional(),
+        price: z.string().min(1).optional(),
+        image: z.string().min(1).optional(),
+        rating: z.number().min(0).max(5).optional(),
+        url: z.string().optional(),
+        retailer: z.string().min(1).optional(),
+        calculatedPrice: z.string().min(1).optional(),
+        quantity: z.number().min(1).optional(),
+        badge: z
+          .enum(["BESTSELLER", "LIMITED", "POPULAR", "NEW"])
+          .optional()
+          .nullable(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.userType !== "admin") {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Unauthorized: Admin access required",
+        });
+      }
+
+      const [updatedItem] = await db
+        .update(trendingItems)
+        .set({
+          ...input,
+          updatedAt: new Date(),
+        })
+        .where(eq(trendingItems.id, input.id))
+        .returning();
+
+      if (!updatedItem) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Trending item not found",
+        });
+      }
+
+      return {
+        ...updatedItem,
+        price: updatedItem.price.toString(),
+        calculatedPrice: updatedItem.calculatedPrice.toString(),
+      };
+    }),
+  deleteTrendingItem: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+      })
+    )
+    .output(
+      z.object({
+        success: z.boolean(),
+        message: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.userType !== "admin") {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Unauthorized: Admin access required",
+        });
+      }
+
+      // First check if item exists
+      const [item] = await db
+        .select()
+        .from(trendingItems)
+        .where(eq(trendingItems.id, input.id))
+        .limit(1);
+
+      if (!item) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Trending item not found",
+        });
+      }
+
+      // Delete the item
+      await db.delete(trendingItems).where(eq(trendingItems.id, input.id));
+
+      return {
+        success: true,
+        message: "Trending item deleted successfully",
+      };
+    }),
+
+  // Add get, update, delete procedures for in-stock items
+  getAllInStockItems: baseProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).default(10),
+        cursor: z.string().uuid().nullish(),
+        category: z.string().optional(),
+      })
+    )
+    .output(
+      z.object({
+        items: z.array(
+          z.object({
+            id: z.string().uuid(),
+            name: z.string(),
+            sku: z.string(),
+            price: z.string(),
+            originalPrice: z.string().nullable(),
+            image: z.string(),
+            url: z.string().nullable(),
+            retailer: z.string(),
+            quantity: z.number().int(),
+            threshold: z.number().int(),
+            location: z.string().nullable(),
+            category: z.string().nullable(),
+            description: z.string().nullable(),
+            isActive: z.boolean(),
+            createdAt: z.date(),
+          })
+        ),
+        nextCursor: z.string().uuid().nullish(),
+      })
+    )
+    .query(async ({ input }) => {
+      const baseQuery = db
+        .select()
+        .from(inStock)
+        .orderBy(desc(inStock.createdAt), desc(inStock.id))
+        .limit(input.limit + 1);
+
+      if (input.cursor) {
+        baseQuery.where(
+          or(
+            lt(
+              inStock.createdAt,
+              db
+                .select({ createdAt: inStock.createdAt })
+                .from(inStock)
+                .where(eq(inStock.id, input.cursor))
+            ),
+            and(
+              eq(
+                inStock.createdAt,
+                db
+                  .select({ createdAt: inStock.createdAt })
+                  .from(inStock)
+                  .where(eq(inStock.id, input.cursor))
+              ),
+              lt(inStock.id, input.cursor)
+            )
+          )
+        );
+      }
+
+      if (input.category) {
+        baseQuery.where(eq(inStock.category, input.category));
+      }
+
+      const results = await baseQuery;
+
+      let nextCursor = null;
+      if (results.length > input.limit) {
+        const lastItem = results[input.limit - 1];
+        nextCursor = lastItem.id;
+      }
+
+      const formattedResults = results.slice(0, input.limit).map((item) => ({
+        ...item,
+        price: item.price.toString(),
+        originalPrice: item.originalPrice?.toString() ?? null,
+      }));
+
+      return {
+        items: formattedResults,
+        nextCursor,
+      };
+    }),
+
+  createInStockItem: protectedProcedure
+    .input(
+      z.object({
+        name: z.string().min(1),
+        sku: z.string().min(1),
+        price: z.string().min(1),
+        originalPrice: z.string().optional(),
+        image: z.string().min(1),
+        url: z.string().optional(),
+        retailer: z.string().min(1),
+        quantity: z.number().min(0),
+        threshold: z.number().min(0).default(5),
+        location: z.string().optional(),
+        category: z.string().optional(),
+        description: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const [newItem] = await db
+        .insert(inStock)
+        .values({
+          userId: ctx.user.id,
+          name: input.name,
+          sku: input.sku,
+          price: input.price,
+          originalPrice: input.originalPrice,
+          image: input.image,
+          url: input.url,
+          retailer: input.retailer,
+          quantity: input.quantity,
+          threshold: input.threshold,
+          location: input.location,
+          category: input.category,
+          description: input.description,
+        })
+        .returning();
+
+      return {
+        ...newItem,
+        price: newItem.price.toString(),
+        originalPrice: newItem.originalPrice?.toString() ?? null,
+      };
+    }),
+
+  updateInStockItem: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+        name: z.string().min(1).optional(),
+        sku: z.string().min(1).optional(),
+        price: z.string().min(1).optional(),
+        originalPrice: z.string().optional(),
+        image: z.string().min(1).optional(),
+        url: z.string().optional(),
+        retailer: z.string().min(1).optional(),
+        quantity: z.number().min(0).optional(),
+        threshold: z.number().min(0).optional(),
+        location: z.string().optional(),
+        category: z.string().optional(),
+        description: z.string().optional(),
+        isActive: z.boolean().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.userType !== "admin") {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Unauthorized: Admin access required",
+        });
+      }
+
+      const [updatedItem] = await db
+        .update(inStock)
+        .set({
+          ...input,
+          updatedAt: new Date(),
+        })
+        .where(eq(inStock.id, input.id))
+        .returning();
+
+      if (!updatedItem) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "In-stock item not found",
+        });
+      }
+
+      return {
+        ...updatedItem,
+        price: updatedItem.price.toString(),
+        originalPrice: updatedItem.originalPrice?.toString() ?? null,
+      };
+    }),
+
+  deleteInStockItem: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+      })
+    )
+    .output(
+      z.object({
+        success: z.boolean(),
+        message: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.userType !== "admin") {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Unauthorized: Admin access required",
+        });
+      }
+
+      const [item] = await db
+        .select()
+        .from(inStock)
+        .where(eq(inStock.id, input.id))
+        .limit(1);
+
+      if (!item) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "In-stock item not found",
+        });
+      }
+
+      await db.delete(inStock).where(eq(inStock.id, input.id));
+
+      return {
+        success: true,
+        message: "In-stock item deleted successfully",
+      };
     }),
 });

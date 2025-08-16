@@ -20,7 +20,7 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative overflow-hidden bg-gradient-to-t from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-500"
+      className="relative overflow-hidden bg-gradient-to-t from-gray-50 to-transparent dark:from-gray-900 dark:to-gray-800 transition-colors duration-500"
     >
       {/* Background decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
