@@ -9,7 +9,7 @@ const BASE_URL = "https://v6.exchangerate-api.com/v6";
 
 async function fetchAndStoreExchangeRate() {
   try {
-    const response = await axios.get(`${BASE_URL}/${API_KEY}/latest/AUD`);
+    /*   const response = await axios.get(`${BASE_URL}/${API_KEY}/latest/AUD`); //TODO:
     const rate = response.data.conversion_rates.LKR;
 
     const newRate = new ExchangeRate({
@@ -20,7 +20,7 @@ async function fetchAndStoreExchangeRate() {
     console.log(
       `Successfully stored AUD to LKR rate: ${rate} at ${new Date()}`
     );
-    return rate;
+    return rate; */
   } catch (error) {
     console.error("Error fetching or storing exchange rate:", error.message);
     throw error;

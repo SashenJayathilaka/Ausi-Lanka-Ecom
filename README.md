@@ -54,6 +54,7 @@ graph TD
     %% Frontend Section
     A[Next.js Frontend\nHosted on Vercel] -->|tRPC| B[Next.js API Routes]
     A -->|Auth| K[Clerk Auth]
+    K -->|User Created Webhooks| G[Ngrok]
 
     %% Backend Services
     B -->|Emails| R[Resend]
@@ -67,7 +68,6 @@ graph TD
     %% Development Tools
     subgraph Development
         F[Nodemon] -->|Hot Reload| N
-        G[Ngrok] -->|Webhooks| N
     end
 
     %% Key Packages
@@ -95,6 +95,7 @@ graph TD
     style E fill:#13AA52,color:#ffffff
     style K fill:#5C6BC0,color:#ffffff
     style R fill:#6D4AFF,color:#ffffff
+    style G fill:#FF6347,color:#ffffff
 
     classDef pkg fill:#191970,stroke:#ddd;
     class H,I,J,L,M,O,P,Q,S pkg;

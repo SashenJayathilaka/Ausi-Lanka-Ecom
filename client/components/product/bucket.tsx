@@ -172,12 +172,12 @@ const Bucket = () => {
                               product.retailer === "Chemist Warehouse"
                                 ? "/assets/partner_chemistwarehouse.webp"
                                 : product.retailer === "Coles"
-                                ? "/assets/coles.png"
-                                : product.retailer === "Woolworths"
-                                ? "/assets/woolworths.png"
-                                : product.retailer === "JB Hi-Fi"
-                                ? "/assets/jbhifi.png"
-                                : "/assets/officeworks.png"
+                                  ? "/assets/coles.png"
+                                  : product.retailer === "Woolworths"
+                                    ? "/assets/woolworths.png"
+                                    : product.retailer === "JB Hi-Fi"
+                                      ? "/assets/jbhifi.png"
+                                      : "/assets/officeworks.png"
                             }
                             alt={product.retailer}
                             className="h-5 w-5 object-contain"
@@ -309,7 +309,7 @@ const Bucket = () => {
             </motion.button>
 
             <motion.button
-              onClick={() => router.push("/products")}
+              onClick={() => router.push("/product")}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full border-2 border-blue-600 dark:border-blue-500 text-blue-600 dark:text-blue-400 py-3 px-4 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors flex items-center justify-center gap-2"

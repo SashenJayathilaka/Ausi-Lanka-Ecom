@@ -6,8 +6,6 @@ import { fadeIn, textVariant } from "@/utils/motion";
 
 const PricingSection = () => {
   const [productCount, setProductCount] = useState(1);
-
-  // Calculate prices based on product count
   const starterPrice = Math.round(4000 * (productCount / 50));
   const businessPrice = Math.round(7500 * (productCount / 50));
 
