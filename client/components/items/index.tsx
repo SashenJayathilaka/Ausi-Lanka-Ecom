@@ -1,6 +1,5 @@
-import React from "react";
-import TrendingNow from "./trending-now";
 import AvailableInSriLanka from "./available-in-sriLanka";
+import { TrendingNow } from "./trending-now";
 
 const Items = () => {
   return (
