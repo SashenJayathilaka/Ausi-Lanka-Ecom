@@ -59,7 +59,7 @@ export const scrapeRouter = createTRPCRouter({
 
         // Add timeout to prevent hanging requests
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 15000); // 15 seconds timeout
+        const timeout = setTimeout(() => controller.abort(), 60000); // 60s
 
         const response = await fetch(
           `${apiUrl}/api/${endpoint}/scrape?url=${encodeURIComponent(url)}`,
@@ -108,7 +108,7 @@ export const scrapeRouter = createTRPCRouter({
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     if (error.name === "AbortError") {
-      return "Request timed out (15s)";
+      return "Request timed out (60s)";
     }
     if (error.message.includes("Failed to fetch")) {
       return "Could not connect to the scraping service";

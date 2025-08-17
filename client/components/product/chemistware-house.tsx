@@ -521,7 +521,8 @@ const ChemistWareHouse = () => {
                 className="p-6 border-b border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 relative overflow-hidden"
                 whileHover={{ backgroundPosition: "100% 50%" }}
               >
-                <div className="absolute inset-0 bg-[url('/assets/dot-pattern.svg')] bg-[size:20px_20px] opacity-10 dark:opacity-5"></div>
+                <div className="absolute inset-0 opacity-10 dark:opacity-5"></div>{" "}
+                {/*  bg-[url('/assets/dot-pattern.svg')] bg-[size:20px_20px] */}
                 <div className="relative z-10 flex items-center">
                   <motion.div
                     className="p-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md mr-4"
