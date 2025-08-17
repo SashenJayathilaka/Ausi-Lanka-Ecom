@@ -1,25 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
-  FiHome,
-  FiUsers,
-  FiSettings,
-  FiPieChart,
-  FiFileText,
-  FiShoppingCart,
-  FiMenu,
-  FiX,
-  FiPlus,
-  FiSearch,
-  FiTruck,
-  FiBox,
-  FiDatabase,
-  FiLayers,
-  FiAward,
   FiBell,
   FiChevronLeft,
+  FiFileText,
+  FiHome,
+  FiMenu,
+  FiPackage,
+  FiPieChart,
+  FiPlus,
+  FiSearch,
+  FiShoppingCart,
+  FiTrendingUp,
+  FiTruck,
+  FiUsers,
+  FiX,
 } from "react-icons/fi";
 import { MdDashboard } from "react-icons/md";
 
@@ -31,7 +28,6 @@ export default function ResponsiveAdminSidebar() {
   const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
-    // Set initial window width
     setWindowWidth(window.innerWidth);
 
     const handleResize = () => {
@@ -83,13 +79,13 @@ export default function ResponsiveAdminSidebar() {
       color: "text-green-500",
       priority: 1,
     },
-    {
+    /*     {
       icon: <FiBox />,
       label: "Inventory",
       href: "/admin",
       color: "text-amber-500",
       priority: 2,
-    },
+    }, */
     {
       icon: <FiFileText />,
       label: "Orders",
@@ -105,13 +101,28 @@ export default function ResponsiveAdminSidebar() {
       priority: 2,
     },
     {
+      icon: <FiTrendingUp />,
+      label: "Trending Items",
+      href: "/admin/trending",
+      color: "text-red-500",
+      priority: 3,
+    },
+    {
+      icon: <FiPackage />,
+      label: "In-Stock Items",
+      href: "/admin/stock",
+      color: "text-red-500",
+      priority: 3,
+    },
+    {
       icon: <FiPieChart />,
       label: "Analytics",
       href: "/admin",
       color: "text-red-500",
       priority: 3,
     },
-    {
+
+    /*     {
       icon: <FiDatabase />,
       label: "Reports",
       href: "/admin",
@@ -138,7 +149,7 @@ export default function ResponsiveAdminSidebar() {
       href: "/admin",
       color: "text-gray-500",
       priority: 2,
-    },
+    }, */
   ];
 
   // Filter nav items based on search query

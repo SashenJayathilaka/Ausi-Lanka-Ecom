@@ -10,6 +10,7 @@ import {
   pgEnum,
   integer,
   index,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export const userTypeEnum = pgEnum("user_type_enum", ["admin", "user"]);
@@ -68,7 +69,6 @@ export const orders = pgTable(
   (t) => [index("user_id_idx").on(t.userId), index("status_idx").on(t.status)]
 );
 
-// Order items table
 export const orderItems = pgTable(
   "order_items",
   {
@@ -91,6 +91,65 @@ export const orderItems = pgTable(
   (t) => [
     index("order_id_idx").on(t.orderId),
     uniqueIndex("unique_order_item").on(t.orderId, t.name),
+  ]
+);
+
+export const trendingItems = pgTable(
+  "trending_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    name: text("name").notNull(),
+    price: numeric("price", { precision: 12, scale: 2 }).notNull(),
+    image: text("image").notNull(),
+    rating: integer("rating").notNull(),
+    url: text("url"),
+    retailer: text("retailer").notNull(),
+    calculatedPrice: numeric("calculated_price", {
+      precision: 12,
+      scale: 2,
+    }).notNull(),
+    quantity: integer("quantity").default(1).notNull(),
+    badge: text("badge", { enum: ["BESTSELLER", "LIMITED", "POPULAR", "NEW"] }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("trending_items_user_id_idx").on(t.userId),
+    index("trending_items_rating_idx").on(t.rating),
+    index("trending_items_badge_idx").on(t.badge),
+  ]
+);
+
+export const inStock = pgTable(
+  "in_stock",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    name: text("name").notNull(),
+    sku: text("sku").unique().notNull(),
+    price: numeric("price", { precision: 12, scale: 2 }).notNull(),
+    originalPrice: numeric("original_price", { precision: 12, scale: 2 }),
+    image: text("image").notNull(),
+    url: text("url"),
+    retailer: text("retailer").notNull(),
+    quantity: integer("quantity").default(0).notNull(),
+    threshold: integer("threshold").default(5).notNull(),
+    location: text("location"),
+    category: text("category"),
+    description: text("description"),
+    isActive: boolean("is_active").default(true).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("in_stock_user_id_idx").on(t.userId),
+    index("in_stock_sku_idx").on(t.sku),
+    index("in_stock_category_idx").on(t.category),
   ]
 );
 
