@@ -1,4 +1,5 @@
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 export const scrapeRouter = createTRPCRouter({
@@ -22,6 +23,14 @@ export const scrapeRouter = createTRPCRouter({
     )
     .mutation(async ({ input }) => {
       const { url } = input;
+
+      if (!url) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "URL is required",
+        });
+      }
+
       let retailer = "";
       let endpoint = "";
 
