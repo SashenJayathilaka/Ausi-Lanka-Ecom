@@ -13,11 +13,11 @@ import { useForm } from "react-hook-form";
 import {
   FiGlobe,
   FiHome,
+  FiInfo,
   FiMapPin,
   FiMessageSquare,
   FiMinus,
   FiPackage,
-  FiPhone,
   FiPlus,
   FiShoppingBag,
   FiTruck,
@@ -132,7 +132,7 @@ const CheckoutPage = () => {
 
   // Calculate total price with delivery
   const deliveryMethod = form.watch("deliveryMethod");
-  const deliveryFee = deliveryMethod === "air" ? 10 : 0;
+  const deliveryFee = deliveryMethod === "air" ? 8500 : 0;
   const totalPrice = basePrice + deliveryFee;
 
   const handleQuantityChange = (index: number, newQuantity: number) => {
@@ -354,20 +354,23 @@ const CheckoutPage = () => {
                   htmlFor="mobile"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                 >
-                  Mobile Number
+                  WhatsApp Number
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiPhone className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-                  </div>
+                <div className="relative flex">
+                  {/* Country Code */}
+                  <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 text-sm">
+                    +94
+                  </span>
+
+                  {/* Mobile Input */}
                   <input
                     type="tel"
                     id="mobile"
                     {...form.register("mobile")}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-                    placeholder="07XXXXXXXX"
-                    pattern="^07[0-9]{8}$"
-                    title="Enter a valid 10-digit Sri Lankan mobile number"
+                    className="block w-full rounded-r-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-3 pl-3"
+                    placeholder="7XXXXXXXX"
+                    pattern="^[1-9][0-9]{8}$"
+                    title="Enter a valid 9-digit Sri Lankan mobile number"
                   />
                 </div>
                 {form.formState.errors.mobile && (
@@ -531,7 +534,7 @@ const CheckoutPage = () => {
                         1 month delivery
                       </span>
                       <span className="text-xs font-medium mt-1 text-gray-800 dark:text-gray-200">
-                        $0.00
+                        {LkrFormat(0)}
                       </span>
                     </label>
                   </div>
@@ -571,7 +574,7 @@ const CheckoutPage = () => {
                         1 week delivery
                       </span>
                       <span className="text-xs font-medium mt-1 text-gray-800 dark:text-gray-200">
-                        +$10.00
+                        {LkrFormat(8500)}
                       </span>
                     </label>
                   </div>
@@ -615,10 +618,78 @@ const CheckoutPage = () => {
                 />
               </div>
 
+              {/* In the order summary section, replace the current total display with this: */}
+              <div className="p-6 border-t border-gray-200 dark:border-gray-700">
+                {/* Subtotal and Shipping */}
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Subtotal
+                  </span>
+                  <span className="font-medium text-gray-800 dark:text-gray-200">
+                    {LkrFormat(basePrice)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-600 dark:text-gray-400">
+                    {deliveryMethod === "air"
+                      ? "Air Cargo (1 week)"
+                      : "Sea Cargo (1 month)"}
+                  </span>
+                  <span className="font-medium text-gray-800 dark:text-gray-200">
+                    {deliveryMethod === "air"
+                      ? `${LkrFormat(8500)}`
+                      : `${LkrFormat(0)}`}
+                  </span>
+                </div>
+
+                {/* Payment Breakdown */}
+                <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-gray-800 dark:text-gray-200 font-medium">
+                      Total Amount
+                    </span>
+                    <span className="font-semibold text-gray-800 dark:text-gray-200">
+                      {LkrFormat(totalPrice)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-gray-600 dark:text-gray-400">
+                      First Payment (50%)
+                    </span>
+                    <span className="font-medium text-blue-600 dark:text-blue-400">
+                      {LkrFormat(totalPrice / 2)}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    Pay 50% now to confirm your order. Remaining 50% due upon
+                    arrival in Sri Lanka.
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Information Box */}
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-6 border border-blue-200 dark:border-blue-800">
+                <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2 flex items-center">
+                  <FiInfo className="mr-2" /> Payment Process
+                </h3>
+                <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1 list-disc pl-5">
+                  <li>
+                    First payment of 50% ({LkrFormat(totalPrice / 2)}) required
+                    now
+                  </li>
+                  <li>
+                    Final 50% payment ({LkrFormat(totalPrice / 2)}) before
+                    delivery
+                  </li>
+                  <li>{`We'll contact you for payment confirmation`}</li>
+                </ul>
+              </div>
+
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={createOrder.isPending || products.length === 0}
-                className={`w-full py-3 px-6 rounded-lg font-medium text-white transition-colors duration-200 flex items-center justify-center cursor-pointer ${
+                className={`w-full py-3 px-6 rounded-lg font-medium text-white transition-colors duration-200 flex items-center justify-center ${
                   products.length === 0
                     ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
@@ -649,7 +720,7 @@ const CheckoutPage = () => {
                     Processing...
                   </>
                 ) : (
-                  `Place Order (${LkrFormat(totalPrice)})`
+                  `Pay 50% Now (${LkrFormat(totalPrice / 2)})`
                 )}
               </button>
 

@@ -181,3 +181,14 @@ export const nextShipment = pgTable("next_shipment", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const latestDollarRate = pgTable("latest_dollar_rate", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  rate: numeric("rate", { precision: 10, scale: 2 }).notNull(),
+  updatedBy: uuid("updated_by")
+    .notNull()
+    .references(() => users.id),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});

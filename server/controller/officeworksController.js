@@ -6,6 +6,7 @@ dotenv.config();
 
 export const scrapeOfficeworksProduct = async (req, res) => {
   const productUrl = req.query.url;
+  const rate = req.query.rate;
 
   if (!productUrl) {
     return res.status(400).json({ error: "Missing URL parameter" });
@@ -125,7 +126,7 @@ export const scrapeOfficeworksProduct = async (req, res) => {
       );
     }
 
-    const calPrice = await calculate(productData.price, productUrl);
+    const calPrice = await calculate(productData.price, productUrl, rate);
 
     res.json({
       title: productData.title || "Title not available",

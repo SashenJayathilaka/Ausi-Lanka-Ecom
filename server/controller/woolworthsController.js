@@ -6,6 +6,7 @@ dotenv.config();
 
 export const scrapeWoolworthsProduct = async (req, res) => {
   const productUrl = req.query.url;
+  const rate = req.query.rate;
 
   if (!productUrl) {
     return res.status(400).json({ error: "Missing URL parameter" });
@@ -107,7 +108,7 @@ export const scrapeWoolworthsProduct = async (req, res) => {
 
     await browser.close();
 
-    const calPrice = await calculate(productData.price, productUrl);
+    const calPrice = await calculate(productData.price, productUrl, rate);
 
     // Return the image URL with all parameters (don't split at '?')
     res.json({
