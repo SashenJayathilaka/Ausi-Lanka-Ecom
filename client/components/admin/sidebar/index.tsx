@@ -18,7 +18,7 @@ import {
   FiUsers,
   FiX,
 } from "react-icons/fi";
-import { MdDashboard } from "react-icons/md";
+import { MdDashboard, MdOutlineAttachMoney } from "react-icons/md";
 
 export default function ResponsiveAdminSidebar() {
   const pathname = usePathname();
@@ -118,6 +118,13 @@ export default function ResponsiveAdminSidebar() {
       icon: <FiPieChart />,
       label: "Analytics",
       href: "/admin",
+      color: "text-red-500",
+      priority: 3,
+    },
+    {
+      icon: <MdOutlineAttachMoney />,
+      label: "Dollar Rate",
+      href: "/admin/dollar-rate",
       color: "text-red-500",
       priority: 3,
     },

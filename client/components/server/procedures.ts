@@ -1,5 +1,8 @@
+import { db } from "@/db";
+import { latestDollarRate } from "@/db/schema";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
+import { desc } from "drizzle-orm";
 import { z } from "zod";
 
 export const scrapeRouter = createTRPCRouter({
@@ -31,8 +34,22 @@ export const scrapeRouter = createTRPCRouter({
         });
       }
 
+      const [data] = await db
+        .select()
+        .from(latestDollarRate)
+        .orderBy(desc(latestDollarRate.createdAt))
+        .limit(1);
+
+      if (!data.rate) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "URL is required",
+        });
+      }
+
       let retailer = "";
       let endpoint = "";
+      const dollarRate = data?.rate || 1;
 
       // Retailer detection
       if (url.includes("chemistwarehouse.com.au")) {
@@ -71,7 +88,7 @@ export const scrapeRouter = createTRPCRouter({
         const timeout = setTimeout(() => controller.abort(), 60000); // 60s
 
         const response = await fetch(
-          `${apiUrl}/api/${endpoint}/scrape?url=${encodeURIComponent(url)}`,
+          `${apiUrl}/api/${endpoint}/scrape?url=${encodeURIComponent(url)}&rate=${dollarRate}`,
           {
             signal: controller.signal,
             headers: {

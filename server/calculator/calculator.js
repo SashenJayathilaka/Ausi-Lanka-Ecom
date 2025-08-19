@@ -1,6 +1,4 @@
-import exchangeRate from "../models/exchangeRate.js";
-
-export const calculate = async (value, productUrl) => {
+export const calculate = async (value, productUrl, rate) => {
   try {
     // Input validation
     if (typeof value !== "string") {
@@ -14,13 +12,13 @@ export const calculate = async (value, productUrl) => {
     }
 
     // Get latest exchange rate
-    const latestRate = await exchangeRate
-      .findOne()
-      .sort({ timestamp: -1 })
-      .limit(1);
-
+    const latestRate = rate;
     if (!latestRate) {
       throw new Error("No exchange rate available");
+    }
+
+    function roundUpToNext100(price) {
+      return (Math.ceil(price / 100) * 100).toFixed(2);
     }
 
     // calculate with current rate
@@ -30,22 +28,22 @@ export const calculate = async (value, productUrl) => {
     if (productUrl.includes("chemistwarehouse.com.au")) {
       if ((result) => 10) {
         const pharmacy = result * 1.65;
-        finalResult = pharmacy * latestRate.rate;
-        return Math.round(finalResult).toFixed(2);
+        finalResult = pharmacy * latestRate;
+        return roundUpToNext100(Math.round(finalResult));
       } else {
         const pharmacy = result * 1.5;
-        finalResult = pharmacy * latestRate.rate;
-        return Math.round(finalResult).toFixed(2);
+        finalResult = pharmacy * latestRate;
+        return roundUpToNext100(Math.round(finalResult));
       }
     } else {
       if ((result) => 10) {
         const pharmacy = result * 1.5;
-        finalResult = pharmacy * latestRate.rate;
-        return Math.round(finalResult).toFixed(2);
+        finalResult = pharmacy * latestRate;
+        return roundUpToNext100(Math.round(finalResult));
       } else {
-        const pharmacy = result * 1.4;
-        finalResult = pharmacy * latestRate.rate;
-        return Math.round(finalResult).toFixed(2);
+        const pharmacy = result * 1.45;
+        finalResult = pharmacy * latestRate;
+        return roundUpToNext100(Math.round(finalResult));
       }
     }
   } catch (error) {

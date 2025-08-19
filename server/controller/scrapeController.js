@@ -6,6 +6,7 @@ dotenv.config();
 
 export const scrapeProduct = async (req, res) => {
   const productUrl = req.query.url;
+  const rate = req.query.rate;
 
   if (!productUrl) {
     return res.status(400).json({ error: "Missing `url` query parameter." });
@@ -73,7 +74,7 @@ export const scrapeProduct = async (req, res) => {
     const image = (await extractImage()) || "Image not found";
 
     await browser.close();
-    const calPrice = await calculate(price, productUrl);
+    const calPrice = await calculate(price, productUrl, rate);
 
     res.json({ title, price, image, calculatedPrice: calPrice });
   } catch (err) {
