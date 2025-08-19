@@ -569,7 +569,7 @@ const ChemistWareHouse = () => {
                 <Bucket />
               </div>
 
-              {products.length > 0 && (
+              {/*               {products.length > 0 && (
                 <motion.div
                   className="p-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20 border-t border-gray-200/50 dark:border-gray-700/50 text-center"
                   initial={{ opacity: 0 }}
@@ -580,7 +580,7 @@ const ChemistWareHouse = () => {
                     Free shipping on orders over $50
                   </p>
                 </motion.div>
-              )}
+              )} */}
             </motion.div>
           </div>
         </div>
