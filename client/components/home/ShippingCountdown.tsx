@@ -49,7 +49,7 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
   const { data: targetDate } = trpc.getNextShipmentRouter.getNext.useQuery(
     undefined,
     {
-      staleTime: Infinity, // 👈 Never refetch automatically
+      staleTime: Infinity,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     }
@@ -80,6 +80,18 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
     return () => clearInterval(timer);
   }, [calculateTimeLeft, targetDate]);
 
+  // 🔹 Calculate Estimated Delivery Date (shipmentDate + 65 days)
+  const estimatedDeliveryDate = new Date(
+    new Date(targetDate?.shipmentDate || "2025-07-30T10:00:00").setDate(
+      new Date(targetDate?.shipmentDate || "2025-07-30T10:00:00").getDate() + 65
+    )
+  ).toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   const formatUnit = (label: string, value: number) => (
     <>
       {isSmall ? (
@@ -94,14 +106,12 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
             borderColor: "rgba(99,102,241,0.3)",
           }}
         >
-          {/* Hover shine effect */}
           <motion.div
             className="absolute inset-0 bg-gradient-to-r from-indigo-50/0 via-indigo-50/40 to-indigo-50/0 dark:via-indigo-900/20 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300"
             initial={{ x: "-100%" }}
             whileHover={{ x: "100%", transition: { duration: 1.2 } }}
           />
 
-          {/* Time value */}
           <motion.div
             key={value}
             className="relative z-10 text-4xl font-bold text-indigo-600 dark:text-indigo-400 font-mono transition-colors duration-300"
@@ -116,7 +126,6 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
             {value.toString().padStart(2, "0")}
           </motion.div>
 
-          {/* Label */}
           <motion.div
             className="relative z-10 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-2 font-medium transition-colors duration-300"
             initial={{ opacity: 0 }}
@@ -157,10 +166,7 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
     <>
       {isSmall ? (
         <div className="relative py-12 bg-gray-50 dark:bg-gray-900 transition-colors duration-500">
-          {/* Top fade */}
           <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-white dark:from-gray-900 to-white/0 dark:to-gray-900/0 z-10 pointer-events-none transition-colors duration-500" />
-
-          {/* Bottom fade */}
           <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white dark:from-gray-900 to-white/0 dark:to-gray-900/0 z-10 pointer-events-none transition-colors duration-500" />
 
           <motion.div
@@ -205,7 +211,6 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
                 {formatUnit("Sec", timeLeft.seconds)}
               </motion.div>
 
-              {/* Progress indicator */}
               <div className="w-full max-w-md relative h-1 bg-gray-100 dark:bg-gray-700 rounded-full mb-6 overflow-hidden transition-colors duration-300">
                 <motion.div
                   className="absolute top-0 left-0 h-full bg-indigo-400 dark:bg-indigo-500 rounded-full transition-colors duration-300"
@@ -219,7 +224,7 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
                 />
               </div>
 
-              <motion.div
+              {/*               <motion.div
                 className="text-center text-gray-500 dark:text-gray-400 text-sm transition-colors duration-300"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -230,6 +235,23 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
                   {timeLeft.hours}h {timeLeft.minutes}m
                 </span>{" "}
                 will ship today
+              </motion.div> */}
+
+              {/* 🔹 Estimated Delivery Section */}
+              <motion.div
+                className="text-center mt-6 transition-colors duration-300"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.9 }}
+              >
+                <div className="inline-block bg-indigo-100 dark:bg-indigo-900 px-6 py-3 rounded-2xl shadow-md">
+                  <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    Estimated Delivery:
+                  </p>
+                  <span className="text-2xl font-extrabold text-indigo-700 dark:text-indigo-300 block mt-1">
+                    {estimatedDeliveryDate}
+                  </span>
+                </div>
               </motion.div>
             </div>
           </motion.div>
@@ -251,6 +273,14 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
             {formatUnit("Min", timeLeft.minutes)}
             {formatUnit("Sec", timeLeft.seconds)}
           </div>
+
+          {/* 🔹 Estimated Delivery Section */}
+          <span className="ml-4 text-sm text-blue-200 dark:text-blue-300 transition-colors duration-300">
+            Estimated Delivery:{" "}
+            <span className="font-semibold text-white dark:text-indigo-300">
+              {estimatedDeliveryDate}
+            </span>
+          </span>
         </motion.div>
       )}
     </>
