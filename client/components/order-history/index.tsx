@@ -200,7 +200,7 @@ const OrderHistoryPageSectionsSuspense: React.FC = () => {
           className="mb-12 text-center"
         >
           <motion.h1
-            className="text-4xl font-bold mb-3 bg-gradient-to-r from-gray-800 dark:from-gray-200 to-indigo-600 dark:to-indigo-400 bg-clip-text text-transparent"
+            className="text-4xl font-bold mb-3 bg-gradient-to-r from-gray-800 dark:from-gray-200 to-indigo-600 dark:to-indigo-400 bg-clip-text text-transparent mt-24"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
