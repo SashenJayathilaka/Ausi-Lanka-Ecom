@@ -258,7 +258,7 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
         </div>
       ) : (
         <motion.div
-          className={`flex items-center gap-3 ${className}`}
+          className={`flex flex-wrap items-center gap-3 ${className}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -267,7 +267,8 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
           <span className="text-sm text-blue-100 dark:text-blue-300 font-medium transition-colors duration-300">
             Next shipping batch closes in:
           </span>
-          <div className="flex gap-2 ml-2">
+
+          <div className="flex flex-wrap gap-2 ml-2">
             {timeLeft.days > 0 && formatUnit("Days", timeLeft.days)}
             {formatUnit("Hrs", timeLeft.hours)}
             {formatUnit("Min", timeLeft.minutes)}
@@ -275,12 +276,14 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
           </div>
 
           {/* 🔹 Estimated Delivery Section */}
-          <span className="ml-4 text-sm text-blue-200 dark:text-blue-300 transition-colors duration-300">
-            Estimated Delivery:{" "}
-            <span className="font-semibold text-white dark:text-indigo-300">
+          <div className="w-full sm:w-auto mt-2 sm:mt-0 ml-0 sm:ml-4">
+            <span className="text-sm sm:text-base text-blue-200 dark:text-blue-300 font-medium transition-colors duration-300">
+              Estimated Delivery:
+            </span>
+            <span className="block text-lg sm:text-xl font-extrabold text-white dark:text-indigo-300 mt-1">
               {estimatedDeliveryDate}
             </span>
-          </span>
+          </div>
         </motion.div>
       )}
     </>
