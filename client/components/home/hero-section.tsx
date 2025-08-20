@@ -126,7 +126,7 @@ const Hero = () => {
               className="flex items-center justify-center gap-2 px-6 py-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-xl text-white transition-all shadow-md hover:shadow-lg cursor-pointer"
               onClick={() => router.push("/product")}
             >
-              {`shopping here`}
+              {`Shop Now`}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
