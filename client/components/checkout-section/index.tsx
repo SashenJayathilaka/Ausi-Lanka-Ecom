@@ -368,9 +368,9 @@ const CheckoutPage = () => {
                     id="mobile"
                     {...form.register("mobile")}
                     className="block w-full rounded-r-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-3 pl-3"
-                    placeholder="7XXXXXXXX"
-                    pattern="^[1-9][0-9]{8}$"
-                    title="Enter a valid 9-digit Sri Lankan mobile number"
+                    placeholder="07XXXXXXXX"
+                    pattern="^07[0-9]{8}$"
+                    title="Enter a valid 10-digit Sri Lankan mobile number"
                   />
                 </div>
                 {form.formState.errors.mobile && (
@@ -689,7 +689,7 @@ const CheckoutPage = () => {
               <button
                 type="submit"
                 disabled={createOrder.isPending || products.length === 0}
-                className={`w-full py-3 px-6 rounded-lg font-medium text-white transition-colors duration-200 flex items-center justify-center ${
+                className={`w-full py-3 px-6 rounded-lg font-medium text-white transition-colors duration-200 flex items-center justify-center cursor-pointer ${
                   products.length === 0
                     ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"

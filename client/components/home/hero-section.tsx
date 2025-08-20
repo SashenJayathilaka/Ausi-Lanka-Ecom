@@ -2,15 +2,13 @@
 
 import { LkrFormat } from "@/utils/format";
 import { fadeIn, staggerContainer, textVariant } from "@/utils/motion";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FiX } from "react-icons/fi";
 
 const Hero = () => {
   const router = useRouter();
-  const [showVideoModal, setShowVideoModal] = useState(false);
   const [speed, setSpeed] = useState<number>();
 
   useEffect(() => {
@@ -106,7 +104,7 @@ const Hero = () => {
             variants={fadeIn("up", 0.5)}
             className="flex flex-col sm:flex-row gap-4 max-w-md"
           >
-            <button
+            {/*             <button
               onClick={() => setShowVideoModal(true)}
               className="flex items-center justify-center gap-2 px-6 py-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-gray-600 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:shadow-sm cursor-pointer"
             >
@@ -123,12 +121,12 @@ const Hero = () => {
                 />
               </svg>
               How It Works
-            </button>
+            </button> */}
             <button
               className="flex items-center justify-center gap-2 px-6 py-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-xl text-white transition-all shadow-md hover:shadow-lg cursor-pointer"
               onClick={() => router.push("/product")}
             >
-              Get Started
+              {`shopping here`}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -276,7 +274,7 @@ const Hero = () => {
       </motion.div>
 
       {/* Video Modal */}
-      <AnimatePresence>
+      {/*      <AnimatePresence>
         {showVideoModal && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -299,7 +297,6 @@ const Hero = () => {
               </button>
 
               <div className="aspect-w-16 aspect-h-9 bg-black rounded-xl overflow-hidden shadow-2xl">
-                {/* Replace with your actual YouTube video ID */}
                 <iframe
                   className="w-full h-[500px]"
                   src={`https://drive.google.com/file/d/1hBh6yQ982cJD2qXHfqTe9x6cTA6gXX7B/preview`}
@@ -311,7 +308,7 @@ const Hero = () => {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
     </section>
   );
 };

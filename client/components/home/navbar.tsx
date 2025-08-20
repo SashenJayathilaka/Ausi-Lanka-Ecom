@@ -7,11 +7,12 @@ import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
-import { FiHeart, FiMoon, FiSun } from "react-icons/fi";
+import { ErrorBoundary } from "react-error-boundary";
+import { FiMoon, FiSun } from "react-icons/fi";
 import { HiMenu, HiSearch, HiShoppingCart, HiX } from "react-icons/hi";
+
 import { AuthButton } from "./auth-button";
 import { LoadingSpinner } from "./ShippingCountdown";
-import { ErrorBoundary } from "react-error-boundary";
 
 const Navbar = () => {
   return (
@@ -179,7 +180,7 @@ const NavBarSuspenses: React.FC = ({}) => {
           </motion.button>
 
           {/* Wishlist */}
-          <motion.div
+          {/*           <motion.div
             variants={fadeIn("left", 0.3)}
             whileHover={{ scale: 1.05 }}
             className="relative hidden md:block"
@@ -188,7 +189,7 @@ const NavBarSuspenses: React.FC = ({}) => {
               <FiHeart className="h-5 w-5 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors" />
               <span className="sr-only">Wishlist</span>
             </Link>
-          </motion.div>
+          </motion.div> */}
 
           {/* Cart Icon with Count */}
           <motion.div
@@ -280,7 +281,7 @@ const NavBarSuspenses: React.FC = ({}) => {
               </motion.div>
             ))}
 
-            <motion.div
+            {/*             <motion.div
               variants={fadeIn("up", 0.4)}
               className="pt-2 border-t border-gray-100 dark:border-gray-700"
             >
@@ -291,7 +292,7 @@ const NavBarSuspenses: React.FC = ({}) => {
                 <FiHeart className="h-5 w-5" />
                 <span>Wishlist</span>
               </Link>
-            </motion.div>
+            </motion.div> */}
           </motion.div>
         </motion.div>
       )}
