@@ -403,11 +403,7 @@ const OrderHistoryPageSectionsSuspense: React.FC = () => {
                               : new Date(
                                   new Date(order.createdAt).setDate(
                                     new Date(order.createdAt).getDate() +
-                                      (order.deliveryMethod === "air"
-                                        ? 10
-                                        : order.deliveryMethod === "sea"
-                                          ? 28
-                                          : 5)
+                                      (order.deliveryMethod === "air" ? 10 : 65)
                                   )
                                 ).toLocaleDateString("en-US", {
                                   weekday: "long",
