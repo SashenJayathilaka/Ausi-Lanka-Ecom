@@ -56,3 +56,12 @@ body:not(.user-is-tabbing) textarea:focus {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* in globals.css */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
