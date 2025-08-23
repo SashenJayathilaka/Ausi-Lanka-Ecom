@@ -65,19 +65,26 @@ const ChemistWareHouse = () => {
       bgColor: "bg-red-100 dark:bg-red-900/30",
     },
     {
+      name: "ALDI",
+      url: "https://www.aldi.com.au/",
+      logo: "/assets/Aldi-Logo.png",
+      color: "from-purple-500 to-purple-600",
+      bgColor: "bg-purple-100 dark:bg-purple-900/30",
+    },
+    {
       name: "Woolworths",
       url: "https://www.woolworths.com.au/",
       logo: "/assets/woolworths.png",
       color: "from-green-600 to-green-700",
       bgColor: "bg-green-100 dark:bg-green-900/30",
     },
-    {
+    /*     {
       name: "JB Hi-Fi",
       url: "https://www.jbhifi.com.au/",
       logo: "/assets/jbhifi.png",
       color: "from-blue-500 to-blue-600",
       bgColor: "bg-blue-100 dark:bg-blue-900/30",
-    },
+    }, */
     {
       name: "Officeworks",
       url: "https://www.officeworks.com.au/",

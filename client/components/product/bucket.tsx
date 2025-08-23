@@ -177,7 +177,9 @@ const Bucket = () => {
                                     ? "/assets/woolworths.png"
                                     : product.retailer === "JB Hi-Fi"
                                       ? "/assets/jbhifi.png"
-                                      : "/assets/officeworks.png"
+                                      : product.retailer === "ALDI"
+                                        ? "/assets/Aldi-Logo.png"
+                                        : "/assets/officeworks.png"
                             }
                             alt={product.retailer}
                             className="h-5 w-5 object-contain"

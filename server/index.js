@@ -5,6 +5,7 @@ import jbhifiRoutes from "./routes/jbhifiRoutes.js";
 import OfficeworksRoutes from "./routes/officeworksRoutes.js";
 import chemistRoutes from "./routes/scrapeRoutes.js";
 import woolworthsRoutes from "./routes/woolworthsRoutes.js";
+import aldiRoutes from "./routes/adliRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -22,6 +23,7 @@ app.use("/api/coles", colesRoutes);
 app.use("/api/jbhifi", jbhifiRoutes);
 app.use("/api/woolworths", woolworthsRoutes);
 app.use("/api/officeWorks", OfficeworksRoutes);
+app.use("/api/aldi", aldiRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
