@@ -67,6 +67,9 @@ export const scrapeRouter = createTRPCRouter({
       } else if (url.includes("officeworks.com.au")) {
         endpoint = "officeworks";
         retailer = "Officeworks";
+      } else if (url.includes("aldi.com.au")) {
+        endpoint = "aldi";
+        retailer = "ALDI";
       } else {
         return {
           success: false,
