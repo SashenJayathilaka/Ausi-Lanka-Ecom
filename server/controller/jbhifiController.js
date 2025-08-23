@@ -36,13 +36,12 @@ export const scrapeJBHIFIProduct = async (req, res) => {
       timeout: 60000,
     });
 
-    // Wait specifically for the image container to load
+    // Wait for the product details to load
     await page
-      .waitForSelector(
-        'div[data-testid="product-image-container"], img._1n3ie3p8',
-        { timeout: 10000 }
-      )
-      .catch(() => console.log("Image container took longer to load"));
+      .waitForSelector('h1._12mtftw9, [data-testid="product-title"]', {
+        timeout: 15000,
+      })
+      .catch(() => console.log("Title took longer to load"));
 
     const productData = await page.evaluate(() => {
       // Title extraction
@@ -51,16 +50,19 @@ export const scrapeJBHIFIProduct = async (req, res) => {
         document.querySelector('[data-testid="product-title"]');
       const title = titleElement?.textContent?.trim();
 
-      // Price extraction (corrected)
+      // Price extraction - corrected selector
       const priceElement =
-        document.querySelector(".PriceTag_actual__1eb7mu916") ||
+        document.querySelector(".PriceTag_actual__1eb7mu91a") || // Corrected class
+        document.querySelector(".PriceTag_actual__1eb7mu91a") || // Keep both variants
         document.querySelector('[data-testid="price-value"]');
+
       let priceText = priceElement?.textContent?.trim();
 
       if (priceText) {
-        priceText = priceText.replace(/[^\d.]/g, "");
-        if (priceText) {
-          priceText = `$${parseFloat(priceText).toFixed(2)}`;
+        // Extract numeric value and format as currency
+        const priceMatch = priceText.match(/(\d+\.?\d*)/);
+        if (priceMatch) {
+          priceText = `$${parseFloat(priceMatch[1]).toFixed(2)}`;
         }
       }
 
