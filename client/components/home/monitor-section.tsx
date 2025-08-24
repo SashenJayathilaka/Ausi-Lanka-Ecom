@@ -111,7 +111,18 @@ const MonitorSection = () => {
                     Estimated Delivery
                   </h4>
                   <p className="text-gray-600 dark:text-gray-300 transition-colors duration-500">
-                    May 23 - May 25, 2023
+                    {new Date().toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}{" "}
+                    -
+                    {new Date(
+                      Date.now() + 65 * 24 * 60 * 60 * 1000
+                    ).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
                   </p>
                 </div>
               </div>
@@ -179,8 +190,8 @@ const MonitorSection = () => {
                             step.status === "completed"
                               ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300"
                               : step.status === "current"
-                              ? "bg-blue-600 dark:bg-blue-500 text-white"
-                              : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500"
+                                ? "bg-blue-600 dark:bg-blue-500 text-white"
+                                : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500"
                           }`}
                         >
                           {step.icon}

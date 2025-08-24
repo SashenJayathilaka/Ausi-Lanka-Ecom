@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { DEFAULT_LIMIT } from "@/constants/constants";
@@ -86,9 +85,13 @@ const OrderCard = ({
               className={`px-3 py-1 rounded-full text-sm cursor-pointer ${
                 order.status === "pending"
                   ? "bg-yellow-100 text-yellow-800"
-                  : order.status === "delivered"
-                    ? "bg-green-100 text-green-800"
-                    : "bg-gray-100 text-gray-800"
+                  : order.status === "confirmed"
+                    ? "bg-blue-100 text-blue-800"
+                    : order.status === "shipped"
+                      ? "bg-indigo-100 text-indigo-800"
+                      : order.status === "delivered"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
               } border-none focus:ring-2 focus:ring-blue-500`}
             >
               {statusOptions.map((option) => (
@@ -160,6 +163,7 @@ const OrderCard = ({
               key={item.id}
               className="flex items-center p-4 border-b hover:bg-gray-100 transition-colors"
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={item.image}
                 alt={item.name}
@@ -252,6 +256,8 @@ const OrderCard = ({
 
 const OrderAdminPageSectionsSuspense: React.FC = () => {
   const utils = trpc.useUtils();
+  const [activeTab, setActiveTab] = useState("all");
+
   const [data] = trpc.getAdminItems.getMany.useSuspenseInfiniteQuery(
     { limit: DEFAULT_LIMIT },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
@@ -281,28 +287,60 @@ const OrderAdminPageSectionsSuspense: React.FC = () => {
     });
   };
 
+  // Filter orders based on active tab
+  const filteredOrders = data.pages.flatMap((page) =>
+    page.items.filter(
+      (order) => activeTab === "all" || order.status === activeTab
+    )
+  );
+
+  const tabs = [
+    { id: "all", label: "All Orders" },
+    { id: "pending", label: "Pending" },
+    { id: "confirmed", label: "Confirmed" },
+    { id: "shipped", label: "Shipped" },
+    { id: "delivered", label: "Delivered" },
+    { id: "cancelled", label: "Cancelled" },
+  ];
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Orders Management</h1>
 
       <div className="mb-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">All Orders</h2>
+        <div className="flex flex-wrap gap-2 border-b">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 rounded-t-lg font-medium transition-colors cursor-pointer ${
+                activeTab === tab.id
+                  ? "bg-blue-100 text-blue-800 border-b-2 border-blue-800"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
       <div>
-        {data.pages.map((page, i) => (
-          <div key={i}>
-            {page.items.map((order) => (
-              <OrderCard
-                key={order.id}
-                order={order}
-                onStatusUpdate={handleStatusUpdate}
-              />
-            ))}
+        {filteredOrders.length > 0 ? (
+          filteredOrders.map((order) => (
+            <OrderCard
+              key={order.id}
+              order={order}
+              onStatusUpdate={handleStatusUpdate}
+            />
+          ))
+        ) : (
+          <div className="text-center py-12 bg-gray-50 rounded-lg">
+            <p className="text-gray-500 text-lg">
+              No {activeTab !== "all" ? activeTab : ""} orders found
+            </p>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
@@ -316,6 +354,13 @@ const OrderAdminSkeleton = () => {
         <div className="mb-8">
           <div className="h-8 w-1/4 bg-gray-200 rounded mb-4"></div>
           <div className="h-6 w-1/3 bg-gray-200 rounded"></div>
+        </div>
+
+        {/* Tabs Skeleton */}
+        <div className="flex gap-2 mb-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-10 w-24 bg-gray-200 rounded-t-lg"></div>
+          ))}
         </div>
 
         {/* Order Cards Skeleton - Shows 3 skeleton cards */}
