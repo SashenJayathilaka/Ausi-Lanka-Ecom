@@ -166,7 +166,7 @@ const Footer = () => {
               <div className="flex items-start gap-3">
                 <FiMapPin className="text-blue-600 dark:text-blue-400 mt-1" />
                 <span className="text-gray-600 dark:text-gray-400">
-                  123 Commercial St, Colombo 01, Sri Lanka
+                  1017 Middle Class Houses New Town Polonnaruwa 51000
                 </span>
               </div>
             </motion.div>

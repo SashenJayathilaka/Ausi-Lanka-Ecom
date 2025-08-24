@@ -2,18 +2,19 @@
 "use client";
 
 import { useCartStore } from "@/store/useCartStore";
+import { trpc } from "@/trpc/client";
 import { LkrFormat } from "@/utils/format";
 import { fadeIn } from "@/utils/motion";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import {
-  FiArrowRight,
-  FiPackage,
-  FiShoppingCart,
+  FiCheckCircle,
+  FiClock,
   FiGrid,
   FiHeart,
+  FiPackage,
+  FiShoppingCart,
 } from "react-icons/fi";
-import { trpc } from "@/trpc/client";
-import { useEffect, useState } from "react";
 
 type Product = {
   id: string;
@@ -174,7 +175,7 @@ const AvailableInSriLanka = () => {
             <div className="flex space-x-1">
               <button
                 onClick={() => setActiveTab("supermarket")}
-                className={`px-6 py-3 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                className={`px-6 py-3 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer ${
                   activeTab === "supermarket"
                     ? "bg-green-500 text-white shadow-sm"
                     : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
@@ -188,7 +189,7 @@ const AvailableInSriLanka = () => {
               </button>
               <button
                 onClick={() => setActiveTab("pharmacy")}
-                className={`px-6 py-3 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                className={`px-6 py-3 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer ${
                   activeTab === "pharmacy"
                     ? "bg-blue-500 text-white shadow-sm"
                     : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
@@ -331,17 +332,48 @@ const AvailableInSriLanka = () => {
         )}
 
         {/* Section footer */}
-        <motion.div variants={fadeIn("up", 0.6)} className="mt-16 text-center">
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
-            These products are already available in our Sri Lankan warehouse for
-            faster delivery within 2-3 business days. No international shipping
-            wait!
+        <motion.div
+          variants={fadeIn("up", 0.6)}
+          className="mt-16 bg-white dark:bg-gray-800 rounded-xl p-6 text-center border shadow-sm dark:border-gray-700 dark:shadow-md"
+        >
+          <div className="flex items-center justify-center space-x-4 mb-4">
+            <div className="flex items-center">
+              <FiPackage className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2" />
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Local Stock
+              </span>
+            </div>
+            <div className="h-6 w-px bg-gray-200 dark:bg-gray-700"></div>
+            <div className="flex items-center">
+              <FiClock className="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                2-3 Days
+              </span>
+            </div>
+          </div>
+
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">
+            Faster Delivery Available
+          </h3>
+
+          <p className="text-gray-600 dark:text-gray-300">
+            These products are already in our{" "}
+            <span className="font-medium dark:text-gray-100">
+              Sri Lankan warehouse
+            </span>
+            for{" "}
+            <span className="text-blue-600 dark:text-blue-400 font-semibold">
+              quick delivery within 2-3 business days
+            </span>
+            . Avoid international shipping delays!
           </p>
-          <button className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-colors duration-200">
-            View All {activeTab === "supermarket" ? "Supermarket" : "Pharmacy"}{" "}
-            Products
-            <FiArrowRight className="ml-2 -mr-1 h-5 w-5" />
-          </button>
+
+          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+            <span className="inline-flex items-center text-sm text-green-600 dark:text-green-400 font-medium">
+              <FiCheckCircle className="mr-1 w-4 h-4" />
+              No customs clearance needed
+            </span>
+          </div>
         </motion.div>
       </motion.div>
     </section>
