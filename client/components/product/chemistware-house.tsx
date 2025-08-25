@@ -419,13 +419,20 @@ const ChemistWareHouse = () => {
                           {data.title}
                         </h3>
 
-                        <div className="flex items-baseline mb-6">
+                        <div className="flex items-baseline mb-2">
                           <span className="text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">
                             {LkrFormat(Number(data?.calculatedPrice || 0))}
                           </span>
                           <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
                             LKR
                           </span>
+                        </div>
+
+                        {/* Added note about sea cargo shipment */}
+                        <div className="mb-6">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                            Price includes our standard sea cargo shipment fee
+                          </p>
                         </div>
 
                         <div className="mt-8 flex flex-wrap gap-4">
