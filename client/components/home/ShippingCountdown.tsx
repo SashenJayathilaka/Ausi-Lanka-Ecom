@@ -223,20 +223,6 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
                   }}
                 />
               </div>
-
-              {/*               <motion.div
-                className="text-center text-gray-500 dark:text-gray-400 text-sm transition-colors duration-300"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.7 }}
-              >
-                Orders placed in{" "}
-                <span className="font-semibold text-indigo-600 dark:text-indigo-400 transition-colors duration-300">
-                  {timeLeft.hours}h {timeLeft.minutes}m
-                </span>{" "}
-                will ship today
-              </motion.div> */}
-
               {/* 🔹 Estimated Delivery Section */}
               <motion.div
                 className="text-center mt-6 transition-colors duration-300"

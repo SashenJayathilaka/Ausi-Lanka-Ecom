@@ -5,12 +5,17 @@ import { fadeIn, staggerContainer, textVariant } from "@/utils/motion";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
 
 const Hero = () => {
   const router = useRouter();
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [speed, setSpeed] = useState<number>(50);
+
+  useEffect(() => {
+    setSpeed(Math.floor(Math.random() * 90) + 10);
+  }, []);
 
   return (
     <section
@@ -169,7 +174,7 @@ const Hero = () => {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     key={index}
-                    src={`https://ui-avatars.com/api/?name=${item}`}
+                    src={`https://ui-avatars.com/api/?name=${item}&background=random&size=256&rounded=true&bold=true&color=fff&font-size=0.5&length=1&speed=${speed}`}
                     alt="avatar"
                     width={32}
                     height={32}
