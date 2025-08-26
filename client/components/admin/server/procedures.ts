@@ -285,18 +285,21 @@ export const getItemsForAdminRouter = createTRPCRouter({
         items: z.array(
           z.object({
             id: z.string().uuid(),
+            userId: z.string().uuid(),
             name: z.string(),
+            description: z.string().nullable(),
             price: z.string(),
             image: z.string(),
             rating: z.number(),
             url: z.string().nullable(),
             retailer: z.string(),
             calculatedPrice: z.string(),
-            quantity: z.number().int(),
             badge: z
               .enum(["BESTSELLER", "LIMITED", "POPULAR", "NEW"])
               .nullable(),
+            category: z.string(),
             createdAt: z.date(),
+            updatedAt: z.date(),
           })
         ),
         nextCursor: z.string().uuid().nullish(),
@@ -357,14 +360,15 @@ export const getItemsForAdminRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string().min(1),
+        description: z.string().optional(),
         price: z.string().min(1),
         image: z.string().min(1),
         rating: z.number().min(0).max(5),
         url: z.string().optional(),
         retailer: z.string().min(1),
         calculatedPrice: z.string().min(1),
-        quantity: z.number().min(1),
         badge: z.enum(["BESTSELLER", "LIMITED", "POPULAR", "NEW"]).optional(),
+        category: z.string().min(1),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -380,14 +384,15 @@ export const getItemsForAdminRouter = createTRPCRouter({
         .values({
           userId: ctx.user.id,
           name: input.name,
+          description: input.description || null,
           price: input.price,
           image: input.image,
           rating: input.rating,
-          url: input.url,
+          url: input.url || null,
           retailer: input.retailer,
           calculatedPrice: input.calculatedPrice,
-          quantity: input.quantity,
-          badge: input.badge,
+          badge: input.badge || null,
+          category: input.category,
         })
         .returning();
 
@@ -403,17 +408,18 @@ export const getItemsForAdminRouter = createTRPCRouter({
       z.object({
         id: z.string().uuid(),
         name: z.string().min(1).optional(),
+        description: z.string().optional().nullable(),
         price: z.string().min(1).optional(),
         image: z.string().min(1).optional(),
         rating: z.number().min(0).max(5).optional(),
-        url: z.string().optional(),
+        url: z.string().optional().nullable(),
         retailer: z.string().min(1).optional(),
         calculatedPrice: z.string().min(1).optional(),
-        quantity: z.number().min(1).optional(),
         badge: z
           .enum(["BESTSELLER", "LIMITED", "POPULAR", "NEW"])
           .optional()
           .nullable(),
+        category: z.string().min(1).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -424,13 +430,16 @@ export const getItemsForAdminRouter = createTRPCRouter({
         });
       }
 
+      // Extract the id from input and create update object without it
+      const { id, ...updateData } = input;
+
       const [updatedItem] = await db
         .update(trendingItems)
         .set({
-          ...input,
+          ...updateData,
           updatedAt: new Date(),
         })
-        .where(eq(trendingItems.id, input.id))
+        .where(eq(trendingItems.id, id))
         .returning();
 
       if (!updatedItem) {

@@ -102,6 +102,7 @@ export const trendingItems = pgTable(
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
     name: text("name").notNull(),
+    description: text("description"),
     price: numeric("price", { precision: 12, scale: 2 }).notNull(),
     image: text("image").notNull(),
     rating: integer("rating").notNull(),
@@ -111,8 +112,8 @@ export const trendingItems = pgTable(
       precision: 12,
       scale: 2,
     }).notNull(),
-    quantity: integer("quantity").default(1).notNull(),
     badge: text("badge", { enum: ["BESTSELLER", "LIMITED", "POPULAR", "NEW"] }),
+    category: text("category").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },

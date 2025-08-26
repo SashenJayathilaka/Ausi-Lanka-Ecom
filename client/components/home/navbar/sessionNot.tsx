@@ -22,7 +22,8 @@ const SessionNot = () => {
     { href: "/", label: "Home" },
     { href: "/product", label: "Shop" },
     { href: "/items", label: "In Stock Items" },
-    { href: "/history", label: "Orders History" },
+    { href: "/catalog", label: "Catalog" },
+    /* { href: "/history", label: "Orders History" }, */
   ];
 
   useEffect(() => {

@@ -260,6 +260,25 @@ const ShippingCountdownSuspenses: React.FC<ShippingCountdownProps> = ({
             {formatUnit("Min", timeLeft.minutes)}
             {formatUnit("Sec", timeLeft.seconds)}
           </div>
+          {/* 🔹 Shipment Date Section */}
+          {targetDate?.shipmentDate && (
+            <div className="w-full sm:w-auto mt-2 sm:mt-0 ml-0 sm:ml-4">
+              <span className="text-sm sm:text-base text-blue-200 dark:text-blue-300 font-medium transition-colors duration-300">
+                Shipment Date:
+              </span>
+              <span className="block text-lg sm:text-xl font-extrabold text-white dark:text-indigo-300 mt-1">
+                {new Date(targetDate?.shipmentDate).toLocaleDateString(
+                  "en-US",
+                  {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                )}
+              </span>
+            </div>
+          )}
 
           {/* 🔹 Estimated Delivery Section */}
           <div className="w-full sm:w-auto mt-2 sm:mt-0 ml-0 sm:ml-4">
