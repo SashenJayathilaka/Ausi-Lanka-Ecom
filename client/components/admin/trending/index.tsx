@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { DEFAULT_LIMIT } from "@/constants/constants";
@@ -49,16 +48,28 @@ const supportedRetailers = [
   },
 ];
 
+const categories = [
+  "Pharmacy Item",
+  "Supermarket Item",
+  "Electronic Item",
+  "Gift Item",
+  "Home & Kitchen",
+  "Beauty & Personal Care",
+  "Toys & Games",
+  "Sports & Outdoors",
+];
+
 const baseTrendingItemSchema = z.object({
   name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
   price: z.string().min(1, "Price is required"),
   image: z.string().min(1, "Image URL is required"),
   rating: z.number().min(0).max(5),
   url: z.string().url().optional().or(z.literal("")),
   retailer: z.string().min(1, "Retailer is required"),
   calculatedPrice: z.string().min(1, "Calculated price is required"),
-  quantity: z.number().min(1, "Quantity must be at least 1"),
   badge: z.enum(["BESTSELLER", "LIMITED", "POPULAR", "NEW"]).optional(),
+  category: z.string().min(1, "Category is required"),
 });
 
 const createTrendingItemSchema = baseTrendingItemSchema;
@@ -70,16 +81,19 @@ type CreateTrendingItem = z.infer<typeof createTrendingItemSchema>;
 type UpdateTrendingItem = z.infer<typeof updateTrendingItemSchema>;
 type TrendingItem = {
   id: string;
-  createdAt: Date;
+  userId: string;
   name: string;
+  description: string | null;
   price: string;
   image: string;
   rating: number;
   url: string | null;
   retailer: string;
   calculatedPrice: string;
-  quantity: number;
   badge: "BESTSELLER" | "LIMITED" | "POPULAR" | "NEW" | null;
+  category: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 const LoadingSpinner = () => (
@@ -182,9 +196,12 @@ const TrendingItemsManagement = () => {
 
       if (result.success && result.data) {
         form.setValue("name", result.data.title);
-        form.setValue("price", result.data.price);
         form.setValue("image", result.data.image || "");
         form.setValue("calculatedPrice", result.data.calculatedPrice);
+
+        const priceWithoutDollar = result.data.price.replace("$", "");
+
+        form.setValue("price", priceWithoutDollar);
 
         const retailer = supportedRetailers.find(
           (r) => urlObj.hostname === new URL(r.url).hostname
@@ -224,6 +241,7 @@ const TrendingItemsManagement = () => {
       calculatedPrice: item.calculatedPrice.toString(),
       url: item.url || "",
       badge: item.badge || undefined,
+      description: item.description || "",
     });
   };
 
@@ -287,6 +305,23 @@ const TrendingItemsManagement = () => {
                 {form.formState.errors.name && (
                   <p className="mt-1 text-sm text-red-600">
                     {form.formState.errors.name.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  {...form.register("description")}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  rows={3}
+                />
+                {form.formState.errors.description && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {form.formState.errors.description.message}
                   </p>
                 )}
               </div>
@@ -401,20 +436,25 @@ const TrendingItemsManagement = () => {
                 )}
               </div>
 
-              {/* Quantity */}
+              {/* Category */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Quantity*
+                  Category*
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  {...form.register("quantity", { valueAsNumber: true })}
+                <select
+                  {...form.register("category")}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                />
-                {form.formState.errors.quantity && (
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+                {form.formState.errors.category && (
                   <p className="mt-1 text-sm text-red-600">
-                    {form.formState.errors.quantity.message}
+                    {form.formState.errors.category.message}
                   </p>
                 )}
               </div>
@@ -473,6 +513,9 @@ const TrendingItemsManagement = () => {
                   Retailer
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Category
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Rating
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -489,6 +532,7 @@ const TrendingItemsManagement = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           className="h-10 w-10 rounded-full object-cover"
                           src={item.image}
@@ -511,6 +555,9 @@ const TrendingItemsManagement = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {item.retailer}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {item.category}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {item.rating}
