@@ -129,7 +129,11 @@ const TrendingItemsManagement = () => {
 
   const { data, isLoading } = trpc.getAdminItems.getAllTrendingItems.useQuery(
     { limit: DEFAULT_LIMIT },
-    { staleTime: 1000 * 60 * 5 }
+    {
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    }
   );
 
   const scrapeMutation = trpc.productScrapeRouter.scrapeProduct.useMutation();
@@ -499,7 +503,7 @@ const TrendingItemsManagement = () => {
 
       {/* Items Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto no-scrollbar">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>

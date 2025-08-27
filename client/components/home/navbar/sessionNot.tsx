@@ -21,9 +21,9 @@ const SessionNot = () => {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/product", label: "Shop" },
-    { href: "/items", label: "In Stock Items" },
     { href: "/catalog", label: "Catalog" },
-    /* { href: "/history", label: "Orders History" }, */
+    { href: "/items", label: "In Stock Items" },
+    { href: "/history", label: "Orders History" },
   ];
 
   useEffect(() => {
