@@ -264,6 +264,7 @@ const ChemistWareHouse = () => {
                     onChange={(e) => setUrl(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleScrape()}
                     aria-label="Product URL input"
+                    disabled={loading}
                   />
                   <motion.button
                     onClick={handlePaste}
@@ -273,6 +274,7 @@ const ChemistWareHouse = () => {
                     whileTap={{ scale: 0.9 }}
                     title="Paste from clipboard"
                     aria-label="Paste URL from clipboard"
+                    disabled={loading}
                   >
                     <FiClipboard className="h-5 w-5" />
                     <span className="sr-only">Paste</span>

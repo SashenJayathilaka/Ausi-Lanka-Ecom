@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { scrapeJBHIFIProduct } from "../controller/jbhifiController.js";
+import { scrapeJBHIFIProduct } from "./jbhifiController.js";
 
 const router = Router();
 
