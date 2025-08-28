@@ -133,14 +133,21 @@ export const getItemRouter = createTRPCRouter({
         .from(orderItems)
         .where(eq(orderItems.orderId, order.id));
 
+      const userData = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, order.userId))
+        .limit(1)
+        .then((rows) => rows[0]);
+
       return {
         ...order,
         items,
         user: {
-          id: user.id,
-          name: user.name,
-          emailId: user.emailId,
-          imageUrl: user.imageUrl,
+          id: userData.id,
+          name: userData.name,
+          emailId: userData.emailId,
+          imageUrl: userData.imageUrl,
         },
       };
     }),

@@ -702,8 +702,8 @@ const CheckoutPage = () => {
                     now
                   </li>
                   <li>
-                    Final 50% payment ({LkrFormat(totalPrice / 2)}) before
-                    delivery
+                    Final 50% payment ({LkrFormat(totalPrice / 2)}) after
+                    receiving the items in hand
                   </li>
                   <li>{`We'll contact you for payment confirmation`}</li>
                 </ul>
@@ -744,7 +744,7 @@ const CheckoutPage = () => {
                     Processing...
                   </>
                 ) : (
-                  `Pay 50% Now (${LkrFormat(totalPrice / 2)})`
+                  "Place Order"
                 )}
               </button>
 
