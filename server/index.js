@@ -1,11 +1,10 @@
 import cors from "cors";
 import express from "express";
+import aldiRoutes from "./routes/adliRoutes.js";
 import colesRoutes from "./routes/colesRoutes.js";
-import jbhifiRoutes from "./bin/jbhifiRoutes.js";
 import OfficeworksRoutes from "./routes/officeworksRoutes.js";
 import chemistRoutes from "./routes/scrapeRoutes.js";
 import woolworthsRoutes from "./routes/woolworthsRoutes.js";
-import aldiRoutes from "./routes/adliRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,7 +19,6 @@ app.get("/", (req, res) => {
 });
 app.use("/api/chemist", chemistRoutes);
 app.use("/api/coles", colesRoutes);
-app.use("/api/jbhifi", jbhifiRoutes);
 app.use("/api/woolworths", woolworthsRoutes);
 app.use("/api/officeWorks", OfficeworksRoutes);
 app.use("/api/aldi", aldiRoutes);
