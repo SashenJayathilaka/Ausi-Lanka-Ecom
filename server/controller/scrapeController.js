@@ -9,26 +9,43 @@ let cluster;
 export const initCluster = async () => {
   if (!cluster) {
     cluster = await Cluster.launch({
-      concurrency: Cluster.CONCURRENCY_PAGE, // each job = one new page
-      maxConcurrency: 3, // limit how many jobs run in parallel
+      concurrency: Cluster.CONCURRENCY_PAGE, // one page per job
+      maxConcurrency: 3, // adjust for your EC2 size
       puppeteerOptions: {
         executablePath: process.env.CHROME_PATH,
         headless: true,
         args: ["--no-sandbox", "--disable-setuid-sandbox"],
       },
+      timeout: 120000,
+      retryLimit: 2,
     });
 
-    // define scraping task
+    // Define cluster task
     await cluster.task(async ({ page, data }) => {
       const { url, rate } = data;
 
+      // Reset page to avoid leftovers
+      await page.goto("about:blank");
       await page.setUserAgent(
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
       );
 
       await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
-      await new Promise((r) => setTimeout(r, 3000));
 
+      // Wait for main title or fallback meta tag
+      await page
+        .waitForSelector("h1.product-title, meta[property='og:title']", {
+          timeout: 15000,
+        })
+        .catch(() => console.warn("Title selector not found"));
+
+      // Optional: check for anti-bot page
+      const html = await page.content();
+      if (html.includes("captcha") || html.includes("Access Denied")) {
+        throw new Error("Blocked by anti-bot protection");
+      }
+
+      // Extract text helper
       const extractText = async (selectors) => {
         for (const sel of selectors) {
           try {
@@ -39,6 +56,7 @@ export const initCluster = async () => {
         return null;
       };
 
+      // Extract image helper
       const extractImage = async () => {
         try {
           const img = await page.$(
@@ -57,6 +75,7 @@ export const initCluster = async () => {
         return null;
       };
 
+      // Get product info
       const title =
         (await extractText(["h1.product-title"])) ||
         (await page
@@ -74,14 +93,16 @@ export const initCluster = async () => {
 
       const image = (await extractImage()) || "Image not found";
 
-      const calPrice = await calculate(price, url, rate);
+      const calPrice = await calculate(price, url, rate).catch(() => NaN);
 
       return { title, price, image, calculatedPrice: calPrice };
     });
   }
+
   return cluster;
 };
 
+// Express route handler
 export const scrapeProduct = async (req, res) => {
   const productUrl = req.query.url;
   const rate = req.query.rate;
@@ -92,13 +113,10 @@ export const scrapeProduct = async (req, res) => {
 
   try {
     const cluster = await initCluster();
-
-    // queue the job and wait for result
     const result = await cluster.execute({ url: productUrl, rate });
-
     res.json(result);
   } catch (err) {
     console.error("Scrape error:", err.message);
-    res.status(500).json({ error: "Scraping failed." });
+    res.status(500).json({ error: "Scraping failed.", details: err.message });
   }
 };
