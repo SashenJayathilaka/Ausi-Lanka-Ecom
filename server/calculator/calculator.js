@@ -7,45 +7,34 @@ export const calculate = async (value, productUrl, rate) => {
 
     // Extract numeric value
     const numericPart = value.replace(/[^0-9.]/g, "");
-    if (isNaN(numericPart)) {
+    const result = parseFloat(numericPart);
+    if (isNaN(result)) {
       throw new Error("Invalid numeric value in price");
     }
 
-    // Get latest exchange rate
-    const latestRate = rate;
-    if (!latestRate) {
+    // Validate exchange rate
+    if (rate === undefined || rate === null) {
       throw new Error("No exchange rate available");
     }
 
-    function roundUpToNext100(price) {
-      return (Math.ceil(price / 100) * 100).toFixed(2);
+    // Helper function: round up to the next multiple of 50
+    function roundUpToNext50(price) {
+      return (Math.ceil(price / 50) * 50).toFixed(2);
     }
 
-    // calculate with current rate
-    let finalResult;
-    const result = parseFloat(numericPart);
-
+    // Determine multiplier based on product URL and price
+    let multiplier;
     if (productUrl.includes("chemistwarehouse.com.au")) {
-      if ((result) => 10) {
-        const pharmacy = result * 1.65;
-        finalResult = pharmacy * latestRate;
-        return roundUpToNext100(Math.round(finalResult));
-      } else {
-        const pharmacy = result * 1.5;
-        finalResult = pharmacy * latestRate;
-        return roundUpToNext100(Math.round(finalResult));
-      }
+      multiplier = result >= 10 ? 1.65 : 1.5;
     } else {
-      if ((result) => 10) {
-        const pharmacy = result * 1.5;
-        finalResult = pharmacy * latestRate;
-        return roundUpToNext100(Math.round(finalResult));
-      } else {
-        const pharmacy = result * 1.45;
-        finalResult = pharmacy * latestRate;
-        return roundUpToNext100(Math.round(finalResult));
-      }
+      multiplier = result >= 10 ? 1.5 : 1.45;
     }
+
+    // Calculate final price
+    const finalResult = result * multiplier * rate;
+
+    // Round up to next 50
+    return roundUpToNext50(finalResult);
   } catch (error) {
     console.error(`Calculation error for ${productUrl}:`, error);
     throw new Error(`Price conversion failed: ${error.message}`);
