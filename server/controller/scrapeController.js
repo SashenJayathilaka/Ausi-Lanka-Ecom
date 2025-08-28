@@ -6,7 +6,7 @@ dotenv.config();
 
 let cluster;
 
-export const initCluster = async () => {
+export const scrapeProduct = async () => {
   if (!cluster) {
     cluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_BROWSER, // fresh browser per job
