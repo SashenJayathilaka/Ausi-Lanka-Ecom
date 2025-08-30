@@ -110,19 +110,35 @@ export const scrapeRouter = createTRPCRouter({
         }
 
         const result = await response.json();
+        console.log("🚀 ~ result:", result);
 
-        return {
-          success: true,
-          data: {
-            title: result.title || "No title found",
-            price: result.price || "No price found",
-            image: result.image || null,
-            url,
-            retailer,
-            calculatedPrice: result.calculatedPrice || result.price || "0",
-          },
-          error: null,
-        };
+        if (
+          result.results &&
+          result.results.length > 0 &&
+          result.results[0].success
+        ) {
+          const productData = result.results[0];
+
+          return {
+            success: true,
+            data: {
+              title: productData.title || "No title found",
+              price: productData.price || "No price found",
+              image: productData.image || null,
+              url,
+              retailer,
+              calculatedPrice:
+                productData.calculatedPrice || productData.price || "0",
+            },
+            error: null,
+          };
+        } else {
+          return {
+            success: false,
+            data: null,
+            error: "No product data found or scraping failed",
+          };
+        }
       } catch (error) {
         console.error("Scraping failed:", error);
         return {
