@@ -32,13 +32,13 @@ export const scrapeOfficeworksProduct = async (req, res) => {
     // Use CHROME_PATH if available, otherwise use default Chromium
     if (process.env.CHROME_PATH) {
       launchOptions.executablePath = process.env.CHROME_PATH;
-      console.log("Using custom Chrome path:", process.env.CHROME_PATH);
+      //console.log("Using custom Chrome path:", process.env.CHROME_PATH);
     } else {
       console.log("Using default Chromium");
     }
 
     browser = await puppeteer.launch(launchOptions);
-    console.log("Browser launched successfully");
+    //console.log("Browser launched successfully");
 
     const results = [];
 
@@ -62,7 +62,7 @@ export const scrapeOfficeworksProduct = async (req, res) => {
 
         await page.setViewport({ width: 1280, height: 800 });
 
-        console.log(`Navigating to: ${productUrl}`);
+        //console.log(`Navigating to: ${productUrl}`);
         await page.goto(productUrl, {
           waitUntil: "domcontentloaded",
           timeout: 30000,
@@ -182,7 +182,7 @@ export const scrapeOfficeworksProduct = async (req, res) => {
           success: true,
         });
 
-        console.log(`Successfully scraped: ${productUrl}`);
+        //console.log(`Successfully scraped: ${productUrl}`);
       } catch (err) {
         console.error(`Scrape error for ${productUrl}:`, err.message);
         results.push({

@@ -110,7 +110,6 @@ export const scrapeRouter = createTRPCRouter({
         }
 
         const result = await response.json();
-        console.log("🚀 ~ result:", result);
 
         if (
           result.results &&

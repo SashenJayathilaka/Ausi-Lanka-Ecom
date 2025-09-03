@@ -32,13 +32,13 @@ export const scrapeProduct = async (req, res) => {
     // Use CHROME_PATH if available, otherwise use default Chromium
     if (process.env.CHROME_PATH) {
       launchOptions.executablePath = process.env.CHROME_PATH;
-      console.log("Using custom Chrome path:", process.env.CHROME_PATH);
+      //console.log("Using custom Chrome path:", process.env.CHROME_PATH);
     } else {
       console.log("Using default Chromium");
     }
 
     browser = await puppeteer.launch(launchOptions);
-    console.log("Browser launched successfully");
+    //console.log("Browser launched successfully");
 
     const results = [];
 
@@ -50,7 +50,7 @@ export const scrapeProduct = async (req, res) => {
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
         );
 
-        console.log(`Navigating to: ${productUrl}`);
+        //console.log(`Navigating to: ${productUrl}`);
         await page.goto(productUrl, {
           waitUntil: "domcontentloaded", // More reliable than networkidle2
           timeout: 30000,
@@ -115,7 +115,7 @@ export const scrapeProduct = async (req, res) => {
           success: true,
         });
 
-        console.log(`Successfully scraped: ${productUrl}`);
+        //console.log(`Successfully scraped: ${productUrl}`);
       } catch (err) {
         console.error(`Scrape error for ${productUrl}:`, err.message);
         results.push({

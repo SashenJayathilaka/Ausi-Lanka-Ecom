@@ -27,7 +27,7 @@ export const initCluster = async () => {
     // Use CHROME_PATH if available
     if (process.env.CHROME_PATH) {
       launchOptions.puppeteerOptions.executablePath = process.env.CHROME_PATH;
-      console.log("Using custom Chrome path:", process.env.CHROME_PATH);
+      //console.log("Using custom Chrome path:", process.env.CHROME_PATH);
     } else {
       console.log("Using default Chromium");
     }
@@ -48,7 +48,7 @@ export const initCluster = async () => {
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
         );
 
-        console.log(`Navigating to: ${url}`);
+        //console.log(`Navigating to: ${url}`);
         await page.goto(url, {
           waitUntil: "domcontentloaded",
           timeout: 30000,
