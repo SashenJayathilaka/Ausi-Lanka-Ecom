@@ -45,6 +45,20 @@ export const updateAllAdminCatalogItems = createTRPCRouter({
       };
     }
 
+    // Helper function to convert price string to numeric value
+    const parsePrice = (
+      priceString: string | null | undefined
+    ): number | null => {
+      if (!priceString) return null;
+
+      // Remove currency symbols, commas, and other non-numeric characters except decimal point
+      const numericString = priceString.replace(/[^\d.]/g, "");
+
+      // Parse to float and return null if not a valid number
+      const parsed = parseFloat(numericString);
+      return isNaN(parsed) ? null : parsed;
+    };
+
     // Group items by retailer
     const itemsByRetailer: Record<string, typeof allItems> = {};
 
@@ -125,13 +139,23 @@ export const updateAllAdminCatalogItems = createTRPCRouter({
               );
 
               if (itemToUpdate) {
+                // Parse price strings to numeric values
+                const parsedPrice = parsePrice(productData.price);
+                const parsedCalculatedPrice = parsePrice(
+                  productData.calculatedPrice
+                );
+
                 await db
                   .update(trendingItems)
                   .set({
-                    price: productData.price || itemToUpdate.price,
+                    price:
+                      parsedPrice !== null
+                        ? parsedPrice.toString()
+                        : itemToUpdate.price,
                     calculatedPrice:
-                      productData.calculatedPrice ||
-                      itemToUpdate.calculatedPrice,
+                      parsedCalculatedPrice !== null
+                        ? parsedCalculatedPrice.toString()
+                        : itemToUpdate.calculatedPrice,
                     updatedAt: new Date(),
                   })
                   .where(eq(trendingItems.id, itemToUpdate.id));
