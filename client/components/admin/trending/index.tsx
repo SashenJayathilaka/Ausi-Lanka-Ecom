@@ -266,6 +266,7 @@ const UpdateAllButton = () => {
                 <div className="w-24 text-center">Status</div>
                 <div className="w-48 text-center">Error</div>
               </div>
+              {/*   eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {results.results.map((result: any, index: number) => (
                 <div key={index} className="p-4 flex items-center">
                   <div className="flex-1 text-sm font-mono">{result.id}</div>
