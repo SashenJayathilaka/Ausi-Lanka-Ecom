@@ -232,8 +232,9 @@ const ChemistWareHouse = () => {
             <motion.div variants={textVariant(0.2)}>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 dark:text-white mb-4 leading-tight">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-orange-500 dark:from-white dark:to-orange-100">
-                  Spooky Shopping, Sorted 🎃
+                  Spooky Shopping, Sorted
                 </span>
+                🎃
               </h1>
               <p className="text-xl text-gray-700 dark:text-orange-200 max-w-2xl">
                 {`Conjure up prices and compare deals across Australia's most mystical retailers`}
