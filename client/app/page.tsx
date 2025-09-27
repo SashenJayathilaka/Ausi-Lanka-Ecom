@@ -1,3 +1,4 @@
+import HalloweenAdvertisement from "@/components/advertisement";
 import CompanyLogo from "@/components/home/company-logo";
 import FeaturesSection from "@/components/home/features-section";
 import Footer from "@/components/home/footer";
@@ -34,6 +35,7 @@ export default async function Home() {
         <ServicesSection />
         <TestimonialsSection />
         <Footer />
+        <HalloweenAdvertisement />
       </div>
     </main>
   );

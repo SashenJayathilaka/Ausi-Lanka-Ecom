@@ -9,14 +9,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BsBoxSeam, BsArrowLeft } from "react-icons/bs";
-import {
-  FiArrowRight,
-  FiMinus,
-  FiPlus,
-  FiShoppingCart,
-  FiTrash2,
-} from "react-icons/fi";
-import { RiShoppingBag3Line } from "react-icons/ri";
+import { FiArrowRight, FiMinus, FiPlus, FiTrash2 } from "react-icons/fi";
+import { GiPumpkinLantern } from "react-icons/gi";
 
 const Bucket = () => {
   const router = useRouter();
@@ -51,25 +45,57 @@ const Bucket = () => {
 
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
 
+  // Supported retailers data with updated color schemes for both modes
+  const supportedRetailers = [
+    {
+      name: "Chemist Warehouse",
+      logo: "/assets/partner_chemistwarehouse.webp",
+    },
+    {
+      name: "Coles",
+      logo: "/assets/coles.png",
+    },
+    {
+      name: "Woolworths",
+      logo: "/assets/woolworths.png",
+    },
+    {
+      name: "JB Hi-Fi",
+      logo: "/assets/jbhifi.png",
+    },
+    {
+      name: "ALDI",
+      logo: "/assets/Aldi-Logo.png",
+    },
+    {
+      name: "Officeworks",
+      logo: "/assets/officeworks.png",
+    },
+  ];
+
+  const getRetailerLogo = (retailerName: string) => {
+    return supportedRetailers.find((r) => r.name === retailerName)?.logo;
+  };
+
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
       className="bg-white dark:bg-gray-800 rounded-none shadow-xl flex flex-col h-full w-full border border-gray-100 dark:border-gray-700 overflow-hidden"
     >
       {/* Cart Header */}
       <motion.div className="p-6 bg-transparent" variants={fadeIn("down", 0.2)}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="p-2.5 rounded-xl bg-white/10 dark:bg-gray-700/50 backdrop-blur-sm text-blue-800 dark:text-blue-400">
-              <FiShoppingCart className="h-6 w-6" />
+            <div className="p-2.5 rounded-xl bg-orange-50 dark:bg-orange-900/50 backdrop-blur-sm text-orange-600 dark:text-orange-400">
+              <GiPumpkinLantern className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-100">
-                Your Cart
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                Your Cauldron
               </h2>
-              <p className="text-blue-800 dark:text-blue-200 text-sm">
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
                 {itemCount} {itemCount === 1 ? "item" : "items"}
               </p>
             </div>
@@ -85,7 +111,7 @@ const Bucket = () => {
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="text-blue-800 dark:text-blue-200 hover:text-blue-800/80 dark:hover:text-blue-300 text-sm flex items-center gap-1 cursor-pointer"
+              className="text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 text-sm flex items-center gap-1 cursor-pointer"
             >
               <FiTrash2 className="h-4 w-4" />
               <span>Clear</span>
@@ -106,25 +132,25 @@ const Bucket = () => {
             className="h-full flex flex-col items-center justify-center text-center p-8"
             variants={fadeIn("up", 0.4)}
           >
-            <div className="mb-6 p-5 bg-white dark:bg-gray-700 rounded-2xl text-blue-400 shadow-lg border border-gray-200 dark:border-gray-600">
-              <RiShoppingBag3Line className="h-12 w-12" />
+            <div className="mb-6 p-5 bg-white dark:bg-gray-700 rounded-2xl text-orange-400 shadow-lg border border-gray-200 dark:border-gray-600">
+              <GiPumpkinLantern className="h-12 w-12" />
             </div>
             <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">
-              Your cart is empty
+              Your cauldron is empty
             </h3>
             <p className="text-gray-500 dark:text-gray-400 max-w-md mb-6">
-              {` Looks like you haven't added anything to your cart yet`}
+              {`Looks like you haven't added any spooky items yet.`}
             </p>
             <motion.button
               whileHover={{
                 scale: 1.05,
-                boxShadow: "0 4px 12px rgba(59, 130, 246, 0.2)",
+                boxShadow: "0 4px 12px rgba(251, 146, 60, 0.2)",
               }}
               whileTap={{ scale: 0.98 }}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium flex items-center gap-2"
+              className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-medium flex items-center gap-2"
               onClick={() => router.push("/products")}
             >
-              Browse Products
+              Start Conjuring
               <FiArrowRight className="h-4 w-4" />
             </motion.button>
           </motion.div>
@@ -168,19 +194,7 @@ const Bucket = () => {
                       {product.retailer && (
                         <div className="absolute -top-2 -right-2 bg-white dark:bg-gray-800 rounded-full p-1 shadow-md border border-gray-200 dark:border-gray-600">
                           <img
-                            src={
-                              product.retailer === "Chemist Warehouse"
-                                ? "/assets/partner_chemistwarehouse.webp"
-                                : product.retailer === "Coles"
-                                  ? "/assets/coles.png"
-                                  : product.retailer === "Woolworths"
-                                    ? "/assets/woolworths.png"
-                                    : product.retailer === "JB Hi-Fi"
-                                      ? "/assets/jbhifi.png"
-                                      : product.retailer === "ALDI"
-                                        ? "/assets/Aldi-Logo.png"
-                                        : "/assets/officeworks.png"
-                            }
+                            src={getRetailerLogo(product.retailer) || ""}
                             alt={product.retailer}
                             className="h-5 w-5 object-contain"
                           />
@@ -192,7 +206,7 @@ const Bucket = () => {
                       <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
                         {product.name}
                       </h3>
-                      <p className="text-green-600 dark:text-green-400 font-bold mt-1 text-lg">
+                      <p className="text-orange-600 dark:text-orange-400 font-bold mt-1 text-lg">
                         {LkrFormat(Number(product.calculatedPrice))}
                         {product.quantity! > 1 && (
                           <span className="text-gray-500 dark:text-gray-400 ml-1 text-sm">
@@ -205,7 +219,7 @@ const Bucket = () => {
                           href={product.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-blue-500 dark:text-blue-400 hover:underline mt-1 truncate block w-full"
+                          className="text-xs text-purple-600 dark:text-purple-400 hover:underline mt-1 truncate block w-full"
                         >
                           View original product
                         </a>
@@ -283,7 +297,7 @@ const Bucket = () => {
               <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 Total
               </span>
-              <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
+              <span className="text-xl font-bold text-orange-600 dark:text-orange-400">
                 {LkrFormat(Number(totalPrice))}
               </span>
             </div>
@@ -293,10 +307,10 @@ const Bucket = () => {
             <motion.button
               whileHover={{
                 scale: 1.02,
-                boxShadow: "0 4px 20px rgba(79, 70, 229, 0.3)",
+                boxShadow: "0 4px 20px rgba(251, 146, 60, 0.3)",
               }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3.5 px-4 rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full bg-gradient-to-r from-orange-600 to-amber-700 hover:from-orange-700 hover:to-amber-800 text-white py-3.5 px-4 rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
               onClick={(e) => {
                 if (!isSignedIn) {
                   e.preventDefault();
@@ -314,7 +328,7 @@ const Bucket = () => {
               onClick={() => router.push("/product")}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full border-2 border-blue-600 dark:border-blue-500 text-blue-600 dark:text-blue-400 py-3 px-4 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors flex items-center justify-center gap-2"
+              className="w-full border-2 border-orange-600 dark:border-orange-500 text-orange-600 dark:text-orange-400 py-3 px-4 rounded-xl font-medium hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors flex items-center justify-center gap-2"
             >
               <BsArrowLeft className="h-4 w-4" />
               Continue Shopping

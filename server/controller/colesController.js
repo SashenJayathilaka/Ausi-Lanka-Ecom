@@ -9,11 +9,23 @@ export const scrapeColesProduct = async (req, res) => {
   const rate = req.query.rate;
 
   if (!productUrl) {
-    return res.status(400).json({ error: "Missing URL parameter" });
+    return res.status(400).json({
+      results: [],
+      total: 0,
+      successful: 0,
+      failed: 0,
+      error: "Missing URL parameter",
+    });
   }
 
   if (!productUrl.includes("coles.com.au")) {
-    return res.status(400).json({ error: "Invalid Coles URL" });
+    return res.status(400).json({
+      results: [],
+      total: 0,
+      successful: 0,
+      failed: 0,
+      error: "Invalid Coles URL",
+    });
   }
 
   try {
@@ -52,20 +64,36 @@ export const scrapeColesProduct = async (req, res) => {
 
     const calPrice = await calculate(productData.price, productUrl, rate);
 
+    // Format the response to match the desired structure
     res.json({
-      title: productData.title || "Title not found",
-      price: productData.price || "Price not found",
-      image: productData.image
-        ? productData.image.startsWith("http")
-          ? productData.image
-          : `https://shop.coles.com.au${productData.image}`
-        : "Image not found",
-      size: productData.size || null,
-      retailer: "Coles",
-      calculatedPrice: calPrice,
+      results: [
+        {
+          url: productUrl,
+          title: productData.title || "Title not found",
+          price: productData.price || "Price not found",
+          image: productData.image
+            ? productData.image.startsWith("http")
+              ? productData.image
+              : `https://shop.coles.com.au${productData.image}`
+            : "Image not found",
+          size: productData.size || null,
+          retailer: "Coles",
+          calculatedPrice: calPrice,
+          success: true,
+        },
+      ],
+      total: 1,
+      successful: 1,
+      failed: 0,
     });
   } catch (err) {
     console.error("Coles scrape error:", err);
-    res.status(500).json({ error: "Failed to scrape Coles product" });
+    res.status(500).json({
+      results: [],
+      total: 0,
+      successful: 0,
+      failed: 1,
+      error: "Failed to scrape Coles product",
+    });
   }
 };

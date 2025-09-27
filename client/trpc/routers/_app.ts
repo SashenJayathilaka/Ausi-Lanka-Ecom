@@ -7,6 +7,7 @@ import { getUsers } from "@/components/product/server/procedures";
 import { createTRPCRouter } from "../init";
 import { scrapeRouter } from "@/components/server/procedures";
 import { dollarRateRouter } from "@/components/items/server/procedures";
+import { updateAllAdminCatalogItems } from "@/components/catalog/server/procedures";
 
 export const appRouter = createTRPCRouter({
   checkout: checkoutRouter,
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   orderAnalyticsRouter: orderAnalyticsRouter,
   productScrapeRouter: scrapeRouter,
   getDollarRateRouter: dollarRateRouter,
+  updateAllAdminItem: updateAllAdminCatalogItems,
 });
 
 export type AppRouter = typeof appRouter;

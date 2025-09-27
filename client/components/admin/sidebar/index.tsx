@@ -102,7 +102,7 @@ export default function ResponsiveAdminSidebar() {
     },
     {
       icon: <FiTrendingUp />,
-      label: "Trending Items",
+      label: "Catalog",
       href: "/admin/trending",
       color: "text-red-500",
       priority: 3,

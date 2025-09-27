@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { DEFAULT_LIMIT } from "@/constants/constants";
@@ -8,9 +9,24 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import {
+  FaSpinner,
+  FaCheckCircle,
+  FaExclamationTriangle,
+  FaSync,
+  FaChevronDown,
+  FaChevronUp,
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaDollarSign,
+  FaStar,
+  FaShoppingCart,
+  FaTag,
+} from "react-icons/fa";
+import { useUser } from "@clerk/nextjs";
 
 const supportedRetailers = [
-  //TODO: move one file
   {
     name: "Chemist Warehouse",
     url: "https://www.chemistwarehouse.com.au/",
@@ -109,6 +125,188 @@ const ErrorFallback = () => (
     </div>
   </div>
 );
+
+const UpdateAllButton = () => {
+  const { user } = useUser();
+  console.log(
+    "🚀 ~ UpdateAllButton ~ ser:",
+    user?.emailAddresses[0].emailAddress
+  );
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [showDetails, setShowDetails] = useState(false);
+
+  // Initialize the tRPC mutation
+  const updateAllMutation =
+    trpc.updateAllAdminItem.updateAllTrendingItems.useMutation();
+
+  const handleUpdateAll = async () => {
+    if (
+      user?.emailAddresses[0].emailAddress === "sashenjayathilaka2001@gmail.com"
+    ) {
+      setIsUpdating(true);
+      setProgress(0);
+
+      try {
+        // Simulate progress for better UX
+        const progressInterval = setInterval(() => {
+          setProgress((prev) => {
+            if (prev >= 90) {
+              clearInterval(progressInterval);
+              return prev;
+            }
+            return prev + 10;
+          });
+        }, 500);
+
+        // Execute the mutation
+        const result = await updateAllMutation.mutateAsync();
+
+        clearInterval(progressInterval);
+        setProgress(100);
+
+        if (result.success) {
+          toast.success(
+            `Successfully updated ${result.updatedCount} items. ${result.failedCount} failed.`,
+            {
+              description:
+                result.failedCount > 0
+                  ? "Some items failed to update. Check details for more information."
+                  : undefined,
+            }
+          );
+        } else {
+          throw new Error(result.message || "Failed to update items");
+        }
+      } catch (error) {
+        console.error("Update error:", error);
+        toast.error("Update Failed", {
+          description:
+            error instanceof Error
+              ? error.message
+              : "An unknown error occurred",
+        });
+      } finally {
+        setIsUpdating(false);
+      }
+    } else {
+      toast.error("You do not have permission to perform this action.");
+    }
+  };
+
+  const results = updateAllMutation.data;
+  const isError = updateAllMutation.isError;
+
+  return (
+    <div className="mb-6 p-4 bg-white rounded-lg shadow">
+      <div className="flex items-center gap-4 mb-4">
+        <button
+          onClick={handleUpdateAll}
+          disabled={isUpdating}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        >
+          {isUpdating ? <FaSpinner className="animate-spin" /> : <FaSync />}
+          {isUpdating ? "Updating All Products..." : "Update All Products"}
+        </button>
+
+        {results && (
+          <div className="flex items-center gap-4">
+            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+              Updated: {results.updatedCount}
+            </span>
+            {results.failedCount > 0 && (
+              <span className="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">
+                Failed: {results.failedCount}
+              </span>
+            )}
+          </div>
+        )}
+
+        {results && (
+          <button
+            onClick={() => setShowDetails(!showDetails)}
+            className="ml-auto flex items-center gap-1 text-sm text-gray-600 hover:text-gray-800"
+          >
+            Details
+            {showDetails ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+        )}
+      </div>
+
+      {isUpdating && (
+        <div className="space-y-2 mb-4">
+          <div className="w-full bg-gray-200 rounded-full h-2.5">
+            <div
+              className="bg-blue-600 h-2.5 rounded-full"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+          <p className="text-sm text-gray-600">
+            Scanning retailers and updating prices... {progress}%
+          </p>
+        </div>
+      )}
+
+      {isError && (
+        <div className="mb-4 p-4 bg-red-100 text-red-800 rounded-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <FaExclamationTriangle />
+            <span className="font-medium">Error</span>
+          </div>
+          <p>{updateAllMutation.error.message}</p>
+        </div>
+      )}
+
+      {results && showDetails && (
+        <div className="space-y-4 mb-4">
+          <div
+            className={`p-4 rounded-lg ${results.failedCount > 0 ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}`}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <FaCheckCircle />
+              <span className="font-medium">
+                {results.failedCount > 0
+                  ? "Update completed with errors"
+                  : "All items updated successfully"}
+              </span>
+            </div>
+            <p>{results.message}</p>
+          </div>
+
+          {results.results && results.results.length > 0 && (
+            <div className="border rounded-md divide-y max-h-96 overflow-y-auto">
+              <div className="p-4 bg-gray-100 font-medium flex items-center sticky top-0">
+                <div className="flex-1">Item ID</div>
+                <div className="w-24 text-center">Status</div>
+                <div className="w-48 text-center">Error</div>
+              </div>
+              {/*   eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {results.results.map((result: any, index: number) => (
+                <div key={index} className="p-4 flex items-center">
+                  <div className="flex-1 text-sm font-mono">{result.id}</div>
+                  <div className="w-24 flex justify-center">
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        result.success
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {result.success ? "Success" : "Failed"}
+                    </span>
+                  </div>
+                  <div className="w-48 text-center text-xs text-gray-600">
+                    {result.error || "-"}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const TrendingItemsAdmin = () => {
   return (
@@ -277,14 +475,18 @@ const TrendingItemsManagement = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Trending Items</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Catalog Items</h1>
         <button
           onClick={handleCreate}
-          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 cursor-pointer"
         >
+          <FaPlus />
           Create New Item
         </button>
       </div>
+
+      {/* Update All Products Button */}
+      <UpdateAllButton />
 
       {mode !== "view" && (
         <div className="bg-white rounded-lg shadow p-6 mb-8">
@@ -335,12 +537,17 @@ const TrendingItemsManagement = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Price*
                 </label>
-                <input
-                  type="text"
-                  step="0.01"
-                  {...form.register("price")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FaDollarSign className="text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    step="0.01"
+                    {...form.register("price")}
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
                 {form.formState.errors.price && (
                   <p className="mt-1 text-sm text-red-600">
                     {form.formState.errors.price.message}
@@ -369,14 +576,19 @@ const TrendingItemsManagement = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Rating (0-5)*
                 </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="5"
-                  step="0.1"
-                  {...form.register("rating", { valueAsNumber: true })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FaStar className="text-gray-400" />
+                  </div>
+                  <input
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    {...form.register("rating", { valueAsNumber: true })}
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
                 {form.formState.errors.rating && (
                   <p className="mt-1 text-sm text-red-600">
                     {form.formState.errors.rating.message}
@@ -397,7 +609,7 @@ const TrendingItemsManagement = () => {
                   />
                   {urlLoading && (
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+                      <FaSpinner className="animate-spin text-gray-400" />
                     </div>
                   )}
                 </div>
@@ -411,10 +623,15 @@ const TrendingItemsManagement = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Retailer*
                 </label>
-                <input
-                  {...form.register("retailer")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FaShoppingCart className="text-gray-400" />
+                  </div>
+                  <input
+                    {...form.register("retailer")}
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
                 {form.formState.errors.retailer && (
                   <p className="mt-1 text-sm text-red-600">
                     {form.formState.errors.retailer.message}
@@ -427,12 +644,17 @@ const TrendingItemsManagement = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Calculated Price*
                 </label>
-                <input
-                  type="text"
-                  step="0.01"
-                  {...form.register("calculatedPrice")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FaDollarSign className="text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    step="0.01"
+                    {...form.register("calculatedPrice")}
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
                 {form.formState.errors.calculatedPrice && (
                   <p className="mt-1 text-sm text-red-600">
                     {form.formState.errors.calculatedPrice.message}
@@ -445,17 +667,22 @@ const TrendingItemsManagement = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Category*
                 </label>
-                <select
-                  {...form.register("category")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                >
-                  <option value="">Select a category</option>
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FaTag className="text-gray-400" />
+                  </div>
+                  <select
+                    {...form.register("category")}
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md appearance-none"
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 {form.formState.errors.category && (
                   <p className="mt-1 text-sm text-red-600">
                     {form.formState.errors.category.message}
@@ -536,7 +763,6 @@ const TrendingItemsManagement = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           className="h-10 w-10 rounded-full object-cover"
                           src={item.image}
@@ -555,7 +781,7 @@ const TrendingItemsManagement = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {item.price}
+                    ${item.price}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {item.retailer}
@@ -564,7 +790,10 @@ const TrendingItemsManagement = () => {
                     {item.category}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {item.rating}
+                    <div className="flex items-center">
+                      <FaStar className="text-yellow-500 mr-1" />
+                      {item.rating}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {item.badge || "-"}
@@ -574,13 +803,13 @@ const TrendingItemsManagement = () => {
                       onClick={() => handleEdit(item)}
                       className="text-blue-600 hover:text-blue-900 mr-4"
                     >
-                      Edit
+                      <FaEdit />
                     </button>
                     <button
                       onClick={() => handleDelete(item.id)}
                       className="text-red-600 hover:text-red-900"
                     >
-                      Delete
+                      <FaTrash />
                     </button>
                   </td>
                 </tr>
