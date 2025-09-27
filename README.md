@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/516cf644-e5cd-4b18-943b-b611770a9e6b" alt="Aus Lanka Logo" width="250"/>
+  <img src="https://github.com/user-attachments/assets/f3f08ba9-a587-4a6d-88f8-d461ceac5af5" alt="Aus Lanka Logo" width="250"/>
 </p>
 
 <h1 align="center">Ausi.LK</h1>
