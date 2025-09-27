@@ -147,7 +147,7 @@ const Hero = () => {
               className="flex items-center justify-center gap-2 px-6 py-4 bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 rounded-xl text-white transition-all shadow-md hover:shadow-lg cursor-pointer"
               onClick={() => router.push("/product")}
             >
-              {`Trick or Treat Shop`}
+              Shop
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
