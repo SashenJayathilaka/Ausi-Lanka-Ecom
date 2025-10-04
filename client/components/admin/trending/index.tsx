@@ -128,10 +128,6 @@ const ErrorFallback = () => (
 
 const UpdateAllButton = () => {
   const { user } = useUser();
-  console.log(
-    "🚀 ~ UpdateAllButton ~ ser:",
-    user?.emailAddresses[0].emailAddress
-  );
   const [isUpdating, setIsUpdating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showDetails, setShowDetails] = useState(false);

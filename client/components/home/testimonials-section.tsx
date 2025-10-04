@@ -14,7 +14,7 @@ const testimonials = [
   {
     id: 1,
     name: "Sachithra Wanasinghe",
-    role: "Luxury Boutique Owner (Colombo)",
+    role: "Colombo",
     image: `https://ui-avatars.com/api/?name=Sachithra+Wanasinghe&background=ff7518&color=fff`,
     text: `Exceptional service! Ausi.lk offers a seamless and trustworthy delivery service directly from Australia, allowing customers to handpick quality products from Australian supermarkets and have them delivered to Sri Lanka with utmost care. 
 The team is highly professional, responsive, and committed to ensuring a smooth and reliable experience every time. 
@@ -67,26 +67,12 @@ const TestimonialsSection = () => {
   return (
     <section
       id="testimonials"
-      className="relative py-20 overflow-hidden bg-gradient-to-t from-orange-50/50 via-purple-100/30 to-white dark:from-gray-900 dark:to-purple-900/20 transition-colors duration-500"
+      className="relative py-20 overflow-hidden bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-500"
     >
-      {/* Halloween decorations */}
-      <div className="absolute top-10 left-5 text-4xl animate-bounce-slow opacity-80 dark:opacity-100">
-        🎃
-      </div>
-      <div className="absolute top-20 right-8 text-3xl animate-pulse-slow opacity-80 dark:opacity-100">
-        👻
-      </div>
-      <div className="absolute bottom-20 left-10 text-2xl animate-spin-slow opacity-80 dark:opacity-100">
-        🕷️
-      </div>
-      <div className="absolute bottom-10 right-5 text-3xl animate-bounce-medium opacity-80 dark:opacity-100">
-        🦇
-      </div>
-
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-        <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-orange-200/30 dark:bg-orange-900/20 blur-3xl opacity-20 transition-colors duration-500"></div>
-        <div className="absolute bottom-10 right-20 w-72 h-72 rounded-full bg-purple-200/30 dark:bg-purple-900/20 blur-3xl opacity-15 transition-colors duration-500"></div>
+        <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-blue-100 dark:bg-blue-900/20 blur-3xl opacity-20 transition-colors duration-500"></div>
+        <div className="absolute bottom-10 right-20 w-72 h-72 rounded-full bg-indigo-100 dark:bg-indigo-900/20 blur-3xl opacity-15 transition-colors duration-500"></div>
       </div>
 
       <motion.div
@@ -100,22 +86,22 @@ const TestimonialsSection = () => {
         <motion.div variants={fadeIn("up", 0.3)} className="text-center mb-16">
           <motion.span
             variants={fadeIn("up", 0.2)}
-            className="inline-block bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-300 px-4 py-2 rounded-full text-sm font-medium mb-4 transition-colors duration-500"
+            className="inline-block bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium mb-4 transition-colors duration-500"
           >
-            Spooky Customer Stories
+            Customer Stories
           </motion.span>
           <motion.h2
             variants={textVariant(0.3)}
             className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white transition-colors duration-500"
           >
             Trusted by{" "}
-            <span className="text-orange-600 dark:text-orange-400 transition-colors duration-500">
+            <span className="text-blue-600 dark:text-blue-400 transition-colors duration-500">
               500+ Businesses
             </span>
           </motion.h2>
           <motion.p
             variants={fadeIn("up", 0.4)}
-            className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto transition-colors duration-500"
+            className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto transition-colors duration-500"
           >
             {` Hear from entrepreneurs who've transformed their businesses with our
             international shipping solutions`}
@@ -144,12 +130,7 @@ const TestimonialsSection = () => {
                   variants={fadeIn("up", index * 0.1)}
                   className="h-full"
                 >
-                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-purple-950/50 overflow-hidden border border-orange-200 dark:border-purple-700 h-full flex flex-col hover:shadow-xl dark:hover:shadow-purple-950/70 transition-all duration-300 group">
-                    {/* Halloween corner accent */}
-                    <div className="absolute top-3 right-3 text-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      🎃
-                    </div>
-
+                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-gray-950/50 overflow-hidden border border-gray-100 dark:border-gray-700 h-full flex flex-col hover:shadow-xl dark:hover:shadow-gray-950/70 transition-all duration-300">
                     <div className="p-8 flex-1">
                       <div className="flex items-center mb-6">
                         <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white dark:border-gray-800 shadow-md">
@@ -163,7 +144,7 @@ const TestimonialsSection = () => {
                           <h4 className="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">
                             {testimonial.name}
                           </h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-500">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">
                             {testimonial.role}
                           </p>
                         </div>
@@ -180,14 +161,14 @@ const TestimonialsSection = () => {
                           />
                         ))}
                       </div>
-                      <p className="text-gray-700 dark:text-gray-300 mb-6 line-clamp-3 transition-colors duration-500">
+                      <p className="text-gray-600 dark:text-gray-300 mb-6 transition-colors duration-500 line-clamp-3">
                         {testimonial.text}
                       </p>
                     </div>
-                    <div className="px-8 py-4 bg-orange-50 dark:bg-purple-700/50 border-t border-orange-200 dark:border-purple-600 transition-colors duration-500">
-                      <p className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-500">
+                    <div className="px-8 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-600 transition-colors duration-500">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">
                         Order:{" "}
-                        <span className="font-medium text-gray-800 dark:text-gray-200 transition-colors duration-500">
+                        <span className="font-medium text-gray-700 dark:text-gray-200 transition-colors duration-500">
                           {testimonial.order}
                         </span>
                       </p>
@@ -204,16 +185,16 @@ const TestimonialsSection = () => {
             className="flex justify-center gap-4 mt-8"
           >
             <motion.button
-              whileHover={{ scale: 1.1, backgroundColor: "#ea580c" }}
+              whileHover={{ scale: 1.1, backgroundColor: "#3B82F6" }}
               whileTap={{ scale: 0.95 }}
-              className="testimonial-prev w-12 h-12 rounded-full border border-orange-200 dark:border-purple-600 flex items-center justify-center bg-white dark:bg-gray-700 hover:bg-orange-500 dark:hover:bg-orange-600 hover:text-white cursor-pointer transition-all shadow-sm"
+              className="testimonial-prev w-12 h-12 rounded-full border border-gray-200 dark:border-gray-600 flex items-center justify-center bg-white dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white cursor-pointer transition-all shadow-sm"
             >
               <BsChevronLeft className="w-5 h-5 text-gray-700 dark:text-gray-300 hover:text-white transition-colors duration-300" />
             </motion.button>
             <motion.button
-              whileHover={{ scale: 1.1, backgroundColor: "#ea580c" }}
+              whileHover={{ scale: 1.1, backgroundColor: "#3B82F6" }}
               whileTap={{ scale: 0.95 }}
-              className="testimonial-next w-12 h-12 rounded-full border border-orange-200 dark:border-purple-600 flex items-center justify-center bg-white dark:bg-gray-700 hover:bg-orange-500 dark:hover:bg-orange-600 hover:text-white cursor-pointer transition-all shadow-sm"
+              className="testimonial-next w-12 h-12 rounded-full border border-gray-200 dark:border-gray-600 flex items-center justify-center bg-white dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white cursor-pointer transition-all shadow-sm"
             >
               <BsChevronRight className="w-5 h-5 text-gray-700 dark:text-gray-300 hover:text-white transition-colors duration-300" />
             </motion.button>
@@ -226,7 +207,7 @@ const TestimonialsSection = () => {
           className="flex flex-wrap justify-center gap-8 mt-16"
         >
           <div className="flex items-center gap-3">
-            <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 transition-colors duration-500">
+            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 transition-colors duration-500">
               4.9
             </div>
             <div className="flex flex-col">
@@ -238,97 +219,39 @@ const TestimonialsSection = () => {
                   />
                 ))}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">
                 Average Rating
               </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 transition-colors duration-500">
+            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 transition-colors duration-500">
               98%
             </div>
             <div className="flex flex-col">
               <div className="text-sm font-medium text-gray-900 dark:text-white transition-colors duration-500">
                 Delivery Success
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">
                 On-time shipments
               </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 transition-colors duration-500">
+            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 transition-colors duration-500">
               500+
             </div>
             <div className="flex flex-col">
               <div className="text-sm font-medium text-gray-900 dark:text-white transition-colors duration-500">
                 Happy Clients
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">
                 Across Sri Lanka
               </div>
             </div>
           </div>
         </motion.div>
       </motion.div>
-
-      <style jsx>{`
-        @keyframes bounce-slow {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-15px);
-          }
-        }
-        @keyframes bounce-medium {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        @keyframes spin-slow {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-        @keyframes pulse-slow {
-          0%,
-          100% {
-            opacity: 0.7;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 1;
-            transform: scale(1.1);
-          }
-        }
-        .animate-bounce-slow {
-          animation: bounce-slow 5s ease-in-out infinite;
-        }
-        .animate-bounce-medium {
-          animation: bounce-medium 4s ease-in-out infinite;
-        }
-        .animate-spin-slow {
-          animation: spin-slow 20s linear infinite;
-        }
-        .animate-pulse-slow {
-          animation: pulse-slow 3s ease-in-out infinite;
-        }
-        .line-clamp-5 {
-          display: -webkit-box;
-          -webkit-line-clamp: 5;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-      `}</style>
     </section>
   );
 };
