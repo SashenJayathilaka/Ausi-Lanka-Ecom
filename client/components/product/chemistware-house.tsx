@@ -14,8 +14,11 @@ import {
   FiShoppingCart,
   FiX,
 } from "react-icons/fi";
-import { FaGhost, FaHatWizard } from "react-icons/fa";
-import { GiPumpkinLantern } from "react-icons/gi";
+import {
+  RiClipboardLine,
+  RiPriceTag3Line,
+  RiShoppingBasketLine,
+} from "react-icons/ri";
 import { toast } from "sonner";
 import ShippingCountdown from "../home/ShippingCountdown";
 import Bucket from "./bucket";
@@ -45,36 +48,48 @@ const ChemistWareHouse = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
-  // Supported retailers data with updated color schemes for both modes
+  // Supported retailers data with color schemes
   const supportedRetailers = [
     {
       name: "Chemist Warehouse",
       url: "https://www.chemistwarehouse.com.au/",
       logo: "/assets/partner_chemistwarehouse.webp",
-      bgColor: "bg-orange-100 dark:bg-orange-900/30",
+      color: "from-amber-500 to-amber-600",
+      bgColor: "bg-amber-100 dark:bg-amber-900/30",
     },
     {
       name: "Coles",
       url: "https://www.coles.com.au/",
       logo: "/assets/coles.png",
+      color: "from-red-500 to-red-600",
       bgColor: "bg-red-100 dark:bg-red-900/30",
     },
     {
       name: "ALDI",
       url: "https://www.aldi.com.au/",
       logo: "/assets/Aldi-Logo.png",
+      color: "from-purple-500 to-purple-600",
       bgColor: "bg-purple-100 dark:bg-purple-900/30",
     },
     {
       name: "Woolworths",
       url: "https://www.woolworths.com.au/",
       logo: "/assets/woolworths.png",
+      color: "from-green-600 to-green-700",
       bgColor: "bg-green-100 dark:bg-green-900/30",
     },
+    /*     {
+      name: "JB Hi-Fi",
+      url: "https://www.jbhifi.com.au/",
+      logo: "/assets/jbhifi.png",
+      color: "from-blue-500 to-blue-600",
+      bgColor: "bg-blue-100 dark:bg-blue-900/30",
+    }, */
     {
       name: "Officeworks",
       url: "https://www.officeworks.com.au/",
       logo: "/assets/officeworks.png",
+      color: "from-purple-500 to-purple-600",
       bgColor: "bg-purple-100 dark:bg-purple-900/30",
     },
   ];
@@ -195,8 +210,8 @@ const ChemistWareHouse = () => {
 
   if (!mounted || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 transition-colors duration-500">
-        <FaHatWizard className="animate-pulse h-12 w-12 text-purple-600 dark:text-purple-400" />
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
+        <AiOutlineLoading3Quarters className="animate-spin h-12 w-12 text-indigo-600 dark:text-indigo-400" />
       </div>
     );
   }
@@ -206,7 +221,7 @@ const ChemistWareHouse = () => {
       initial="hidden"
       animate="show"
       variants={staggerContainer()}
-      className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200 relative overflow-hidden transition-colors duration-500"
+      className="min-h-screen bg-gray-50 dark:bg-gray-900 relative overflow-hidden"
     >
       {/* Main Content */}
       <div className="pt-24 pb-16 container mx-auto px-4 sm:px-6 lg:px-8">
@@ -219,25 +234,22 @@ const ChemistWareHouse = () => {
           variants={staggerContainer()}
         >
           <div className="absolute inset-0 overflow-hidden z-0">
-            {/* HALLOWEEN GRADIENT (LIGHT & DARK) */}
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-200 via-purple-300 to-pink-300 opacity-90 animate-gradient-x dark:from-red-800 dark:via-purple-900 dark:to-black"></div>
-            {/* HALLOWEEN PATTERN */}
-            <div className="absolute inset-0 bg-[url('/assets/cobweb-pattern.svg')] bg-[length:60px_60px] opacity-15 dark:opacity-10"></div>
-            {/* HALLOWEEN ORBS (LIGHT & DARK) */}
-            <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-orange-200 rounded-full filter blur-[120px] opacity-30 animate-float dark:bg-orange-400"></div>
-            <div className="absolute -top-32 -right-32 w-64 h-64 bg-green-200 rounded-full filter blur-[120px] opacity-30 animate-float-delay dark:bg-green-400"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 opacity-90 animate-gradient-x"></div>
+            <div className="absolute inset-0 bg-[url('/assets/grid-pattern.svg')] bg-[length:60px_60px] opacity-10 dark:opacity-5"></div>
+            <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-indigo-400 rounded-full filter blur-[120px] opacity-30 animate-float"></div>
+            <div className="absolute -top-32 -right-32 w-64 h-64 bg-purple-400 rounded-full filter blur-[120px] opacity-30 animate-float-delay"></div>
           </div>
 
           <div className="relative z-10 p-8 md:p-12 lg:p-16">
             <motion.div variants={textVariant(0.2)}>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 dark:text-white mb-4 leading-tight">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-orange-500 dark:from-white dark:to-orange-100">
-                  Spooky Shopping, Sorted
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                  Smart Shopping, Simplified
                 </span>
-                🎃
               </h1>
-              <p className="text-xl text-gray-700 dark:text-orange-200 max-w-2xl">
-                {`Conjure up prices and compare deals across Australia's most mystical retailers`}
+              <p className="text-xl text-blue-100 max-w-2xl">
+                {`Extract prices, compare deals, and save money across Australia's
+                top retailers`}
               </p>
             </motion.div>
 
@@ -246,8 +258,8 @@ const ChemistWareHouse = () => {
                 <div className="flex-1 relative group">
                   <input
                     type="text"
-                    className="w-full px-6 py-4 rounded-xl bg-white/50 backdrop-blur-sm border-2 border-orange-400/30 focus:border-orange-400/50 focus:ring-4 focus:ring-orange-400/10 text-gray-800 placeholder-gray-500 font-medium text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:bg-white/70 focus:shadow-2xl focus:bg-white/70 dark:bg-white/10 dark:text-white dark:placeholder-orange-200/80 dark:border-orange-400/30 dark:hover:bg-white/20 dark:focus:bg-white/20"
-                    placeholder="Paste your haunted URL here..."
+                    className="w-full px-6 py-4 rounded-xl bg-white/20 backdrop-blur-sm border-2 border-white/30 focus:border-white/50 focus:ring-4 focus:ring-white/10 text-white placeholder-blue-100/80 font-medium text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:bg-white/30 focus:shadow-2xl focus:bg-white/30"
+                    placeholder="Paste product URL here..."
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleScrape()}
@@ -257,7 +269,7 @@ const ChemistWareHouse = () => {
                   <motion.button
                     onClick={handlePaste}
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 text-gray-500 hover:text-gray-800 transition-colors bg-white/20 rounded-lg backdrop-blur-sm dark:text-orange-200 dark:hover:text-white dark:bg-white/10"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 text-blue-100 hover:text-white transition-colors bg-white/10 rounded-lg backdrop-blur-sm"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     title="Paste from clipboard"
@@ -267,26 +279,26 @@ const ChemistWareHouse = () => {
                     <FiClipboard className="h-5 w-5" />
                     <span className="sr-only">Paste</span>
                   </motion.button>
-                  <div className="absolute inset-0 rounded-xl pointer-events-none transition-all duration-300 group-focus-within:bg-orange-400/10 group-focus-within:shadow-[0_0_20px_5px_rgba(251,146,60,0.3)]" />
+                  <div className="absolute inset-0 rounded-xl pointer-events-none transition-all duration-300 group-focus-within:bg-blue-400/10 group-focus-within:shadow-[0_0_20px_5px_rgba(96,165,250,0.3)]" />
                 </div>
                 <button
                   onClick={() => handleScrape()}
                   disabled={loading}
-                  className="px-6 py-4 bg-orange-600 text-white rounded-xl font-bold text-lg flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all hover:bg-orange-700"
+                  className="px-6 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all hover:bg-gray-100"
                 >
                   {loading ? (
                     <AiOutlineLoading3Quarters className="animate-spin h-6 w-6" />
                   ) : (
                     <>
                       <span>Analyze</span>
-                      <FaGhost className="h-5 w-5" />
+                      <RiPriceTag3Line className="h-5 w-5" />
                     </>
                   )}
                 </button>
               </div>
 
               <div className="mt-6 flex flex-col items-center justify-between">
-                <ShippingCountdown className="text-gray-700 dark:text-white font-medium" />
+                <ShippingCountdown className="text-white font-medium" />
               </div>
             </motion.div>
           </div>
@@ -339,7 +351,7 @@ const ChemistWareHouse = () => {
             >
               <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
-                  <FaGhost className="mr-2 text-orange-500" />
+                  <RiPriceTag3Line className="mr-2 text-indigo-600 dark:text-indigo-400" />
                   Product Analysis
                 </h2>
               </div>
@@ -390,6 +402,7 @@ const ChemistWareHouse = () => {
                             className="h-8 w-auto object-contain"
                           />
                         </div>
+
                         {data.image ? (
                           <motion.img
                             src={data.image}
@@ -409,7 +422,7 @@ const ChemistWareHouse = () => {
                         </h3>
 
                         <div className="flex items-baseline mb-2">
-                          <span className="text-4xl font-extrabold text-orange-500 dark:text-orange-400">
+                          <span className="text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">
                             {LkrFormat(Number(data?.calculatedPrice || 0))}
                           </span>
                           <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
@@ -417,6 +430,7 @@ const ChemistWareHouse = () => {
                           </span>
                         </div>
 
+                        {/* Added note about sea cargo shipment */}
                         <div className="mb-6">
                           <p className="text-sm text-gray-500 dark:text-gray-400 italic">
                             Price includes our standard sea cargo shipment fee
@@ -428,11 +442,11 @@ const ChemistWareHouse = () => {
                             onClick={handleAddToBucket}
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
-                            className="flex-1 bg-gradient-to-r from-lime-600 to-green-700 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all cursor-pointer"
+                            className="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 dark:from-indigo-500 dark:to-indigo-600 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all cursor-pointer"
                           >
-                            <GiPumpkinLantern className="h-6 w-6" />
+                            <RiShoppingBasketLine className="h-6 w-6" />
                             <span className="font-semibold text-lg">
-                              Add to Cauldron
+                              Add to Collection
                             </span>
                           </motion.button>
 
@@ -443,7 +457,7 @@ const ChemistWareHouse = () => {
                               rel="noopener noreferrer"
                               whileHover={{ scale: 1.03 }}
                               whileTap={{ scale: 0.97 }}
-                              className="flex-1 border-2 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-4 px-6 rounded-lg flex items-center justify-center gap-2 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:border-orange-200 dark:hover:border-orange-400 transition-all"
+                              className="flex-1 border-2 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-4 px-6 rounded-lg flex items-center justify-center gap-2 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:border-indigo-200 dark:hover:border-indigo-400 transition-all"
                             >
                               <FiExternalLink className="h-5 w-5" />
                               <span className="font-medium">View Product</span>
@@ -460,25 +474,25 @@ const ChemistWareHouse = () => {
                     className="text-center py-16 bg-gray-50 dark:bg-gray-700/30 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 relative"
                   >
                     <div className="mx-auto h-24 w-24 text-gray-300 dark:text-gray-500 mb-6">
-                      <FaGhost className="h-full w-full" />
+                      <RiPriceTag3Line className="h-full w-full" />
                     </div>
                     <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-2">
                       No product analyzed yet
                     </h3>
                     <p className="mt-1 text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-4">
-                      Paste a product URL from any supported retailer to get
-                      started
+                      Paste a product URL from any supported retailer above to
+                      get started
                     </p>
 
                     <button
                       onClick={handlePaste}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 cursor-pointer"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
                     >
                       {loading ? (
                         <AiOutlineLoading3Quarters className="animate-spin h-6 w-6" />
                       ) : (
                         <>
-                          <FiClipboard className="mr-2" />
+                          <RiClipboardLine className="mr-2" />
                           Paste URL
                         </>
                       )}
@@ -520,12 +534,14 @@ const ChemistWareHouse = () => {
               }}
             >
               <motion.div
-                className="p-6 border-b border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-orange-50/50 to-purple-50/50 dark:from-gray-900 dark:to-purple-900/30 relative overflow-hidden"
+                className="p-6 border-b border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 relative overflow-hidden"
                 whileHover={{ backgroundPosition: "100% 50%" }}
               >
+                <div className="absolute inset-0 opacity-10 dark:opacity-5"></div>{" "}
+                {/*  bg-[url('/assets/dot-pattern.svg')] bg-[size:20px_20px] */}
                 <div className="relative z-10 flex items-center">
                   <motion.div
-                    className="p-3 rounded-xl bg-gradient-to-r from-orange-500 to-purple-500 text-white shadow-md mr-4"
+                    className="p-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md mr-4"
                     animate={{
                       rotate: [0, 5, -5, 0],
                       y: [0, -5, 0],
@@ -536,14 +552,14 @@ const ChemistWareHouse = () => {
                       repeatType: "reverse",
                     }}
                   >
-                    <GiPumpkinLantern className="h-6 w-6" />
+                    <RiShoppingBasketLine className="h-6 w-6" />
                   </motion.div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
-                      Your Cauldron
+                      Your Collection
                       {products.length > 0 && (
                         <motion.span
-                          className="ml-3 bg-orange-600 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center"
+                          className="ml-3 bg-indigo-600 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center"
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
                           transition={{
@@ -558,8 +574,8 @@ const ChemistWareHouse = () => {
                     </h2>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                       {products.length > 0
-                        ? "Your spooky selection"
-                        : "Ready for your spooky favorites"}
+                        ? "Your curated selection"
+                        : "Ready for your favorites"}
                     </p>
                   </div>
                 </div>
@@ -568,6 +584,19 @@ const ChemistWareHouse = () => {
               <div className="relative">
                 <Bucket />
               </div>
+
+              {/*               {products.length > 0 && (
+                <motion.div
+                  className="p-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20 border-t border-gray-200/50 dark:border-gray-700/50 text-center"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Free shipping on orders over $50
+                  </p>
+                </motion.div>
+              )} */}
             </motion.div>
           </div>
         </div>
@@ -581,9 +610,9 @@ const ChemistWareHouse = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             onClick={() => setShowBucket(true)}
-            className="lg:hidden fixed bottom-6 right-6 bg-gradient-to-r from-orange-600 to-orange-700 text-white p-4 rounded-full shadow-2xl z-50 flex items-center justify-center"
+            className="lg:hidden fixed bottom-6 right-6 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white p-4 rounded-full shadow-2xl z-50 flex items-center justify-center"
           >
-            <GiPumpkinLantern className="h-6 w-6" />
+            <RiShoppingBasketLine className="h-6 w-6" />
             {products.length > 0 && (
               <motion.span
                 initial={{ scale: 0 }}
@@ -605,13 +634,13 @@ const ChemistWareHouse = () => {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30 }}
-            className="fixed inset-0 z-50 bg-white dark:bg-gray-950 lg:hidden"
+            className="fixed inset-0 z-50 bg-white dark:bg-gray-900 lg:hidden"
           >
             <div className="h-full flex flex-col">
               <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
-                  <GiPumpkinLantern className="mr-2 text-orange-500" />
-                  Your Cauldron
+                  <RiShoppingBasketLine className="mr-2 text-indigo-600 dark:text-indigo-400" />
+                  Your Collection
                 </h2>
                 <button
                   onClick={() => setShowBucket(false)}
@@ -635,7 +664,7 @@ const ChemistWareHouse = () => {
           [...Array(10)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute rounded-full bg-orange-200 dark:bg-orange-900/20 opacity-10"
+              className="absolute rounded-full bg-indigo-100 dark:bg-indigo-900/20 opacity-10"
               initial={{
                 x: Math.random() * width,
                 y: Math.random() * height,
