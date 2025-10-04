@@ -24,6 +24,7 @@ import {
   FaShoppingCart,
   FaTag,
 } from "react-icons/fa";
+import { useUser } from "@clerk/nextjs";
 
 const supportedRetailers = [
   {
@@ -126,6 +127,7 @@ const ErrorFallback = () => (
 );
 
 const UpdateAllButton = () => {
+  const { user } = useUser();
   const [isUpdating, setIsUpdating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
@@ -135,48 +137,56 @@ const UpdateAllButton = () => {
     trpc.updateAllAdminItem.updateAllTrendingItems.useMutation();
 
   const handleUpdateAll = async () => {
-    setIsUpdating(true);
-    setProgress(0);
+    if (
+      user?.emailAddresses[0].emailAddress === "sashenjayathilaka2001@gmail.com"
+    ) {
+      setIsUpdating(true);
+      setProgress(0);
 
-    try {
-      // Simulate progress for better UX
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return prev;
-          }
-          return prev + 10;
+      try {
+        // Simulate progress for better UX
+        const progressInterval = setInterval(() => {
+          setProgress((prev) => {
+            if (prev >= 90) {
+              clearInterval(progressInterval);
+              return prev;
+            }
+            return prev + 10;
+          });
+        }, 500);
+
+        // Execute the mutation
+        const result = await updateAllMutation.mutateAsync();
+
+        clearInterval(progressInterval);
+        setProgress(100);
+
+        if (result.success) {
+          toast.success(
+            `Successfully updated ${result.updatedCount} items. ${result.failedCount} failed.`,
+            {
+              description:
+                result.failedCount > 0
+                  ? "Some items failed to update. Check details for more information."
+                  : undefined,
+            }
+          );
+        } else {
+          throw new Error(result.message || "Failed to update items");
+        }
+      } catch (error) {
+        console.error("Update error:", error);
+        toast.error("Update Failed", {
+          description:
+            error instanceof Error
+              ? error.message
+              : "An unknown error occurred",
         });
-      }, 500);
-
-      // Execute the mutation
-      const result = await updateAllMutation.mutateAsync();
-
-      clearInterval(progressInterval);
-      setProgress(100);
-
-      if (result.success) {
-        toast.success(
-          `Successfully updated ${result.updatedCount} items. ${result.failedCount} failed.`,
-          {
-            description:
-              result.failedCount > 0
-                ? "Some items failed to update. Check details for more information."
-                : undefined,
-          }
-        );
-      } else {
-        throw new Error(result.message || "Failed to update items");
+      } finally {
+        setIsUpdating(false);
       }
-    } catch (error) {
-      console.error("Update error:", error);
-      toast.error("Update Failed", {
-        description:
-          error instanceof Error ? error.message : "An unknown error occurred",
-      });
-    } finally {
-      setIsUpdating(false);
+    } else {
+      toast.error("You do not have permission to perform this action.");
     }
   };
 
@@ -189,7 +199,7 @@ const UpdateAllButton = () => {
         <button
           onClick={handleUpdateAll}
           disabled={isUpdating}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           {isUpdating ? <FaSpinner className="animate-spin" /> : <FaSync />}
           {isUpdating ? "Updating All Products..." : "Update All Products"}
@@ -266,6 +276,7 @@ const UpdateAllButton = () => {
                 <div className="w-24 text-center">Status</div>
                 <div className="w-48 text-center">Error</div>
               </div>
+              {/*   eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {results.results.map((result: any, index: number) => (
                 <div key={index} className="p-4 flex items-center">
                   <div className="flex-1 text-sm font-mono">{result.id}</div>
@@ -460,10 +471,10 @@ const TrendingItemsManagement = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Trending Items</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Catalog Items</h1>
         <button
           onClick={handleCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 cursor-pointer"
         >
           <FaPlus />
           Create New Item

@@ -13,19 +13,21 @@ import "swiper/css/navigation";
 const testimonials = [
   {
     id: 1,
-    name: "Nadeesha Perera",
-    role: "Luxury Boutique Owner (Colombo)",
-    image: `https://ui-avatars.com/api/?name=Nadeesha+Perera`,
-    text: "Ausi.LK has transformed my boutique with genuine Australian products. My customers adore the premium quality, and shipping is always fast.",
+    name: "Sachithra Wanasinghe",
+    role: "Colombo",
+    image: `https://ui-avatars.com/api/?name=Sachithra+Wanasinghe&background=ff7518&color=fff`,
+    text: `Exceptional service! Ausi.lk offers a seamless and trustworthy delivery service directly from Australia, allowing customers to handpick quality products from Australian supermarkets and have them delivered to Sri Lanka with utmost care. 
+The team is highly professional, responsive, and committed to ensuring a smooth and reliable experience every time. 
+Highly recommended for anyone seeking genuine Australian products delivered hassle-free!`,
     rating: 5,
     order: "#AU-7842",
   },
   {
     id: 2,
-    name: "Rajiv Fernando",
-    role: "Pharmacy Chain Manager (Kandy)",
-    image: `https://ui-avatars.com/api/?name=Rajiv+Fernando`,
-    text: "Thanks to Ausi.LK, I now stock Chemist Warehouse products in Sri Lanka. The vitamins and supplements sell out fast—my customers trust the authenticity!",
+    name: "Sayuru Dissanayaka",
+    role: "Polonnaruwa",
+    image: `https://ui-avatars.com/api/?name=Sayuru+Dissanayaka&background=8b5cf6&color=fff`,
+    text: `I recently used Ausi.lk's services to import goods from Australia to Sri Lanka, and I must say their service is excellent! They are highly reliable, professional, and efficient in handling shipments. Their communication is clear, and they provide updates promptly, ensuring a stress-free experience. I would highly recommend them to anyone looking for a trustworthy cargo and freight company. Great job, Ausi.lk!`,
     rating: 5,
     order: "#AU-9215",
   },
@@ -33,8 +35,9 @@ const testimonials = [
     id: 3,
     name: "Chamari Silva",
     role: "Gift Shop Owner (Galle)",
-    image: "https://ui-avatars.com/api/?name=Chamari+Silva",
-    text: "I was amazed by Ausi.LK’s customer service when there was a minor customs delay. They handled everything professionally—true peace of mind!",
+    image:
+      "https://ui-avatars.com/api/?name=Chamari+Silva&background=dc2626&color=fff",
+    text: "I was amazed by Ausi.LK's customer service when there was a minor customs delay. They handled everything professionally—true peace of mind!",
     rating: 4,
     order: "#AU-6732",
   },
@@ -42,7 +45,8 @@ const testimonials = [
     id: 4,
     name: "Dinesh Rathnayake",
     role: "Cafe Owner (Negombo)",
-    image: "https://ui-avatars.com/api/?name=Dinesh+Rathnayake",
+    image:
+      "https://ui-avatars.com/api/?name=Dinesh+Rathnayake&background=ea580c&color=fff",
     text: "Ausi.LK delivers Woolworths and Coles products straight to my café. The Australian coffee beans and snacks keep my customers coming back!",
     rating: 5,
     order: "#AU-4589",
@@ -51,7 +55,8 @@ const testimonials = [
     id: 5,
     name: "Anjali Weerasinghe",
     role: "Electronics Retailer (Colombo)",
-    image: "https://ui-avatars.com/api/?name=Anjali+Weerasinghe",
+    image:
+      "https://ui-avatars.com/api/?name=Anjali+Weerasinghe&background=16a34a&color=fff",
     text: "JB Hi-Fi and Officeworks products through Ausi.LK are a game-changer. My store now offers genuine Aussie tech.",
     rating: 5,
     order: "#AU-3367",
@@ -156,7 +161,7 @@ const TestimonialsSection = () => {
                           />
                         ))}
                       </div>
-                      <p className="text-gray-600 dark:text-gray-300 mb-6 transition-colors duration-500">
+                      <p className="text-gray-600 dark:text-gray-300 mb-6 transition-colors duration-500 line-clamp-3">
                         {testimonial.text}
                       </p>
                     </div>

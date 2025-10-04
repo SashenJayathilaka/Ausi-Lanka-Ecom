@@ -18,35 +18,20 @@ const CompanyLogo = () => {
   ];
 
   return (
-    <div className="w-full bg-gradient-to-t  dark:from-purple-900/30 dark:to-gray-900 py-16 relative overflow-hidden transition-colors duration-300">
-      {/* Halloween decorative elements */}
+    <div className="w-full bg-gray-50 dark:bg-gray-900 py-16 relative overflow-hidden transition-colors duration-300">
+      {/* Decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-orange-200/50 dark:bg-orange-500/20 rounded-full blur-[100px] opacity-30 dark:opacity-20"></div>
-        <div className="absolute bottom-0 right-0 w-72 h-72 bg-purple-200/50 dark:bg-purple-600/20 rounded-full blur-[100px] opacity-25 dark:opacity-15"></div>
-
-        {/* Floating Halloween elements - visible in both modes */}
-        <div className="absolute top-10 left-1/4 text-4xl animate-bounce-slow opacity-80 dark:opacity-100">
-          🎃
-        </div>
-        <div className="absolute bottom-10 right-1/4 text-3xl animate-bounce-medium opacity-80 dark:opacity-100">
-          🦇
-        </div>
-        <div className="absolute top-1/3 left-10 text-2xl animate-spin-slow opacity-80 dark:opacity-100">
-          🕷️
-        </div>
-        <div className="absolute bottom-1/4 right-20 text-3xl animate-pulse-slow opacity-80 dark:opacity-100">
-          👻
-        </div>
+        <div className="absolute top-0 left-0 w-64 h-64 bg-blue-100 dark:bg-blue-900/20 rounded-full blur-[100px] opacity-20 dark:opacity-10"></div>
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-blue-200 dark:bg-blue-800/20 rounded-full blur-[100px] opacity-15 dark:opacity-10"></div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
-        {/* Section header with Halloween theme */}
+      <div className="container mx-auto px-4">
+        {/* Section header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-3 relative inline-block">
-            <span className="absolute -inset-3 bg-orange-200/50 dark:bg-purple-800/30 blur-md -z-10 rounded-lg transition-colors duration-300"></span>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
             Trusted by Leading Australian Retailers
           </h2>
-          <p className="text-lg text-gray-700 dark:text-orange-100 max-w-2xl mx-auto transition-colors duration-300">
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             {`We partner with Australia's most recognized brands to bring you
             authentic products`}
           </p>
@@ -54,9 +39,9 @@ const CompanyLogo = () => {
 
         {/* Logo marquee container */}
         <div className="relative h-32 overflow-hidden">
-          {/* Gradient fade edges with Halloween colors */}
-          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white dark:from-purple-900 to-transparent z-20 transition-colors duration-300"></div>
-          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white dark:from-purple-900 to-transparent z-20 transition-colors duration-300"></div>
+          {/* Gradient fade edges */}
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-gray-50 dark:from-gray-900 to-transparent z-20"></div>
+          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-gray-50 dark:from-gray-900 to-transparent z-20"></div>
 
           {/* First marquee row */}
           <motion.div
@@ -80,11 +65,10 @@ const CompanyLogo = () => {
                 }}
               >
                 <div className="relative group h-20 w-48">
-                  <div className="absolute -inset-2 bg-orange-100/50 dark:bg-purple-600/20 rounded-lg blur-md group-hover:bg-orange-200/50 dark:group-hover:bg-purple-600/30 transition-all duration-300 -z-10"></div>
                   <Image
                     src={logo.src}
                     alt={logo.alt}
-                    className="object-contain h-full w-full grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                    className="object-contain h-full w-full grayscale opacity-90 dark:opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
                     fill
                     sizes="(max-width: 768px) 100px, 200px"
                     quality={100}
@@ -116,11 +100,10 @@ const CompanyLogo = () => {
                 }}
               >
                 <div className="relative group h-20 w-48">
-                  <div className="absolute -inset-2 bg-purple-100/50 dark:bg-purple-600/20 rounded-lg blur-md group-hover:bg-purple-200/50 dark:group-hover:bg-purple-600/30 transition-all duration-300 -z-10"></div>
                   <Image
                     src={logo.src}
                     alt={logo.alt}
-                    className="object-contain h-full w-full grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                    className="object-contain h-full w-full grayscale opacity-90 dark:opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
                     fill
                     sizes="(max-width: 768px) 100px, 200px"
                     quality={100}
@@ -131,14 +114,13 @@ const CompanyLogo = () => {
           </motion.div>
         </div>
 
-        {/* CTA button with Halloween theme */}
+        {/* CTA button */}
         <div className="text-center mt-12">
-          <button className="inline-flex items-center px-6 py-3 bg-orange-600 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600 text-white rounded-lg font-medium transition-colors shadow-sm hover:shadow-md cursor-pointer relative overflow-hidden group">
-            <span className="absolute inset-0 bg-gradient-to-r from-orange-500 to-purple-600 dark:from-orange-600 dark:to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-            <span className="relative z-10">Become a Partner</span>
+          <button className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg font-medium transition-colors shadow-sm hover:shadow-md cursor-pointer">
+            Become a Partner
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 ml-2 relative z-10"
+              className="h-5 w-5 ml-2"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -151,58 +133,6 @@ const CompanyLogo = () => {
           </button>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes bounce-slow {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-15px);
-          }
-        }
-        @keyframes bounce-medium {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        @keyframes spin-slow {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-        @keyframes pulse-slow {
-          0%,
-          100% {
-            opacity: 0.7;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 1;
-            transform: scale(1.1);
-          }
-        }
-        .animate-bounce-slow {
-          animation: bounce-slow 5s ease-in-out infinite;
-        }
-        .animate-bounce-medium {
-          animation: bounce-medium 4s ease-in-out infinite;
-        }
-        .animate-spin-slow {
-          animation: spin-slow 20s linear infinite;
-        }
-        .animate-pulse-slow {
-          animation: pulse-slow 3s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   );
 };
