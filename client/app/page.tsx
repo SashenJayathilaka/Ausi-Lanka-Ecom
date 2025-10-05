@@ -33,10 +33,8 @@ export default async function Home() {
         <FeaturesSection />
         <MonitorSection />
         <ServicesSection />
-
         {/* Advertisement Section - Before testimonials for social proof flow */}
         <AdvertisementSection />
-
         <TestimonialsSection />
         <Footer />
       </div>
