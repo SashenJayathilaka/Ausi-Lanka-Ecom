@@ -198,7 +198,7 @@ const Hero = () => {
             {/* Main product image */}
             <div className="relative z-10 rounded-2xl overflow-hidden shadow-xl dark:shadow-gray-900/50 border-8 border-white dark:border-gray-800 hover:shadow-2xl dark:hover:shadow-gray-900/70 transition-all duration-300 transform hover:-translate-y-1">
               <Image
-                src="/assets/kangaroo-with-australia.jpg"
+                src="/assets/hero_image.png"
                 width={600}
                 height={600}
                 className="w-full h-auto"
