@@ -37,6 +37,8 @@ export const users = pgTable(
     name: text("name").notNull(),
     emailId: text("email_id").notNull(),
     imageUrl: text("image_url"),
+    whatsAppNumber: varchar("whatsapp_number", { length: 20 }),
+    delivery_address: text("delivery_address"),
     userType: userTypeEnum("user_type").default("user").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
