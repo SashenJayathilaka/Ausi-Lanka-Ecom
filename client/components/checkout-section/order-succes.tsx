@@ -307,7 +307,7 @@ function OrderSuccess({ formValues }: Props) {
         className="fixed bottom-8 right-8 bg-white dark:bg-gray-700 p-4 rounded-full shadow-xl cursor-pointer transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        onClick={() => router.push("/orders")}
+        onClick={() => router.push("/history")}
       >
         <FiPackage className="h-6 w-6 text-blue-600 dark:text-blue-400" />
       </motion.div>

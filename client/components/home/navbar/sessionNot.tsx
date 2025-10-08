@@ -23,7 +23,6 @@ const SessionNot = () => {
     { href: "/product", label: "Shop" },
     { href: "/catalog", label: "Catalog" },
     { href: "/items", label: "In Stock Items" },
-    { href: "/history", label: "Orders History" },
   ];
 
   useEffect(() => {

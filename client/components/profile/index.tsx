@@ -1,29 +1,48 @@
 "use client";
 
+import { districts } from "@/lib/districts";
 import { trpc } from "@/trpc/client";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
+import React, { Suspense, useEffect, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { useForm } from "react-hook-form";
 import {
-  FiUser,
-  FiMail,
-  FiPhone,
-  FiMapPin,
-  FiSave,
   FiEdit,
-  FiX,
+  FiHome,
+  FiMail,
+  FiMapPin,
+  FiNavigation,
+  FiPhone,
+  FiSave,
   FiSettings,
   FiShoppingBag,
+  FiUser,
+  FiX,
 } from "react-icons/fi";
 import { OrderHistoryPage } from "../order-history";
+import OrderHistoryPageSkeleton from "../order-history/order-history-page-skeleton";
 
 interface UserFormData {
   name: string;
   whatsAppNumber: string | null;
-  delivery_address: string | null;
+  addressLine1: string | null;
+  addressLine2: string | null;
+  city: string | null;
+  district: string | null;
+  postalCode: string | null;
 }
 
-const CurrentUserProfile = () => {
+export const CurrentUserProfile: React.FC = () => {
+  return (
+    <Suspense fallback={<OrderHistoryPageSkeleton />}>
+      <ErrorBoundary fallback={<p>Error...</p>}>
+        <CurrentUserProfileSuspense />
+      </ErrorBoundary>
+    </Suspense>
+  );
+};
+
+const CurrentUserProfileSuspense = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState<"profile" | "orders">("profile");
   const tabs = [
@@ -54,12 +73,16 @@ const CurrentUserProfile = () => {
   } = useForm<UserFormData>();
 
   // Reset form when user data loads or editing mode changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (data?.user) {
       reset({
         name: data.user.name,
         whatsAppNumber: data.user.whatsAppNumber || "",
-        delivery_address: data.user.delivery_address || "",
+        addressLine1: data.user.addressLine1 || "",
+        addressLine2: data.user.addressLine2 || "",
+        city: data.user.city || "",
+        district: data.user.district || "",
+        postalCode: data.user.postalCode || "",
       });
     }
   }, [data, reset, isEditing]);
@@ -68,7 +91,11 @@ const CurrentUserProfile = () => {
     updateUser.mutate({
       name: formData.name,
       whatsAppNumber: formData.whatsAppNumber || null,
-      delivery_address: formData.delivery_address || null,
+      addressLine1: formData.addressLine1 || null,
+      addressLine2: formData.addressLine2 || null,
+      city: formData.city || null,
+      district: formData.district || null,
+      postalCode: formData.postalCode || null,
     });
   };
 
@@ -79,7 +106,11 @@ const CurrentUserProfile = () => {
       reset({
         name: data?.user.name || "",
         whatsAppNumber: data?.user.whatsAppNumber || "",
-        delivery_address: data?.user.delivery_address || "",
+        addressLine1: data?.user.addressLine1 || "",
+        addressLine2: data?.user.addressLine2 || "",
+        city: data?.user.city || "",
+        district: data?.user.district || "",
+        postalCode: data?.user.postalCode || "",
       });
     }
   };
@@ -115,23 +146,72 @@ const CurrentUserProfile = () => {
     },
   };
 
+  // Format full address for display
+  const formatFullAddress = () => {
+    const addressParts = [
+      user.addressLine1,
+      user.addressLine2,
+      user.city,
+      user.district,
+      user.postalCode,
+    ].filter(Boolean);
+
+    return addressParts.length > 0 ? addressParts.join(", ") : "Not provided";
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-8 mt-28"
-        >
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Profile Settings
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Manage your account information and preferences
-          </p>
-        </motion.div>
+        {activeTab === "profile" ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-12 text-center"
+          >
+            <motion.h1
+              className="text-4xl font-bold mb-3 bg-gradient-to-r from-gray-800 dark:from-gray-200 to-indigo-600 dark:to-indigo-400 bg-clip-text text-transparent mt-24"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              Profile Settings
+            </motion.h1>
+            <motion.p
+              className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              Manage your account information and preferences
+            </motion.p>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-12 text-center"
+          >
+            <motion.h1
+              className="text-4xl font-bold mb-3 bg-gradient-to-r from-gray-800 dark:from-gray-200 to-indigo-600 dark:to-indigo-400 bg-clip-text text-transparent mt-24"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              Your Order History
+            </motion.h1>
+            <motion.p
+              className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              Track your purchases and delivery status
+            </motion.p>
+          </motion.div>
+        )}
 
         <div className="max-w-6xl flex space-x-1 p-1 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 mb-8 m-auto">
           {tabs.map((tab) => {
@@ -140,7 +220,7 @@ const CurrentUserProfile = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all duration-200 flex-1 justify-center ${
+                className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all duration-200 flex-1 justify-center cursor-pointer ${
                   activeTab === tab.id
                     ? "bg-blue-500 text-white shadow-md"
                     : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -281,28 +361,104 @@ const CurrentUserProfile = () => {
                   )}
                 </motion.div>
 
-                {/* Delivery Address Field */}
+                {/* Address Fields */}
                 <motion.div variants={itemVariants}>
-                  <label className="flex items-center space-x-3 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="flex items-center space-x-3 text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
                     <FiMapPin className="w-4 h-4 text-red-500" />
                     <span>Delivery Address</span>
                   </label>
+
                   {isEditing ? (
-                    <div>
-                      <textarea
-                        {...register("delivery_address")}
-                        rows={3}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors resize-none"
-                        placeholder="Enter your delivery address"
-                      />
-                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        Optional - Your preferred delivery location
-                      </p>
+                    <div className="space-y-4">
+                      {/* Address Line 1 */}
+                      <div>
+                        <label className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
+                          <FiHome className="w-4 h-4" />
+                          <span>Address Line 1</span>
+                        </label>
+                        <input
+                          type="text"
+                          {...register("addressLine1")}
+                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                          placeholder="Street address, P.O. box, company name"
+                        />
+                      </div>
+
+                      {/* Address Line 2 */}
+                      <div>
+                        <label className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
+                          <FiHome className="w-4 h-4" />
+                          <span>Address Line 2 (Optional)</span>
+                        </label>
+                        <input
+                          type="text"
+                          {...register("addressLine2")}
+                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                          placeholder="Apartment, suite, unit, building, floor, etc."
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* City */}
+                        <div>
+                          <label className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
+                            <FiNavigation className="w-4 h-4" />
+                            <span>City</span>
+                          </label>
+                          <input
+                            type="text"
+                            {...register("city")}
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                            placeholder="City"
+                          />
+                        </div>
+
+                        {/* District */}
+                        <div>
+                          <label className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
+                            <FiNavigation className="w-4 h-4" />
+                            <span>District</span>
+                          </label>
+                          <select
+                            id="district"
+                            {...register("district")}
+                            className="block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+                          >
+                            <option value="">Select District</option>
+                            {districts.map((district) => (
+                              <option key={district} value={district}>
+                                {district}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Postal Code */}
+                      <div>
+                        <label className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
+                          <FiMapPin className="w-4 h-4" />
+                          <span>Postal Code</span>
+                        </label>
+                        <input
+                          type="text"
+                          {...register("postalCode")}
+                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                          placeholder="Postal code"
+                        />
+                      </div>
                     </div>
                   ) : (
-                    <p className="px-4 py-3 bg-gray-50 dark:bg-gray-700 rounded-lg text-gray-900 dark:text-white">
-                      {user.delivery_address || "Not provided"}
-                    </p>
+                    <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                      <p className="text-gray-900 dark:text-white whitespace-pre-line">
+                        {formatFullAddress()}
+                      </p>
+                      {!user.addressLine1 && !user.city && !user.district && (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                          No address provided
+                        </p>
+                      )}
+                    </div>
                   )}
                 </motion.div>
 
@@ -350,7 +506,7 @@ const CurrentUserProfile = () => {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg"
+                className="mt-4 p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg max-w-4xl m-auto"
               >
                 <p className="text-green-800 dark:text-green-200 text-center">
                   Profile updated successfully!
@@ -363,7 +519,7 @@ const CurrentUserProfile = () => {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg"
+                className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg max-w-4xl m-auto"
               >
                 <p className="text-red-800 dark:text-red-200 text-center">
                   Failed to update profile. Please try again.

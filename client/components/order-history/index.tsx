@@ -5,6 +5,7 @@ import { trpc } from "@/trpc/client";
 import { LkrFormat } from "@/utils/format";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "next-themes";
+import { usePathname } from "next/navigation";
 import React, { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import {
@@ -37,6 +38,7 @@ export const OrderHistoryPage: React.FC = () => {
 
 const OrderHistoryPageSectionsSuspense: React.FC = () => {
   const { theme } = useTheme();
+  const pathname = usePathname();
   const [data] = trpc.getItem.getMany.useSuspenseInfiniteQuery(
     { limit: DEFAULT_LIMIT },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
@@ -191,31 +193,35 @@ const OrderHistoryPageSectionsSuspense: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-gradient-to-t from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-500">
+    <div
+      className={`w-full ${pathname === "/history" && "bg-gradient-to-t from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-500 pb-36"}`}
+    >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-12 text-center"
-        >
-          <motion.h1
-            className="text-4xl font-bold mb-3 bg-gradient-to-r from-gray-800 dark:from-gray-200 to-indigo-600 dark:to-indigo-400 bg-clip-text text-transparent mt-24"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
+        {pathname === "/history" && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-12 text-center"
           >
-            Your Order History
-          </motion.h1>
-          <motion.p
-            className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            Track your purchases and delivery status
-          </motion.p>
-        </motion.div>
+            <motion.h1
+              className="text-4xl font-bold mb-3 bg-gradient-to-r from-gray-800 dark:from-gray-200 to-indigo-600 dark:to-indigo-400 bg-clip-text text-transparent mt-24"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              Your Order History
+            </motion.h1>
+            <motion.p
+              className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              Track your purchases and delivery status
+            </motion.p>
+          </motion.div>
+        )}
         <AnimatePresence mode="wait">
           {orders.length === 0 ? (
             <motion.div

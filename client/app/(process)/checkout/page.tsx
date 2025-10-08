@@ -1,8 +1,16 @@
 import CheckoutSections from "@/components/checkout-section";
-import React from "react";
+import { HydrateClient, trpc } from "@/trpc/server";
+
+export const dynamic = "force-dynamic";
 
 const CheckoutPage = () => {
-  return <CheckoutSections />;
+  void trpc.getCurrentUserProfile.getCurrentUser.prefetch();
+
+  return (
+    <HydrateClient>
+      <CheckoutSections />
+    </HydrateClient>
+  );
 };
 
 export default CheckoutPage;
