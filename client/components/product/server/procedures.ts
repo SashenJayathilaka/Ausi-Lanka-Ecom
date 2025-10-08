@@ -21,6 +21,7 @@ export const getUsers = createTRPCRouter({
             name: z.string(),
             emailId: z.string(),
             imageUrl: z.string().nullable(),
+            whatsAppNumber: z.string().nullable(),
             userType: z.enum(["admin", "user"]),
             createdAt: z.date(),
           })
@@ -42,6 +43,7 @@ export const getUsers = createTRPCRouter({
           name: users.name,
           emailId: users.emailId,
           imageUrl: users.imageUrl,
+          whatsAppNumber: users.whatsAppNumber,
           userType: users.userType,
           createdAt: users.createdAt,
         })

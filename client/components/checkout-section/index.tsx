@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { districts } from "@/lib/districts";
@@ -8,7 +7,7 @@ import { LkrFormat } from "@/utils/format";
 import { useClerk } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   FiGlobe,
@@ -46,6 +45,25 @@ const CheckoutPage = () => {
   const { user } = useClerk();
   const { products, removeProduct, updateQuantity, clearCart } = useCartStore();
   const [orderSuccess, setOrderSuccess] = useState(false);
+
+  const { data } = trpc.getCurrentUserProfile.getCurrentUser.useQuery(
+    undefined,
+    {
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    }
+  );
+
+  const updateUser = trpc.getCurrentUserProfile.updateCurrentUser.useMutation({
+    onSuccess: () => {
+      toast.success("Profile updated successfully");
+    },
+    onError: (error) => {
+      toast.error("Failed to update profile");
+      console.error("Update error:", error);
+    },
+  });
 
   const email = user?.primaryEmailAddress?.emailAddress;
 
@@ -92,7 +110,6 @@ const CheckoutPage = () => {
             },
           }),
         });
-
         // Send internal notification email
         await fetch("/api/send", {
           method: "POST",
@@ -145,14 +162,53 @@ const CheckoutPage = () => {
     removeProduct(index);
   };
 
-  const onSubmit = (data: z.infer<typeof checkoutFormSchema>) => {
+  useEffect(() => {
+    if (data?.user?.name) {
+      form.setValue("name", data.user.name);
+    }
+
+    if (data?.user?.whatsAppNumber) {
+      form.setValue("mobile", data.user.whatsAppNumber);
+    }
+
+    if (data?.user.addressLine1) {
+      form.setValue("addressLine1", data.user.addressLine1);
+    }
+
+    if (data?.user.addressLine2) {
+      form.setValue("addressLine2", data.user.addressLine2);
+    }
+
+    if (data?.user.city) {
+      form.setValue("city", data.user.city);
+    }
+
+    if (data?.user.district) {
+      form.setValue("district", data.user.district);
+    }
+
+    if (data?.user.postalCode) {
+      form.setValue("postalCode", data.user.postalCode);
+    }
+  }, [
+    form,
+    data?.user?.name,
+    data?.user?.whatsAppNumber,
+    data?.user.addressLine1,
+    data?.user.addressLine2,
+    data?.user?.city,
+    data?.user?.district,
+    data?.user?.postalCode,
+  ]);
+
+  const onSubmit = (formData: z.infer<typeof checkoutFormSchema>) => {
     if (products.length === 0) {
       toast.error("Your cart is empty");
       return;
     }
 
     createOrder.mutate({
-      ...data,
+      ...formData,
       totalAmount: totalPrice,
       items: products.map((product) => ({
         name: product.name,
@@ -165,8 +221,77 @@ const CheckoutPage = () => {
         ),
         quantity: product.quantity || 1,
       })),
-      missingItems: data.missingItems ? [data.missingItems] : undefined,
+      missingItems: formData.missingItems ? [formData.missingItems] : undefined,
     });
+
+    // Update user profile with latest info - compare with original user data
+    const updateData: {
+      name?: string;
+      whatsAppNumber?: string | null;
+      addressLine1?: string | null;
+      addressLine2?: string | null;
+      city?: string | null;
+      district?: string | null;
+      postalCode?: string | null;
+    } = {};
+
+    // Compare form data with original user data to detect changes
+    if (
+      formData.name &&
+      formData.name.trim() !== "" &&
+      formData.name !== data?.user?.name
+    ) {
+      updateData.name = formData.name;
+    }
+
+    if (
+      formData.mobile &&
+      formData.mobile.trim() !== "" &&
+      formData.mobile !== data?.user?.whatsAppNumber
+    ) {
+      updateData.whatsAppNumber = formData.mobile;
+    }
+
+    if (
+      formData.addressLine1 &&
+      formData.addressLine1.trim() !== "" &&
+      formData.addressLine1 !== data?.user?.addressLine1
+    ) {
+      updateData.addressLine1 = formData.addressLine1;
+    }
+
+    if (formData.addressLine2 !== data?.user?.addressLine2) {
+      updateData.addressLine2 = formData.addressLine2 || null;
+    }
+
+    if (
+      formData.city &&
+      formData.city.trim() !== "" &&
+      formData.city !== data?.user?.city
+    ) {
+      updateData.city = formData.city;
+    }
+
+    if (
+      formData.district &&
+      formData.district.trim() !== "" &&
+      formData.district !== data?.user?.district
+    ) {
+      updateData.district = formData.district;
+    }
+
+    if (
+      formData.postalCode &&
+      formData.postalCode.trim() !== "" &&
+      formData.postalCode !== data?.user?.postalCode
+    ) {
+      updateData.postalCode = formData.postalCode;
+    }
+
+    // Only update if there are actual changes
+    if (Object.keys(updateData).length > 0) {
+      updateUser.mutate(updateData);
+    }
   };
 
   if (orderSuccess) {
@@ -213,6 +338,7 @@ const CheckoutPage = () => {
                   >
                     <div className="flex-shrink-0 h-20 w-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
                       {product.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={product.image}
                           alt={product.name}

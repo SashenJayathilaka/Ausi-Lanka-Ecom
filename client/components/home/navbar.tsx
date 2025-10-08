@@ -44,7 +44,7 @@ const NavBarSuspenses: React.FC = ({}) => {
     { href: "/product", label: "Shop" },
     { href: "/catalog", label: "Catalog" },
     { href: "/items", label: "In Stock Items" },
-    { href: "/history", label: "Orders History" },
+    { href: "/profile", label: "Profile" },
     String(data?.userType) === "admin"
       ? { href: "/admin", label: "Admin" }
       : { href: "/", label: "" },
