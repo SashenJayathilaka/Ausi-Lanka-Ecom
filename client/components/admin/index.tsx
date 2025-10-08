@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { FiAlertTriangle, FiLock, FiPackage } from "react-icons/fi";
+import { DownloadPDFButton } from "./pdf/DownloadPDFButton";
 
 interface OrderDetailsProps {
   orderId: string;
@@ -41,8 +42,12 @@ const OrderDetailsContent = ({ orderId }: { orderId: string }) => {
               Placed on {new Date(order.createdAt).toLocaleDateString()}
             </p>
           </div>
-          <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
-            {order.status.toUpperCase()}
+          <div className="flex items-center gap-4">
+            <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+              {order.status.toUpperCase()}
+            </div>
+            {/* Pass the order data directly to the download button */}
+            <DownloadPDFButton order={order} />
           </div>
         </div>
 
