@@ -2,30 +2,40 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
-export interface Order {
-  items: {
-    id: string;
-    orderId: string;
-    name: string;
-    price: string;
-    image: string;
-    url: string | null;
-    retailer: string;
-    calculatedPrice: string;
-    quantity: number;
-    createdAt: Date;
-  }[];
-  user: {
-    id: string;
-    name: string;
-    emailId: string;
-    imageUrl: string | null;
-  };
+type OrderItem = {
+  id: string;
+  orderId: string;
+  name: string;
+  price: string;
+  image: string;
+  url: string | null;
+  retailer: string;
+  calculatedPrice: string;
+  quantity: number;
+  createdAt: Date;
+};
+
+type OrderUser = {
+  id: string;
+  name: string;
+  emailId: string;
+  imageUrl: string | null;
+} | null;
+
+type DeliveryMethod = "sea" | "air" | "express";
+type OrderStatus =
+  | "pending"
+  | "confirmed"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
+
+export type Order = {
   id: string;
   userId: string;
   name: string;
   mobile: string;
-  deliveryMethod: "sea" | "air" | "express";
+  deliveryMethod: DeliveryMethod;
   addressLine1: string;
   addressLine2: string | null;
   city: string;
@@ -33,11 +43,13 @@ export interface Order {
   postalCode: string;
   comments: string | null;
   missingItems: string[] | null;
-  status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
+  status: OrderStatus;
   totalAmount: string;
   createdAt: Date;
   updatedAt: Date;
-}
+  items: OrderItem[];
+  user: OrderUser;
+};
 
 const styles = StyleSheet.create({
   page: {

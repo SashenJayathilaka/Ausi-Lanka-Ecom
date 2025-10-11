@@ -18,6 +18,7 @@ import {
   FiXCircle,
 } from "react-icons/fi";
 import OrderHistoryPageSkeleton from "./order-history-page-skeleton";
+import { DownloadPDFButton } from "../admin/pdf/DownloadPDFButton";
 
 type OrderStatus =
   | "pending"
@@ -271,8 +272,8 @@ const OrderHistoryPageSectionsSuspense: React.FC = () => {
                   {/* Order header */}
                   <div className="p-6 border-b border-gray-100 dark:border-gray-700">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                      <div>
-                        <div className="flex items-center gap-3 mb-3">
+                      <div className="flex-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
                           <StatusBadge status={order.status} />
                           <span className="font-medium text-gray-900 dark:text-gray-200">
                             Order #{order.id.slice(0, 8).toUpperCase()}
@@ -295,20 +296,22 @@ const OrderHistoryPageSectionsSuspense: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="text-right">
-                        <p className="font-bold text-lg text-gray-900 dark:text-gray-200">
-                          {LkrFormat(Number(order.totalAmount))}
-                        </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                          {new Date(order.createdAt).toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            }
-                          )}
-                        </p>
+                      <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3 sm:gap-4">
+                        <div className="text-right">
+                          <p className="font-bold text-lg text-gray-900 dark:text-gray-200">
+                            {LkrFormat(Number(order.totalAmount))}
+                          </p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            {new Date(order.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -418,6 +421,13 @@ const OrderHistoryPageSectionsSuspense: React.FC = () => {
                                   day: "numeric",
                                 })}
                           </p>
+                        </div>
+                        {/* Download Receipt Button */}
+                        <div className="sm:w-auto w-full">
+                          <DownloadPDFButton
+                            order={order}
+                            className="w-full sm:w-auto justify-center text-sm"
+                          />
                         </div>
                       </div>
                     </div>
