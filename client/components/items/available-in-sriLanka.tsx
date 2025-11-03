@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import {
   FiCheckCircle,
   FiClock,
+  FiExternalLink,
   FiGrid,
   FiHeart,
   FiPackage,
@@ -85,6 +86,12 @@ const AvailableInSriLanka = () => {
       retailer: product.retailer,
       calculatedPrice: product.price,
     });
+  };
+
+  const handleViewOriginal = (product: Product) => {
+    if (product.url) {
+      window.open(product.url, "_blank", "noopener,noreferrer");
+    }
   };
 
   const currentProducts =
@@ -229,7 +236,7 @@ const AvailableInSriLanka = () => {
             {currentProducts.map((item) => (
               <div
                 key={item.id}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/20 overflow-hidden hover:shadow-lg dark:hover:shadow-gray-900/30 transition-all duration-300 border border-gray-100 dark:border-gray-700"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/20 overflow-hidden hover:shadow-lg dark:hover:shadow-gray-900/30 transition-all duration-300 border border-gray-100 dark:border-gray-700 group"
               >
                 {/* Item image */}
                 <div className="relative h-48 w-full bg-white">
@@ -260,7 +267,7 @@ const AvailableInSriLanka = () => {
 
                 {/* Item details */}
                 <div className="p-5">
-                  <h3 className="text-lg font-semibold dark:text-white">
+                  <h3 className="text-lg font-semibold dark:text-white line-clamp-2">
                     {item.name}
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -310,21 +317,35 @@ const AvailableInSriLanka = () => {
                     </div>
                   )}
 
-                  {/* Add to cart button */}
-                  <button
-                    onClick={() => handleAddToCart(item)}
-                    disabled={item.quantity <= 0}
-                    className={`mt-6 w-full ${
-                      item.quantity <= 0
-                        ? "bg-gray-300 dark:bg-gray-600 cursor-not-allowed"
-                        : activeTab === "supermarket"
-                          ? "bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
-                          : "bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-                    } text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2`}
-                  >
-                    <FiShoppingCart className="h-5 w-5" />
-                    {item.quantity <= 0 ? "Out of Stock" : "Add to Cart"}
-                  </button>
+                  {/* Action buttons */}
+                  <div className="mt-6 space-y-3">
+                    {/* Add to cart button */}
+                    <button
+                      onClick={() => handleAddToCart(item)}
+                      disabled={item.quantity <= 0}
+                      className={`w-full cursor-pointer ${
+                        item.quantity <= 0
+                          ? "bg-gray-300 dark:bg-gray-600 cursor-not-allowed"
+                          : activeTab === "supermarket"
+                            ? "bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
+                            : "bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+                      } text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2`}
+                    >
+                      <FiShoppingCart className="h-5 w-5" />
+                      {item.quantity <= 0 ? "Out of Stock" : "Add to Cart"}
+                    </button>
+
+                    {/* View original product link */}
+                    {item.url && (
+                      <button
+                        onClick={() => handleViewOriginal(item)}
+                        className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
+                      >
+                        <FiExternalLink className="h-4 w-4" />
+                        View Original Product
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
