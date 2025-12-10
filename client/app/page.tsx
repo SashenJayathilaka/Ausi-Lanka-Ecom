@@ -1,5 +1,4 @@
 import AdvertisementSection from "@/components/home/advertisement-section";
-import BusinessAdvertisement from "@/components/home/business-advertisement";
 import ChristmasAdvertisement from "@/components/home/christmas-advertisement";
 import CompanyLogo from "@/components/home/company-logo";
 import FeaturesSection from "@/components/home/features-section";
