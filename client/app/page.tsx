@@ -1,4 +1,6 @@
 import AdvertisementSection from "@/components/home/advertisement-section";
+import BusinessAdvertisement from "@/components/home/business-advertisement";
+import ChristmasAdvertisement from "@/components/home/christmas-advertisement";
 import CompanyLogo from "@/components/home/company-logo";
 import FeaturesSection from "@/components/home/features-section";
 import Footer from "@/components/home/footer";
@@ -33,6 +35,10 @@ export default async function Home() {
         <FeaturesSection />
         <MonitorSection />
         <ServicesSection />
+        {/* 🎄 CHRISTMAS VERSION - Uncomment to use Christmas-themed advertisement */}
+        <ChristmasAdvertisement />
+        {/* Regular Business Advertisement - Comment out when using Christmas version */}
+        {/* <BusinessAdvertisement /> */}
         {/* Advertisement Section - Before testimonials for social proof flow */}
         <AdvertisementSection />
         <TestimonialsSection />

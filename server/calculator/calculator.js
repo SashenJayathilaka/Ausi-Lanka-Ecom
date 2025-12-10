@@ -25,9 +25,9 @@ export const calculate = async (value, productUrl, rate) => {
     // Determine multiplier based on product URL and price
     let multiplier;
     if (productUrl.includes("chemistwarehouse.com.au")) {
-      multiplier = result >= 10 ? 1.65 : 1.5;
+      multiplier = result >= 10 ? 1.7 : 1.5;
     } else {
-      multiplier = result >= 10 ? 1.5 : 1.45;
+      multiplier = 1.45;
     }
 
     // Calculate final price
