@@ -2,265 +2,631 @@
   <img src="https://github.com/user-attachments/assets/f3f08ba9-a587-4a6d-88f8-d461ceac5af5" alt="Aus Lanka Logo" width="250"/>
 </p>
 
-<h1 align="center">Ausi.LK</h1>
-<h3 align="center">Your Gateway to Authentic Sri Lankan Groceries in Australia</h3>
+<h1 align="center">Ausi Lanka E-Commerce Platform</h1>
+<h3 align="center">Full-Stack Australian Product Price Comparison & Delivery System</h3>
 
 <div align="center">
   
 [![Live Business](https://img.shields.io/badge/Status-LIVE-brightgreen)](https://auslanka.com.au)  
-[![Node.js](https://img.shields.io/badge/Node.js-20.x-green.svg)](https://nodejs.org/) 
-[![PostgreSQL](https://img.shields.io/badge/Neon%20DB-PostgreSQL%2015%2B-blue.svg)](https://neon.tech) 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org/)  
-[![License](https://img.shields.io/badge/License-MIT%20with%20Restrictions-red.svg)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)  
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)  
+[![Node.js](https://img.shields.io/badge/Node.js-20.x-green.svg)](https://nodejs.org/)  
+[![PostgreSQL](https://img.shields.io/badge/Neon%20DB-PostgreSQL%2015-blue.svg)](https://neon.tech)  
+[![MongoDB](https://img.shields.io/badge/MongoDB-8.x-green.svg)](https://www.mongodb.com/)  
+[![License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)
 
 </div>
 
 ---
 
-## 🚀 About the Business
+## 📋 Table of Contents
 
-**Ausi.Lk Delivery** is a real, Melbourne-based online grocery delivery business focused on serving Sri Lankans living in Australia. We bring the flavors of home from authentic spices to homecooked meals. right to your doorstep.
+- [About](#-about)
+- [Key Features](#-key-features)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Development](#-development)
+- [Environment Variables](#-environment-variables)
+- [API Documentation](#-api-documentation)
+- [Deployment](#-deployment)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-> This is not a demo. This is our actual production platform serving real customers across Australia.
+---
 
-## 📊 Current Business Snapshot (2025)
+## 🚀 About
+
+**Ausi Lanka** is a production-ready e-commerce platform serving the Sri Lankan community in Australia. The platform features real-time product price scraping from major Australian retailers (Woolworths, Coles, Officeworks, Aldi, Chemist Warehouse), currency conversion (AUD to LKR), and a complete online ordering system with Christmas-themed UI.
+
+### Business Metrics (2025)
 
 - 🛒 **5,000+ active customers**
-- 🤝 **200+ verified suppliers**
+- 🏪 **200+ verified suppliers**
 - 🚚 **15,000+ successful deliveries**
-- 💬 **98.7% customer satisfaction**
-- 🇦🇺 **Live in 8 major cities across Australia**
+- ⭐ **98.7% customer satisfaction**
+- 🇦🇺 **Operating in 8 major Australian cities**
 
 ---
 
-## 🌟 What Makes Us Unique?
+## ✨ Key Features
 
-| Feature                | Description                                          | Status     |
-| ---------------------- | ---------------------------------------------------- | ---------- |
-| Multi-city Delivery    | We deliver across all major Australian metro areas   | ✅ Live    |
-| Sri Lankan Recipe Kits | Cook authentic dishes with our ready-to-cook bundles | 🚧 Q3 2025 |
-| Merchant Dashboard     | Real-time sales insights and bulk catalog management | ✅ Live    |
-| AI Route Optimization  | Fast delivery via optimized driver routing           | ✅ Live    |
-| Cold Chain Logistics   | Fresh frozen items delivered with temp. control      | 🚧 Pilot   |
+### 🛍️ E-Commerce Core
+
+- **Product Catalog** with advanced filtering and search
+- **Shopping Cart** with persistent state management (Zustand)
+- **Checkout System** with order confirmation emails (Resend)
+- **Order History** tracking with detailed status updates
+- **User Profiles** with address management
+
+### 💰 Price Intelligence
+
+- **Multi-Retailer Scraping** from 5 major Australian stores
+- **Real-Time Currency Conversion** (AUD → LKR with live exchange rates)
+- **Price Comparison** across retailers with calculated shipping costs
+- **Dynamic Pricing** based on product categories and weight
+
+### 🎨 UI/UX
+
+- **Christmas Theme** with animated snow effects (50 particles)
+- **Product Carousel** with thumbnail navigation
+- **Responsive Design** (mobile-first Tailwind CSS)
+- **Dark Mode** support with theme persistence
+- **Loading States** and skeleton screens
+
+### 👨‍💼 Admin Dashboard
+
+- **Analytics Overview** with sales charts
+- **Product Management** (CRUD operations)
+- **Order Management** with status updates
+- **User Management** with role-based access
+- **Inventory Tracking** with low-stock alerts
+- **Shipment Tracking** integration
+
+### 🤖 Web Scraping Engine (TypeScript)
+
+- **Puppeteer-Based** scraping with anti-bot detection bypass
+- **Cluster Support** for Aldi scraping (parallel processing)
+- **Error Handling** with detailed logging
+- **Retry Logic** with exponential backoff
+- **Image Extraction** with URL validation
+- **Schema Detection** for structured data
 
 ---
 
-## 🏗️ Our Tech, Built for Scale
+## 🛠️ Tech Stack
 
-### System Overview
+### Frontend (`/client`)
 
-```mermaid
-graph TD
-    %% Frontend Section
-    A[Next.js Frontend\nHosted on Vercel] -->|tRPC| B[Next.js API Routes]
-    A -->|Auth| K[Clerk Auth]
-    K -->|User Created Webhooks| G[Ngrok]
+| Technology        | Version | Purpose                           |
+| ----------------- | ------- | --------------------------------- |
+| **Next.js**       | 15.x    | React framework with App Router   |
+| **TypeScript**    | 5.x     | Type-safe development             |
+| **Tailwind CSS**  | 3.x     | Utility-first styling             |
+| **tRPC**          | 11.x    | End-to-end typesafe APIs          |
+| **Drizzle ORM**   | Latest  | Type-safe PostgreSQL queries      |
+| **Zustand**       | 5.x     | State management (cart, language) |
+| **Framer Motion** | 11.x    | Animations (carousel, snow)       |
+| **Clerk**         | 6.x     | Authentication & user management  |
+| **Resend**        | 4.x     | Transactional emails              |
 
-    %% Backend Services
-    B -->|Emails| R[Resend]
+### Backend (`/server`)
 
-    %% Node.js Backend (Separate Service)
-    N[Node.js Backend\nAWS EC2] -->|Scraping| C[Puppeteer]
-    N -->|DB| E[(MongoDB)]
-    N -->|External APIs| D[Currency Rate APIs]
-    A -->|API Calls| N
+| Technology            | Version | Purpose                      |
+| --------------------- | ------- | ---------------------------- |
+| **Node.js**           | 20.x    | JavaScript runtime           |
+| **TypeScript**        | 5.7     | Type-safe backend code       |
+| **Express.js**        | 5.x     | Web framework                |
+| **Puppeteer**         | 24.x    | Web scraping automation      |
+| **puppeteer-cluster** | 0.24.x  | Parallel scraping            |
+| **Mongoose**          | 8.x     | MongoDB ODM (exchange rates) |
+| **Axios**             | 1.7.x   | HTTP client                  |
+| **dotenv**            | 16.x    | Environment configuration    |
+| **tsx**               | 4.x     | TypeScript execution         |
 
-    %% Development Tools
-    subgraph Development
-        F[Nodemon] -->|Hot Reload| N
-    end
+### Databases
 
-    %% Key Packages
-    subgraph NextJS_Stack
-        B -->|Emails| L[Resend SDK]
-        B -->|DB| M[Drizzle + Neon]
-        A -->|State| H[Zustand]
-        A -->|Forms| I[React Hook Form]
-        A -->|TRPC| J[tRPC]
-    end
+- **PostgreSQL** (Neon) - Main application data (products, orders, users)
+- **MongoDB** - Exchange rates and scraping cache
 
-    subgraph NodeJS_Stack
-        N -->|HTTP| O[Express]
-        N -->|Scheduling| P[node-cron]
-        N -->|DB| Q[Mongoose]
-        N -->|Requests| S[Axios]
-    end
+### Infrastructure
 
-    %% Styling
-    style A fill:#000000,color:#ffffff
-    style B fill:#0070f3,color:#ffffff
-    style N fill:#539E43,color:#ffffff
-    style C fill:#40B5A4,color:#000000
-    style D fill:#FFD700,color:#000000
-    style E fill:#13AA52,color:#ffffff
-    style K fill:#5C6BC0,color:#ffffff
-    style R fill:#6D4AFF,color:#ffffff
-    style G fill:#FF6347,color:#ffffff
+- **Vercel** - Frontend hosting (Next.js)
+- **AWS EC2** - Backend API server (t3.xlarge)
+- **Bun** - Fast package manager & runtime
 
-    classDef pkg fill:#191970,stroke:#ddd;
-    class H,I,J,L,M,O,P,Q,S pkg;
+---
+
+## 📁 Project Structure
+
+```
+ausi-lanka-ecom/
+├── client/                    # Next.js frontend application
+│   ├── app/                   # Next.js 15 App Router
+│   │   ├── (admin)/          # Admin dashboard routes
+│   │   ├── (auth)/           # Authentication pages (sign-in/sign-up)
+│   │   ├── (process)/        # Main app routes (cart, catalog, checkout, etc.)
+│   │   ├── api/              # API routes (tRPC, webhooks)
+│   │   ├── layout.tsx        # Root layout with ChristmasSnow
+│   │   └── page.tsx          # Landing page
+│   ├── components/           # React components
+│   │   ├── admin/            # Admin dashboard components
+│   │   ├── cart/             # Shopping cart UI
+│   │   ├── catalog/          # Product catalog
+│   │   ├── checkout-section/ # Checkout flow
+│   │   ├── home/             # Landing page sections
+│   │   │   ├── christmas-advertisement.tsx  # Christmas carousel
+│   │   │   ├── business-advertisement.tsx    # Regular carousel
+│   │   │   └── navbar.tsx    # Navigation
+│   │   ├── christmas-snow.tsx  # Global snow animation
+│   │   └── server/           # Server components
+│   ├── db/                   # Database schema & config
+│   │   ├── index.ts          # Neon PostgreSQL connection
+│   │   └── schema.ts         # Drizzle ORM schemas
+│   ├── trpc/                 # tRPC setup
+│   │   ├── routers/          # API route definitions
+│   │   ├── client.tsx        # Client-side tRPC
+│   │   └── server.tsx        # Server-side tRPC
+│   ├── store/                # Zustand state stores
+│   │   ├── useCartStore.ts   # Shopping cart state
+│   │   └── useLanguageStore.ts  # Language preference
+│   ├── public/assets/        # Static assets (product images)
+│   ├── middleware.ts         # Clerk auth middleware
+│   ├── drizzle.config.ts     # Drizzle ORM config
+│   └── package.json          # Dependencies (Bun)
+│
+├── server/                   # TypeScript backend (Express API)
+│   ├── controller/           # Request handlers
+│   │   ├── scrapeController.ts      # Chemist Warehouse scraper
+│   │   ├── colesController.ts       # Coles scraper
+│   │   ├── woolworthsController.ts  # Woolworths scraper
+│   │   ├── officeworksController.ts # Officeworks scraper
+│   │   └── aldiContoller.ts         # Aldi scraper (cluster-based)
+│   ├── routes/               # Express route definitions
+│   │   ├── scrapeRoutes.ts
+│   │   ├── colesRoutes.ts
+│   │   ├── woolworthsRoutes.ts
+│   │   ├── officeworksRoutes.ts
+│   │   └── adliRoutes.ts
+│   ├── models/               # Mongoose models
+│   │   └── exchangeRate.ts   # AUD/LKR exchange rate schema
+│   ├── calculator/           # Business logic
+│   │   └── calculator.ts     # Price calculation with multipliers
+│   ├── index.ts              # Express server entry point
+│   ├── tsconfig.json         # TypeScript config (ES2020, DOM lib)
+│   └── package.json          # Dependencies (Bun)
+│
+├── README.md                 # This file
+└── LICENSE                   # MIT License with restrictions
 ```
 
-## Current Implementation Details
-
-### Node.js Backend Services
-
-1. **Web Scraping**:
-
-   - Uses `puppeteer` (v24.10.2)
-   - Scheduled via `node-cron` (v4.1.1)
-
-2. **Currency Rate Updates**:
-
-   - Fetched using `axios` (v1.10.0)
-   - Stored in MongoDB via `mongoose` (v8.16.1)
-
-3. **API Server**:
-   - Built with `express` (v5.1.0)
-   - CORS enabled via `cors` (v2.8.5)
-
-### Frontend-Backend Communication
-
-- Next.js makes API calls to Node.js backend
-- No direct file storage integration (AWS S3 removed)
-- Authentication handled entirely by Clerk
-
-### Planned Future Additions
-
-- Twilio integration (not currently implemented)
-
-## 🛠️ Technical Stack
-
-- **Frontend**: Next.js 14 (App Router), Tailwind CSS
-- **Backend**: Node.js 20, Express.js, Drizzle ORM
-- **Authentication**: [Clerk.dev](https://clerk.dev)
-- **Database**: [Neon (PostgreSQL 15+)](https://neon.tech)
-- **CI/CD**: GitHub Actions
-- **Hosting**: AWS EC2 (t3.xlarge)
-
 ---
 
-## 👨‍💻 For Developers
+## 🚀 Getting Started
 
-## 🧰 Installation
+### Prerequisites
 
-### ✅ Prerequisites
+- **Node.js** 20.x or higher
+- **Bun** 1.x (package manager)
+- **PostgreSQL** (Neon account recommended)
+- **MongoDB** (local or Atlas)
+- **Chrome/Chromium** (for Puppeteer scraping)
 
-- Node.js 20+
-- Redis 7.x
-- PostgreSQL (or Neon DB)
-- AWS CLI configured
+### Installation
 
-### 🔧 Setup
+1. **Clone the repository**
 
 ```bash
-# Clone project
-git clone https://github.com/SashenJayathilaka/Ausi-Lanka-Ecom
-cd Ausi-Lanka-Ecom
+git clone https://github.com/SashenJayathilaka/ausi-lanka-ecom.git
+cd ausi-lanka-ecom
+```
 
-# Install packages
-npm install
-cd client && bun install
-cd server && npm install
+2. **Install dependencies**
 
-# Environment setup
-cp .env.example .env
-# Fill in your credentials
+```bash
+# Install client dependencies
+cd client
+bun install
 
-# Database migration
-bun drizzle-kit push
+# Install server dependencies
+cd ../server
+bun install
+```
 
-# Start development servers (in 2 terminals)
-client/ bun run dev:all
-backend/ /npm run dev
+3. **Set up environment variables**
+
+Create `.env` files in both `client/` and `server/` directories:
+
+**`client/.env`**
+
+```env
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/catalog
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/catalog
+
+# Database (Neon PostgreSQL)
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require
+
+# Resend (Email)
+RESEND_API_KEY=re_...
+
+# Backend API URL
+NEXT_PUBLIC_API_URL=http://localhost:5000
+```
+
+**`server/.env`**
+
+```env
+# MongoDB
+MONGODB_URI=mongodb://localhost:27017/auslanka
+# or MongoDB Atlas
+MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/auslanka
+
+# Chrome Path (for Puppeteer)
+# Windows
+CHROME_PATH=C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe
+# macOS
+# CHROME_PATH=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+# Linux
+# CHROME_PATH=/usr/bin/google-chrome
+
+# Server Port
+PORT=5000
+
+# CORS Origins
+CORS_ORIGIN=http://localhost:3000
+```
+
+4. **Set up the database**
+
+```bash
+cd client
+bun run drizzle-kit push  # Push schema to Neon DB
+```
+
+5. **Start development servers**
+
+Open two terminals:
+
+**Terminal 1 (Frontend):**
+
+```bash
+cd client
+bun run dev
+# Runs on http://localhost:3000
+```
+
+**Terminal 2 (Backend):**
+
+```bash
+cd server
+bun run dev
+# Runs on http://localhost:5000
 ```
 
 ---
 
-<!-- ## 📦 Deployment Guide (AWS EC2 + Neon)
+## 💻 Development
+
+### Available Scripts
+
+#### Client (`/client`)
 
 ```bash
-# Build all apps
-npm run build
+bun run dev          # Start Next.js dev server (port 3000)
+bun run build        # Build for production
+bun run start        # Start production server
+bun run lint         # Run ESLint
+bun run db:studio    # Open Drizzle Studio (database GUI)
+bun run db:push      # Push schema changes to database
+```
 
-# Run DB migrations
-npm run db:migrate:prod
+#### Server (`/server`)
 
-# Launch using PM2
-pm2 start ecosystem.config.js --env production
-``` -->
+```bash
+bun run dev          # Start with tsx watch (hot reload)
+bun run build        # Compile TypeScript to JavaScript
+bun run start        # Run compiled JavaScript (production)
+```
 
-<!-- ---
+### Code Style & Formatting
 
-## 📚 API Access
+- **TypeScript** for type safety across both client and server
+- **ESLint** for code quality
+- **Prettier** (recommended) for consistent formatting
+- **Strict mode** enabled in `tsconfig.json`
 
-**Full Docs**: [https://api.auslanka.com.au/docs](https://api.auslanka.com.au/docs)
+### TypeScript Migration
 
-### ✨ Sample Endpoints
+The server codebase was recently migrated from JavaScript to TypeScript:
+
+- ✅ All controllers converted with full type safety
+- ✅ Express Request/Response types
+- ✅ Puppeteer Browser/Page types
+- ✅ Custom interfaces for scrape results
+- ✅ Error handling with proper type casting
+- ✅ DOM lib included for `page.evaluate()` calls
+
+---
+
+## 🔑 Environment Variables
+
+### Client Environment Variables
+
+| Variable                            | Description                       | Required |
+| ----------------------------------- | --------------------------------- | -------- |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk public key                  | ✅       |
+| `CLERK_SECRET_KEY`                  | Clerk secret key                  | ✅       |
+| `DATABASE_URL`                      | Neon PostgreSQL connection string | ✅       |
+| `RESEND_API_KEY`                    | Resend email API key              | ✅       |
+| `NEXT_PUBLIC_API_URL`               | Backend API URL                   | ✅       |
+
+### Server Environment Variables
+
+| Variable      | Description                        | Required      |
+| ------------- | ---------------------------------- | ------------- |
+| `MONGODB_URI` | MongoDB connection string          | ✅            |
+| `CHROME_PATH` | Path to Chrome/Chromium executable | ⚠️ Optional\* |
+| `PORT`        | Server port (default: 5000)        | ❌            |
+| `CORS_ORIGIN` | Allowed CORS origins               | ❌            |
+
+\* If `CHROME_PATH` is not set, Puppeteer will download and use Chromium.
+
+---
+
+## 📡 API Documentation
+
+### Base URL
+
+```
+Development: http://localhost:5000
+Production: https://api.auslanka.com.au (if deployed)
+```
+
+### Scraping Endpoints
+
+#### 1. Scrape Chemist Warehouse Product
 
 ```http
-POST /api/v1/orders
-GET  /api/v1/products
-POST /api/v1/auth/verify
+GET /api/scrape?url={PRODUCT_URL}&rate={EXCHANGE_RATE}
 ```
 
-### Example API Call (JavaScript)
+**Example:**
 
-```js
-fetch("https://api.auslanka.com.au/api/v1/orders", {
-  method: "POST",
-  headers: {
-    Authorization: "Bearer " + token,
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(orderData),
-});
+```bash
+curl "http://localhost:5000/api/scrape?url=https://www.chemistwarehouse.com.au/buy/123456/product-name&rate=185.50"
 ```
 
---- -->
+**Response:**
 
-## 🔐 Security Commitment
+```json
+{
+  "results": [
+    {
+      "url": "https://www.chemistwarehouse.com.au/...",
+      "title": "Product Name 500ml",
+      "price": "$12.99",
+      "image": "https://www.chemistwarehouse.com.au/images/...",
+      "calculatedPrice": "Rs 2,409.00",
+      "success": true
+    }
+  ],
+  "total": 1,
+  "successful": 1,
+  "failed": 0
+}
+```
 
-- 🔑 JWT Auth (rotating keys)
-- 🛡️ CSRF protection
-- 🔒 Row-level PostgreSQL access
-- 🧪 Penetration testing quarterly
-- ✅ SOC 2 Type I Compliant
+#### 2. Scrape Coles Product
 
-📩 **Report vulnerabilities**: [security@auslanka.com.au](mailto:ausilk27@gmail.com)
+```http
+GET /api/coles?url={PRODUCT_URL}&rate={EXCHANGE_RATE}
+```
+
+#### 3. Scrape Woolworths Product
+
+```http
+GET /api/woolworths?url={PRODUCT_URL}&rate={EXCHANGE_RATE}
+```
+
+#### 4. Scrape Officeworks Product
+
+```http
+GET /api/officeworks?url={PRODUCT_URL}&rate={EXCHANGE_RATE}
+```
+
+#### 5. Scrape Aldi Product (Cluster-based)
+
+```http
+GET /api/aldi?url={PRODUCT_URL}&rate={EXCHANGE_RATE}
+```
+
+### Response Format
+
+All scraping endpoints return the same structure:
+
+```typescript
+interface ScrapeResponse {
+  results: Array<{
+    url: string;
+    title?: string;
+    price?: string;
+    image?: string;
+    calculatedPrice?: string;
+    retailer?: string;
+    success: boolean;
+    error?: string;
+  }>;
+  total: number;
+  successful: number;
+  failed: number;
+}
+```
+
+### Error Responses
+
+```json
+{
+  "error": "Browser initialization failed.",
+  "details": "Chrome executable not found...",
+  "suggestion": "Check if Chrome is installed and CHROME_PATH is set correctly"
+}
+```
+
+---
+
+## 🚢 Deployment
+
+### Frontend (Vercel)
+
+1. **Connect GitHub repository** to Vercel
+2. **Set environment variables** in Vercel dashboard
+3. **Deploy**: Vercel auto-deploys on push to `main`
+
+```bash
+# Manual deployment
+cd client
+bun run build
+vercel --prod
+```
+
+### Backend (AWS EC2)
+
+1. **Launch EC2 instance** (Ubuntu 22.04, t3.xlarge)
+2. **Install dependencies**:
+
+```bash
+# Install Node.js 20
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Install Bun
+curl -fsSL https://bun.sh/install | bash
+
+# Install Chrome
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+sudo apt-get update
+sudo apt-get install -y google-chrome-stable
+```
+
+3. **Clone and build**:
+
+```bash
+git clone https://github.com/SashenJayathilaka/ausi-lanka-ecom.git
+cd ausi-lanka-ecom/server
+bun install
+bun run build
+```
+
+4. **Set up PM2** (process manager):
+
+```bash
+npm install -g pm2
+pm2 start dist/index.js --name "auslanka-api"
+pm2 startup
+pm2 save
+```
+
+5. **Configure Nginx** (reverse proxy):
+
+```nginx
+server {
+    listen 80;
+    server_name api.auslanka.com.au;
+
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+---
+
+## 🤝 Contributing
+
+### Development Workflow
+
+1. **Fork** the repository
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Commit changes**: `git commit -m 'Add amazing feature'`
+4. **Push to branch**: `git push origin feature/amazing-feature`
+5. **Open a Pull Request**
+
+### Code Guidelines
+
+- Write **type-safe TypeScript** code
+- Follow existing **code structure** and naming conventions
+- Add **comments** for complex logic
+- Test scraping functions with **real URLs**
+- Update **documentation** for new features
 
 ---
 
 ## 📜 License
 
-This project is licensed under the MIT License, with commercial use restrictions:
+This project is licensed under the **MIT License with Commercial Restrictions**.
 
-⚠️ Unauthorized commercial use, replication, resale, or redistribution of this codebase is strictly prohibited without written permission from Aus Lanka. This repository is public solely for operational deployment.
+⚠️ **Commercial Use Restrictions:**
 
-© 2025 Aus Lanka. All rights reserved.
+- Unauthorized commercial use, replication, resale, or redistribution is **strictly prohibited**
+- Written permission required for any commercial usage
+- This repository is public for operational deployment purposes only
+
+© 2025 Ausi Lanka. All rights reserved.
+
+See the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 📞 Contact Us
+## 📞 Contact & Support
+
+### Business Inquiries
 
 **Head Office:**  
-95 weeden drive vermont south 3133 VIC, Australia
+95 Weeden Drive, Vermont South 3133, VIC, Australia
 
 **Business Hours:**  
-Mon–Fri: 9AM – 5PM AEST
+Monday – Friday: 9:00 AM – 5:00 PM AEST
 
-- 📧 Orders: [orders@auslanka.com.au](mailto:ausilk27@gmail.com)
-- 🤝 Partnerships: [partnerships@auslanka.com.au](mailto:ausilk27@gmail.com)
-- ☎️ Customer Support: +94 77 675 3242
+### Contact Channels
+
+- 📧 **Orders:** [ausilk27@gmail.com](mailto:ausilk27@gmail.com)
+- 🤝 **Partnerships:** [ausilk27@gmail.com](mailto:ausilk27@gmail.com)
+- 🐛 **Bug Reports:** [GitHub Issues](https://github.com/SashenJayathilaka/ausi-lanka-ecom/issues)
+- ☎️ **Customer Support:** +94 77 675 3242
+
+### Social Media
+
+- 👍 [Facebook: Ausilk](https://www.facebook.com/people/Ausilk/61555664871422/?_rdr)
+- 🌐 [Website: auslanka.com.au](https://auslanka.com.au)
 
 ---
 
-## 🌐 Follow us:
+## 🙏 Acknowledgments
 
-<!-- - 📸 [Instagram: @auslanka_official](https://instagram.com/auslanka_official) -->
-
-- 👍 [Facebook: facebook.com/auslankagrocery](https://www.facebook.com/people/Ausilk/61555664871422/?_rdr)
+- **Next.js Team** - Amazing React framework
+- **Vercel** - Seamless deployment platform
+- **Neon** - Serverless PostgreSQL
+- **Clerk** - Authentication solution
+- **Puppeteer Team** - Web scraping automation
 
 ---
 
-<p align="center"><em>"Bringing the taste of home to every Sri Lankan in Australia"</em> 🇱🇰❤️🇦🇺</p>
+<p align="center">
+  <strong>Built with ❤️ for the Sri Lankan community in Australia</strong><br>
+  <em>"Bringing the taste of home to every Sri Lankan in Australia"</em> 🇱🇰❤️🇦🇺
+</p>
+
+<p align="center">
+  <sub>Last Updated: December 2025 | Version 2.0 (TypeScript Migration)</sub>
+</p>
