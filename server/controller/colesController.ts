@@ -1,41 +1,55 @@
-import puppeteer from "puppeteer";
+import puppeteer, { Browser, Page } from "puppeteer";
+import { Request, Response } from "express";
 import dotenv from "dotenv";
 import { calculate } from "../calculator/calculator.js";
 
 dotenv.config();
 
-export const scrapeColesProduct = async (req, res) => {
-  const productUrl = req.query.url;
-  const rate = req.query.rate;
+interface ProductData {
+  title: string | null;
+  price: string | null;
+  image: string | null;
+  size: string | null;
+  retailer: string;
+}
+
+export const scrapeColesProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const productUrl = req.query.url as string;
+  const rate = parseFloat(req.query.rate as string);
 
   if (!productUrl) {
-    return res.status(400).json({
+    res.status(400).json({
       results: [],
       total: 0,
       successful: 0,
       failed: 0,
       error: "Missing URL parameter",
     });
+    return;
   }
 
   if (!productUrl.includes("coles.com.au")) {
-    return res.status(400).json({
+    res.status(400).json({
       results: [],
       total: 0,
       successful: 0,
       failed: 0,
       error: "Invalid Coles URL",
     });
+    return;
   }
 
   try {
-    const browser = await puppeteer.launch({
+    const browser: Browser = await puppeteer.launch({
       executablePath: process.env.CHROME_PATH,
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
-    const page = await browser.newPage();
+    const page: Page = await browser.newPage();
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
     );
@@ -43,28 +57,31 @@ export const scrapeColesProduct = async (req, res) => {
     await page.goto(productUrl, { waitUntil: "networkidle2", timeout: 60000 });
     await new Promise((r) => setTimeout(r, 5000));
 
-    const productData = await page.evaluate(() => {
+    const productData: ProductData = await page.evaluate((): ProductData => {
       const titleEl = document.querySelector("h1.product__title");
       const priceEl = document.querySelector("span.price__value");
       const imgEl = document.querySelector(
         'img[data-testid="product-thumbnail-image-0"]'
-      );
+      ) as HTMLImageElement;
       const sizeEl = document.querySelector(".product__size");
 
       return {
-        title: titleEl ? titleEl.textContent.trim() : null,
-        price: priceEl ? priceEl.textContent.trim() : null,
+        title: titleEl ? titleEl.textContent?.trim() || null : null,
+        price: priceEl ? priceEl.textContent?.trim() || null : null,
         image: imgEl ? imgEl.src || imgEl.getAttribute("data-src") : null,
-        size: sizeEl ? sizeEl.textContent.trim() : null,
+        size: sizeEl ? sizeEl.textContent?.trim() || null : null,
         retailer: "Coles",
       };
     });
 
     await browser.close();
 
-    const calPrice = await calculate(productData.price, productUrl, rate);
+    const calPrice = await calculate(
+      productData.price || "$0",
+      productUrl,
+      rate
+    );
 
-    // Format the response to match the desired structure
     res.json({
       results: [
         {

@@ -1,24 +1,57 @@
-import puppeteer from "puppeteer";
+import puppeteer, { Browser, Page, LaunchOptions } from "puppeteer";
 import dotenv from "dotenv";
 import { calculate } from "../calculator/calculator.js";
+import { Request, Response } from "express";
 
 dotenv.config();
 
-export const scrapeOfficeworksProduct = async (req, res) => {
-  const productUrls = req.query.url;
-  const rate = req.query.rate;
+interface ProductData {
+  title: string | null;
+  price: string | null;
+  image: string | null;
+  productCode: string | null;
+}
+
+interface ScrapeResult {
+  url: string;
+  title?: string;
+  price?: string;
+  image?: string;
+  productCode?: string;
+  retailer?: string;
+  calculatedPrice?: string;
+  success: boolean;
+  error?: string;
+}
+
+interface ScrapeResponse {
+  results: ScrapeResult[];
+  total: number;
+  successful: number;
+  failed: number;
+}
+
+export const scrapeOfficeworksProduct = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const productUrls = req.query.url as string | string[] | undefined;
+  const rateParam = req.query.rate as string | undefined;
+  const rate = rateParam ? parseFloat(rateParam) : undefined;
 
   if (!productUrls) {
     return res.status(400).json({ error: "Missing `url` query parameter." });
   }
 
-  const urls = Array.isArray(productUrls) ? productUrls : [productUrls];
-  let browser = null;
+  const urls: string[] = Array.isArray(productUrls)
+    ? productUrls
+    : [productUrls];
+  let browser: Browser | null = null;
 
   try {
     // Configure browser launch with better error handling
-    const launchOptions = {
-      headless: "new",
+    const launchOptions: LaunchOptions = {
+      headless: true,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -40,10 +73,10 @@ export const scrapeOfficeworksProduct = async (req, res) => {
     browser = await puppeteer.launch(launchOptions);
     //console.log("Browser launched successfully");
 
-    const results = [];
+    const results: ScrapeResult[] = [];
 
     for (const productUrl of urls) {
-      let page = null;
+      let page: Page | null = null;
       try {
         // Validate URL for Officeworks
         if (!productUrl.includes("officeworks.com.au")) {
@@ -93,9 +126,9 @@ export const scrapeOfficeworksProduct = async (req, res) => {
 
         await new Promise((r) => setTimeout(r, 2000));
 
-        const productData = await page.evaluate(() => {
+        const productData = await page.evaluate((): ProductData => {
           // Enhanced title extraction with multiple fallbacks
-          const getTitle = () => {
+          const getTitle = (): string | null => {
             const selectors = [
               'h1[itemprop="name"]', // Semantic markup
               "h1.product-title", // Common class
@@ -106,13 +139,13 @@ export const scrapeOfficeworksProduct = async (req, res) => {
 
             for (const selector of selectors) {
               const el = document.querySelector(selector);
-              if (el) return el.textContent.trim();
+              if (el) return el.textContent?.trim() || null;
             }
             return null;
           };
 
           // Price extraction with better cleaning
-          const getPrice = () => {
+          const getPrice = (): string | null => {
             const priceEl =
               document.querySelector('[data-testid="price"]') ||
               document.querySelector(".price-text") ||
@@ -120,7 +153,7 @@ export const scrapeOfficeworksProduct = async (req, res) => {
 
             if (!priceEl) return null;
 
-            let priceText = priceEl.textContent.trim();
+            let priceText = priceEl.textContent?.trim() || "";
             // Handle prices like "$119.00", "$119", "119.00", etc.
             const priceMatch = priceText.match(/(\d+\.?\d*)/);
             return priceMatch
@@ -129,11 +162,15 @@ export const scrapeOfficeworksProduct = async (req, res) => {
           };
 
           // Image extraction with URL validation
-          const getImage = () => {
+          const getImage = (): string | null => {
             const imgEl =
-              document.querySelector(".image-gallery-image img") ||
-              document.querySelector(".product-image-main img") ||
-              document.querySelector('img[loading="eager"]');
+              document.querySelector<HTMLImageElement>(
+                ".image-gallery-image img"
+              ) ||
+              document.querySelector<HTMLImageElement>(
+                ".product-image-main img"
+              ) ||
+              document.querySelector<HTMLImageElement>('img[loading="eager"]');
 
             if (!imgEl) return null;
 
@@ -168,6 +205,9 @@ export const scrapeOfficeworksProduct = async (req, res) => {
             }, Price: Not found`
           );
         }
+        if (!rate || isNaN(rate)) {
+          throw new Error("Missing or invalid exchange rate");
+        }
 
         const calPrice = await calculate(productData.price, productUrl, rate);
 
@@ -176,7 +216,7 @@ export const scrapeOfficeworksProduct = async (req, res) => {
           title: productData.title || "Title not available",
           price: productData.price,
           image: productData.image || "Image not available",
-          productCode: productData.productCode,
+          productCode: productData.productCode || undefined,
           retailer: "Officeworks",
           calculatedPrice: calPrice,
           success: true,
@@ -184,10 +224,11 @@ export const scrapeOfficeworksProduct = async (req, res) => {
 
         //console.log(`Successfully scraped: ${productUrl}`);
       } catch (err) {
-        console.error(`Scrape error for ${productUrl}:`, err.message);
+        const error = err as Error;
+        console.error(`Scrape error for ${productUrl}:`, error.message);
         results.push({
           url: productUrl,
-          error: `Scraping failed: ${err.message}`,
+          error: `Scraping failed: ${error.message}`,
           success: false,
         });
       } finally {
@@ -200,40 +241,44 @@ export const scrapeOfficeworksProduct = async (req, res) => {
     await browser.close();
     browser = null;
 
-    res.json({
+    const response: ScrapeResponse = {
       results,
       total: results.length,
       successful: results.filter((r) => r.success).length,
       failed: results.filter((r) => !r.success).length,
-    });
+    };
+
+    return res.json(response);
   } catch (err) {
-    console.error("Browser error:", err.message);
+    const error = err as Error;
+    console.error("Browser error:", error.message);
 
     // Clean up browser instance if it exists
     if (browser) {
       try {
         await browser.close();
       } catch (closeErr) {
-        console.error("Error closing browser:", closeErr.message);
+        const closeError = closeErr as Error;
+        console.error("Error closing browser:", closeError.message);
       }
     }
 
     // More specific error messages
-    if (err.message.includes("executable doesn't exist")) {
-      res.status(500).json({
+    if (error.message.includes("executable doesn't exist")) {
+      return res.status(500).json({
         error:
           "Chrome executable not found. Please check CHROME_PATH environment variable.",
-        details: err.message,
+        details: error.message,
       });
-    } else if (err.message.includes("timeout")) {
-      res.status(500).json({
+    } else if (error.message.includes("timeout")) {
+      return res.status(500).json({
         error: "Browser launch timeout. Check system resources.",
-        details: err.message,
+        details: error.message,
       });
     } else {
-      res.status(500).json({
+      return res.status(500).json({
         error: "Browser initialization failed.",
-        details: err.message,
+        details: error.message,
         suggestion:
           "Check if Chrome is installed and CHROME_PATH is set correctly",
       });

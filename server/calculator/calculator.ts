@@ -1,4 +1,15 @@
-export const calculate = async (value, productUrl, rate) => {
+export interface CalculateResult {
+  price: string;
+  originalPrice: number;
+  convertedPrice: number;
+  exchangeRate: number;
+}
+
+export const calculate = async (
+  value: string,
+  productUrl: string,
+  rate: number
+): Promise<string> => {
   try {
     // Input validation
     if (typeof value !== "string") {
@@ -18,12 +29,12 @@ export const calculate = async (value, productUrl, rate) => {
     }
 
     // Helper function: round up to the next multiple of 50
-    function roundUpToNext50(price) {
+    function roundUpToNext50(price: number): string {
       return (Math.ceil(price / 50) * 50).toFixed(2);
     }
 
     // Determine multiplier based on product URL and price
-    let multiplier;
+    let multiplier: number;
     if (productUrl.includes("chemistwarehouse.com.au")) {
       multiplier = result >= 10 ? 1.7 : 1.5;
     } else {
@@ -37,6 +48,10 @@ export const calculate = async (value, productUrl, rate) => {
     return roundUpToNext50(finalResult);
   } catch (error) {
     console.error(`Calculation error for ${productUrl}:`, error);
-    throw new Error(`Price conversion failed: ${error.message}`);
+    throw new Error(
+      `Price conversion failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
   }
 };

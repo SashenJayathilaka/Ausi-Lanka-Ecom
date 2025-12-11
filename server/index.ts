@@ -1,5 +1,5 @@
 import cors from "cors";
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import aldiRoutes from "./routes/adliRoutes.js";
 import colesRoutes from "./routes/colesRoutes.js";
 import OfficeworksRoutes from "./routes/officeworksRoutes.js";
@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("<h1>Welcome to the Ausi Lanka E-commerce API</h1>");
 });
 app.use("/api/chemist", chemistRoutes);
@@ -24,7 +24,7 @@ app.use("/api/officeWorks", OfficeworksRoutes);
 app.use("/api/aldi", aldiRoutes);
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });
