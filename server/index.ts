@@ -5,6 +5,8 @@ import colesRoutes from "./routes/colesRoutes.js";
 import OfficeworksRoutes from "./routes/officeworksRoutes.js";
 import chemistRoutes from "./routes/scrapeRoutes.js";
 import woolworthsRoutes from "./routes/woolworthsRoutes.js";
+import inngestRoutes from "./routes/inngestRoutes.js";
+import { handleInngest } from "./inngest/serve.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,6 +14,9 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Inngest endpoint for function registration and execution
+app.use("/api/inngest", handleInngest);
 
 // Routes
 app.get("/", (req: Request, res: Response) => {
@@ -22,6 +27,9 @@ app.use("/api/coles", colesRoutes);
 app.use("/api/woolworths", woolworthsRoutes);
 app.use("/api/officeWorks", OfficeworksRoutes);
 app.use("/api/aldi", aldiRoutes);
+
+// Inngest job triggers (async scraping)
+app.use("/api/jobs", inngestRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

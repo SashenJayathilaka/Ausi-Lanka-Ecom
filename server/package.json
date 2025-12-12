@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch index.ts",
+    "dev:inngest": "bunx inngest-cli@latest dev",
     "build": "tsc",
     "start": "node dist/index.js"
   },
@@ -18,12 +19,14 @@
   },
   "dependencies": {
     "@types/mongoose": "^5.11.97",
-    "axios": "^1.10.0",
+    "axios": "^1.13.2",
     "cors": "^2.8.5",
     "dotenv": "^17.0.0",
     "express": "^5.1.0",
+    "inngest": "^3.47.0",
     "mongoose": "^9.0.1",
     "puppeteer": "^24.10.2",
-    "puppeteer-cluster": "^0.24.0"
+    "puppeteer-cluster": "^0.24.0",
+    "undici": "^7.16.0"
   }
 }
