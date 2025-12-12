@@ -23,6 +23,15 @@ app.use("/api/woolworths", woolworthsRoutes);
 app.use("/api/officeWorks", OfficeworksRoutes);
 app.use("/api/aldi", aldiRoutes);
 
+import { serve } from "inngest/express";
+import { inngest } from "./inngest/client";
+import { scrapeProductJob } from "./inngest/functions";
+
+app.use(
+  "/api/inngest",
+  serve({ client: inngest, functions: [scrapeProductJob] })
+);
+
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);

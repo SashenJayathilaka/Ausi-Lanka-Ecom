@@ -1,17 +1,6 @@
-import puppeteer, { Browser, Page } from "puppeteer";
 import { Request, Response } from "express";
-import dotenv from "dotenv";
-import { calculate } from "../calculator/calculator.js";
-
-dotenv.config();
-
-interface ProductData {
-  title: string | null;
-  price: string | null;
-  image: string | null;
-  size: string | null;
-  retailer: string;
-}
+import { scrapeUrls } from "../services/scraper";
+import { inngest } from "../inngest/client";
 
 export const scrapeColesProduct = async (
   req: Request,
@@ -43,66 +32,41 @@ export const scrapeColesProduct = async (
   }
 
   try {
-    const browser: Browser = await puppeteer.launch({
-      executablePath: process.env.CHROME_PATH,
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    // Trigger Inngest background job
+    await inngest.send({
+      name: "scraping/product.requested",
+      data: {
+        url: productUrl,
+        rate: rate,
+      },
     });
+    console.log("Inngest event sent for Coles.");
 
-    const page: Page = await browser.newPage();
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
-    );
+    const results = await scrapeUrls([productUrl], rate);
+    const result = results[0];
 
-    await page.goto(productUrl, { waitUntil: "networkidle2", timeout: 60000 });
-    await new Promise((r) => setTimeout(r, 5000));
-
-    const productData: ProductData = await page.evaluate((): ProductData => {
-      const titleEl = document.querySelector("h1.product__title");
-      const priceEl = document.querySelector("span.price__value");
-      const imgEl = document.querySelector(
-        'img[data-testid="product-thumbnail-image-0"]'
-      ) as HTMLImageElement;
-      const sizeEl = document.querySelector(".product__size");
-
-      return {
-        title: titleEl ? titleEl.textContent?.trim() || null : null,
-        price: priceEl ? priceEl.textContent?.trim() || null : null,
-        image: imgEl ? imgEl.src || imgEl.getAttribute("data-src") : null,
-        size: sizeEl ? sizeEl.textContent?.trim() || null : null,
-        retailer: "Coles",
-      };
-    });
-
-    await browser.close();
-
-    const calPrice = await calculate(
-      productData.price || "$0",
-      productUrl,
-      rate
-    );
-
-    res.json({
-      results: [
-        {
-          url: productUrl,
-          title: productData.title || "Title not found",
-          price: productData.price || "Price not found",
-          image: productData.image
-            ? productData.image.startsWith("http")
-              ? productData.image
-              : `https://shop.coles.com.au${productData.image}`
-            : "Image not found",
-          size: productData.size || null,
-          retailer: "Coles",
-          calculatedPrice: calPrice,
-          success: true,
-        },
-      ],
-      total: 1,
-      successful: 1,
-      failed: 0,
-    });
+    if (result.success) {
+      res.json({
+        results: [
+          {
+            ...result,
+            retailer: "Coles",
+            size: null, // Size extraction not yet implemented in shared scraper
+          },
+        ],
+        total: 1,
+        successful: 1,
+        failed: 0,
+      });
+    } else {
+      res.status(500).json({
+        results: [],
+        total: 1,
+        successful: 0,
+        failed: 1,
+        error: result.error || "Failed to scrape Coles product",
+      });
+    }
   } catch (err) {
     console.error("Coles scrape error:", err);
     res.status(500).json({
