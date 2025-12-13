@@ -25,6 +25,8 @@
     "inngest": "^3.47.0",
     "mongoose": "^9.0.1",
     "puppeteer": "^24.10.2",
-    "puppeteer-cluster": "^0.24.0"
+    "puppeteer-cluster": "^0.24.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }

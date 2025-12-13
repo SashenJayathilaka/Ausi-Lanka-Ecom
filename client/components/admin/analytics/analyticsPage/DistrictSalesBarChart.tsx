@@ -17,6 +17,7 @@ import { Bar } from "react-chartjs-2";
 import { ErrorBoundary } from "react-error-boundary";
 import ChartError from "./chartError";
 import ChartLoading from "./chartLoading";
+import { useTheme } from "next-themes";
 
 // Register ChartJS components
 ChartJS.register(
@@ -41,6 +42,7 @@ export const DistrictSalesBarChart = () => {
 const DistrictSalesBarChartSuspense = () => {
   const { data, error } =
     trpc.orderAnalyticsRouter.getSalesByDistrict.useQuery();
+  const { theme } = useTheme();
 
   if (error) {
     return <ChartError />;
@@ -93,8 +95,10 @@ const DistrictSalesBarChartSuspense = () => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow">
-      <h2 className="text-lg font-semibold mb-4">Top 10 Districts by Sales</h2>
+    <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow dark:shadow-slate-900 border border-transparent dark:border-slate-700">
+      <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">
+        Top 10 Districts by Sales
+      </h2>
       <div className="h-96">
         {" "}
         {/* Taller container for better visibility */}
@@ -106,6 +110,9 @@ const DistrictSalesBarChartSuspense = () => {
             plugins: {
               legend: {
                 position: "top",
+                labels: {
+                  color: theme === "dark" ? "#e5e7eb" : "#374151",
+                },
               },
               tooltip: {
                 callbacks: {
@@ -127,16 +134,26 @@ const DistrictSalesBarChartSuspense = () => {
                   autoSkip: false,
                   maxRotation: 45,
                   minRotation: 45,
+                  color: theme === "dark" ? "#e5e7eb" : "#374151",
+                },
+                grid: {
+                  color: theme === "dark" ? "#374151" : "#e5e7eb",
                 },
               },
               y: {
                 beginAtZero: true,
+                ticks: {
+                  color: theme === "dark" ? "#e5e7eb" : "#374151",
+                },
+                grid: {
+                  color: theme === "dark" ? "#374151" : "#e5e7eb",
+                },
               },
             },
           }}
         />
       </div>
-      <p className="text-sm text-gray-500 mt-2">
+      <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
         Showing top 10 of {districts.length} districts
       </p>
     </div>

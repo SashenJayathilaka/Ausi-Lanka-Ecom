@@ -19,6 +19,7 @@ import {
   FiX,
 } from "react-icons/fi";
 import { MdDashboard, MdOutlineAttachMoney } from "react-icons/md";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function ResponsiveAdminSidebar() {
   const pathname = usePathname();
@@ -185,7 +186,7 @@ export default function ResponsiveAdminSidebar() {
     <>
       {/* Mobile Header (shown only on sm/md screens) */}
       {isMobile && (
-        <header className="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b border-gray-200 lg:hidden">
+        <header className="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-slate-950 shadow-sm border-b border-gray-200 dark:border-slate-800 lg:hidden">
           <div className="flex items-center justify-between p-3">
             <button
               onClick={toggleMobileSidebar}
@@ -201,9 +202,13 @@ export default function ResponsiveAdminSidebar() {
               <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
                 <span className="text-white font-bold text-sm">AD</span>
               </div>
-              <h1 className="text-lg font-bold text-indigo-800">Admin</h1>
+              <h1 className="text-lg font-bold text-indigo-800 dark:text-indigo-400">
+                Admin
+              </h1>
             </div>
-            <div className="w-8"></div> {/* Spacer for balance */}
+            <div className="flex items-center">
+              <ModeToggle />
+            </div>
           </div>
         </header>
       )}
@@ -218,7 +223,7 @@ export default function ResponsiveAdminSidebar() {
 
       {/* Desktop Sidebar (lg screens) */}
       <aside
-        className={`hidden lg:block fixed top-0 h-screen bg-gradient-to-b from-indigo-50 to-white shadow-lg transition-all duration-300 ease-in-out z-20 border-r border-gray-200
+        className={`hidden lg:block fixed top-0 h-screen bg-gradient-to-b from-indigo-50 to-white dark:from-slate-950 dark:to-slate-900 shadow-lg transition-all duration-300 ease-in-out z-20 border-r border-gray-200 dark:border-slate-800
           ${shouldCollapseSidebar ? "w-20" : sidebarOpen ? "w-64" : "w-20"}`}
       >
         <div className="flex flex-col h-full">
@@ -229,7 +234,9 @@ export default function ResponsiveAdminSidebar() {
                 <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
                   <span className="text-white font-bold text-sm">AD</span>
                 </div>
-                <h2 className="text-lg font-bold text-indigo-800">AdminPro</h2>
+                <h2 className="text-lg font-bold text-indigo-800 dark:text-indigo-400">
+                  AdminPro
+                </h2>
               </div>
             ) : (
               <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center mx-auto">
@@ -238,26 +245,29 @@ export default function ResponsiveAdminSidebar() {
             )}
 
             {!shouldCollapseSidebar && (
-              <button
-                onClick={toggleSidebar}
-                className="p-2 rounded-lg text-gray-500 hover:bg-indigo-100 hover:text-indigo-700 transition-colors"
-              >
-                <FiChevronLeft
-                  className={`transition-transform ${!sidebarOpen && "rotate-180"} text-lg`}
-                />
-              </button>
+              <div className="flex items-center space-x-1">
+                <ModeToggle />
+                <button
+                  onClick={toggleSidebar}
+                  className="p-2 rounded-lg text-gray-500 hover:bg-indigo-100 hover:text-indigo-700 dark:text-gray-400 dark:hover:bg-slate-800 dark:hover:text-indigo-400 transition-colors"
+                >
+                  <FiChevronLeft
+                    className={`transition-transform ${!sidebarOpen && "rotate-180"} text-lg`}
+                  />
+                </button>
+              </div>
             )}
           </div>
 
           {/* Search Bar (visible when expanded) */}
           {!shouldCollapseSidebar && sidebarOpen && (
-            <div className="p-4 border-b border-gray-200">
+            <div className="p-4 border-b border-gray-200 dark:border-slate-800">
               <div className="relative">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="w-full pl-10 pr-4 py-2 rounded-lg bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 text-sm shadow-sm"
+                  className="w-full pl-10 pr-4 py-2 rounded-lg bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-300 dark:focus:border-indigo-700 text-sm shadow-sm dark:text-gray-100"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -276,8 +286,8 @@ export default function ResponsiveAdminSidebar() {
                       ${shouldCollapseSidebar ? "px-3 justify-center" : sidebarOpen ? "px-4" : "px-3 justify-center"}
                       ${
                         isActive(item.href)
-                          ? `bg-indigo-100 text-indigo-700 font-medium ${item.color}`
-                          : "text-gray-600 hover:bg-indigo-50 hover:text-gray-900"
+                          ? `bg-indigo-100 dark:bg-slate-800 text-indigo-700 dark:text-indigo-400 font-medium ${item.color}`
+                          : "text-gray-600 dark:text-gray-400 hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-gray-100"
                       }`}
                   >
                     <span
@@ -300,16 +310,16 @@ export default function ResponsiveAdminSidebar() {
           </nav>
 
           {/* Bottom Section */}
-          <div className="p-4 border-t border-gray-200">
+          <div className="p-4 border-t border-gray-200 dark:border-slate-800">
             {/* Notifications (visible when expanded) */}
             {!shouldCollapseSidebar && sidebarOpen && (
-              <div className="mb-4 p-3 bg-indigo-50 rounded-lg flex items-center">
+              <div className="mb-4 p-3 bg-indigo-50 dark:bg-slate-800 rounded-lg flex items-center">
                 <div className="relative">
-                  <FiBell className="text-indigo-600 text-lg" />
+                  <FiBell className="text-indigo-600 dark:text-indigo-400 text-lg" />
                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                 </div>
                 <div className="ml-3">
-                  <p className="text-xs font-medium text-gray-700">
+                  <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
                     3 new notifications
                   </p>
                 </div>
@@ -332,20 +342,20 @@ export default function ResponsiveAdminSidebar() {
 
       {/* Mobile Sidebar (sm/md screens) */}
       <aside
-        className={`lg:hidden fixed top-0 left-0 h-screen w-72 bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-40
+        className={`lg:hidden fixed top-0 left-0 h-screen w-72 bg-white dark:bg-slate-950 shadow-xl transform transition-transform duration-300 ease-in-out z-40
           ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="flex flex-col h-full pt-16">
           {" "}
           {/* pt-16 to account for header */}
           {/* Search Bar */}
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 dark:border-slate-800">
             <div className="relative">
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search menu..."
-                className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 text-sm"
+                className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-300 dark:focus:border-indigo-700 text-sm dark:text-gray-100"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -362,8 +372,8 @@ export default function ResponsiveAdminSidebar() {
                       className={`flex items-center p-3 px-4 rounded-lg transition-all
                         ${
                           isActive(item.href)
-                            ? `bg-indigo-50 text-indigo-700 font-medium ${item.color}`
-                            : "text-gray-700 hover:bg-gray-50"
+                            ? `bg-indigo-50 dark:bg-slate-800 text-indigo-700 dark:text-indigo-400 font-medium ${item.color}`
+                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800"
                         }`}
                     >
                       <span
@@ -398,7 +408,7 @@ export default function ResponsiveAdminSidebar() {
 
       {/* Bottom Navigation for Mobile (sm/md screens) */}
       {isMobile && !mobileSidebarOpen && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white shadow-lg border-t border-gray-200">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white dark:bg-slate-950 shadow-lg border-t border-gray-200 dark:border-slate-800">
           <div className="flex justify-around items-center p-2">
             {bottomNavItems.map((item) => (
               <a

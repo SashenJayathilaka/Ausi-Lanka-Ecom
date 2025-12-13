@@ -78,17 +78,19 @@ const UsersAdminPageSectionsSuspense: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">User Management</h1>
+      <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+        User Management
+      </h1>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-slate-900 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+            <thead className="bg-gray-50 dark:bg-slate-900">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   User
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Name
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -102,9 +104,12 @@ const UsersAdminPageSectionsSuspense: React.FC = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
               {users.map((user) => (
-                <tr key={user.clerkId} className="hover:bg-gray-50">
+                <tr
+                  key={user.clerkId}
+                  className="hover:bg-gray-50 dark:hover:bg-slate-700"
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex-shrink-0 h-10 w-10">
                       <Image
@@ -117,7 +122,7 @@ const UsersAdminPageSectionsSuspense: React.FC = () => {
                       />
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                     {editingUser?.clerkId === user.clerkId ? (
                       <UserEditForm
                         user={editingUser}
@@ -128,7 +133,7 @@ const UsersAdminPageSectionsSuspense: React.FC = () => {
                       user.name
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {editingUser?.clerkId === user.clerkId
                       ? null
                       : user.emailId}
@@ -155,7 +160,7 @@ const UsersAdminPageSectionsSuspense: React.FC = () => {
                         className={`${
                           user.clerkId === currentUser?.id
                             ? "text-gray-400 cursor-not-allowed"
-                            : "text-blue-600 hover:text-blue-900"
+                            : "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
                         } mr-3`}
                       >
                         Edit
@@ -191,7 +196,7 @@ const UserEditForm: React.FC<{
       <div>
         <input
           {...register("name")}
-          className={`w-full px-3 py-2 border rounded-md ${errors.name ? "border-red-500" : "border-gray-300"} bg-white text-gray-900`}
+          className={`w-full px-3 py-2 border rounded-md ${errors.name ? "border-red-500" : "border-gray-300 dark:border-slate-700"} bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100`}
         />
         {errors.name && (
           <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
@@ -201,7 +206,7 @@ const UserEditForm: React.FC<{
       <div>
         <input
           {...register("emailId")}
-          className={`w-full px-3 py-2 border rounded-md ${errors.emailId ? "border-red-500" : "border-gray-300"} bg-white text-gray-900`}
+          className={`w-full px-3 py-2 border rounded-md ${errors.emailId ? "border-red-500" : "border-gray-300 dark:border-slate-700"} bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100`}
         />
         {errors.emailId && (
           <p className="mt-1 text-sm text-red-600">{errors.emailId.message}</p>
@@ -211,7 +216,7 @@ const UserEditForm: React.FC<{
       <div>
         <select
           {...register("userType")}
-          className="w-full px-3 py-2 border rounded-md border-gray-300 bg-white text-gray-900"
+          className="w-full px-3 py-2 border rounded-md border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
         >
           <option value="user">User</option>
           <option value="admin">Admin</option>
@@ -228,7 +233,7 @@ const UserEditForm: React.FC<{
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+          className="px-4 py-2 bg-gray-200 dark:bg-slate-700 text-gray-800 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-slate-600"
         >
           Cancel
         </button>

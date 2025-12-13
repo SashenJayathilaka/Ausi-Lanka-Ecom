@@ -1,6 +1,10 @@
 import { Cluster } from "puppeteer-cluster";
 import { Page } from "puppeteer";
+import puppeteer from "puppeteer-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import { calculate } from "../calculator/calculator";
+
+puppeteer.use(StealthPlugin());
 
 export interface ScrapeResult {
   url: string;
@@ -95,6 +99,7 @@ const initCluster = async () => {
     const launchOptions: any = {
       concurrency: Cluster.CONCURRENCY_CONTEXT,
       maxConcurrency: 5,
+      puppeteer, // Use puppeteer-extra
       puppeteerOptions: {
         headless: true,
         args: [

@@ -194,12 +194,12 @@ const UpdateAllButton = () => {
   const isError = updateAllMutation.isError;
 
   return (
-    <div className="mb-6 p-4 bg-white rounded-lg shadow">
+    <div className="mb-6 p-4 bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-slate-900">
       <div className="flex items-center gap-4 mb-4">
         <button
           onClick={handleUpdateAll}
           disabled={isUpdating}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-100 rounded-md hover:bg-blue-200 dark:hover:bg-blue-900/50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
         >
           {isUpdating ? <FaSpinner className="animate-spin" /> : <FaSync />}
           {isUpdating ? "Updating All Products..." : "Update All Products"}
@@ -207,11 +207,11 @@ const UpdateAllButton = () => {
 
         {results && (
           <div className="flex items-center gap-4">
-            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+            <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-100 text-xs font-medium rounded-full">
               Updated: {results.updatedCount}
             </span>
             {results.failedCount > 0 && (
-              <span className="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">
+              <span className="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-100 text-xs font-medium rounded-full">
                 Failed: {results.failedCount}
               </span>
             )}
@@ -221,7 +221,7 @@ const UpdateAllButton = () => {
         {results && (
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="ml-auto flex items-center gap-1 text-sm text-gray-600 hover:text-gray-800"
+            className="ml-auto flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
           >
             Details
             {showDetails ? <FaChevronUp /> : <FaChevronDown />}
@@ -231,20 +231,20 @@ const UpdateAllButton = () => {
 
       {isUpdating && (
         <div className="space-y-2 mb-4">
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
+          <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5">
             <div
               className="bg-blue-600 h-2.5 rounded-full"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             Scanning retailers and updating prices... {progress}%
           </p>
         </div>
       )}
 
       {isError && (
-        <div className="mb-4 p-4 bg-red-100 text-red-800 rounded-lg">
+        <div className="mb-4 p-4 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-100 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
             <FaExclamationTriangle />
             <span className="font-medium">Error</span>
@@ -270,28 +270,33 @@ const UpdateAllButton = () => {
           </div>
 
           {results.results && results.results.length > 0 && (
-            <div className="border rounded-md divide-y max-h-96 overflow-y-auto">
-              <div className="p-4 bg-gray-100 font-medium flex items-center sticky top-0">
+            <div className="border border-gray-200 dark:border-slate-700 rounded-md divide-y divide-gray-200 dark:divide-slate-700 max-h-96 overflow-y-auto">
+              <div className="p-4 bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-gray-100 font-medium flex items-center sticky top-0">
                 <div className="flex-1">Item ID</div>
                 <div className="w-24 text-center">Status</div>
                 <div className="w-48 text-center">Error</div>
               </div>
               {/*   eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {results.results.map((result: any, index: number) => (
-                <div key={index} className="p-4 flex items-center">
-                  <div className="flex-1 text-sm font-mono">{result.id}</div>
+                <div
+                  key={index}
+                  className="p-4 flex items-center bg-white dark:bg-slate-800"
+                >
+                  <div className="flex-1 text-sm font-mono text-gray-700 dark:text-gray-300">
+                    {result.id}
+                  </div>
                   <div className="w-24 flex justify-center">
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full ${
                         result.success
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
+                          ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-100"
+                          : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-100"
                       }`}
                     >
                       {result.success ? "Success" : "Failed"}
                     </span>
                   </div>
-                  <div className="w-48 text-center text-xs text-gray-600">
+                  <div className="w-48 text-center text-xs text-gray-600 dark:text-gray-400">
                     {result.error || "-"}
                   </div>
                 </div>
@@ -471,7 +476,9 @@ const TrendingItemsManagement = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Catalog Items</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          Catalog Items
+        </h1>
         <button
           onClick={handleCreate}
           className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 cursor-pointer"
@@ -485,8 +492,8 @@ const TrendingItemsManagement = () => {
       <UpdateAllButton />
 
       {mode !== "view" && (
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-slate-900 p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
             {mode === "edit" ? "Edit Item" : "Create New Item"}
           </h2>
 
@@ -497,12 +504,12 @@ const TrendingItemsManagement = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Name*
                 </label>
                 <input
                   {...form.register("name")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                 />
                 {form.formState.errors.name && (
                   <p className="mt-1 text-sm text-red-600">
@@ -513,12 +520,12 @@ const TrendingItemsManagement = () => {
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Description
                 </label>
                 <textarea
                   {...form.register("description")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                   rows={3}
                 />
                 {form.formState.errors.description && (
@@ -530,7 +537,7 @@ const TrendingItemsManagement = () => {
 
               {/* Price */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Price*
                 </label>
                 <div className="relative">
@@ -541,7 +548,7 @@ const TrendingItemsManagement = () => {
                     type="text"
                     step="0.01"
                     {...form.register("price")}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                   />
                 </div>
                 {form.formState.errors.price && (
@@ -553,12 +560,12 @@ const TrendingItemsManagement = () => {
 
               {/* Image */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Image URL*
                 </label>
                 <input
                   {...form.register("image")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                 />
                 {form.formState.errors.image && (
                   <p className="mt-1 text-sm text-red-600">
@@ -569,7 +576,7 @@ const TrendingItemsManagement = () => {
 
               {/* Rating */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Rating (0-5)*
                 </label>
                 <div className="relative">
@@ -582,7 +589,7 @@ const TrendingItemsManagement = () => {
                     max="5"
                     step="0.1"
                     {...form.register("rating", { valueAsNumber: true })}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                   />
                 </div>
                 {form.formState.errors.rating && (
@@ -594,13 +601,13 @@ const TrendingItemsManagement = () => {
 
               {/* URL */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   URL
                 </label>
                 <div className="relative">
                   <input
                     {...form.register("url")}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                     placeholder="Enter product URL to auto-fill details"
                   />
                   {urlLoading && (
@@ -616,7 +623,7 @@ const TrendingItemsManagement = () => {
 
               {/* Retailer */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Retailer*
                 </label>
                 <div className="relative">
@@ -625,7 +632,7 @@ const TrendingItemsManagement = () => {
                   </div>
                   <input
                     {...form.register("retailer")}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                   />
                 </div>
                 {form.formState.errors.retailer && (
@@ -637,7 +644,7 @@ const TrendingItemsManagement = () => {
 
               {/* Calculated Price */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Calculated Price*
                 </label>
                 <div className="relative">
@@ -648,7 +655,7 @@ const TrendingItemsManagement = () => {
                     type="text"
                     step="0.01"
                     {...form.register("calculatedPrice")}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                   />
                 </div>
                 {form.formState.errors.calculatedPrice && (
@@ -660,7 +667,7 @@ const TrendingItemsManagement = () => {
 
               {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Category*
                 </label>
                 <div className="relative">
@@ -669,7 +676,7 @@ const TrendingItemsManagement = () => {
                   </div>
                   <select
                     {...form.register("category")}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md appearance-none"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md appearance-none bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                   >
                     <option value="">Select a category</option>
                     {categories.map((category) => (
@@ -688,12 +695,12 @@ const TrendingItemsManagement = () => {
 
               {/* Badge */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Badge
                 </label>
                 <select
                   {...form.register("badge")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                 >
                   <option value="">None</option>
                   <option value="BESTSELLER">Bestseller</option>
@@ -708,7 +715,7 @@ const TrendingItemsManagement = () => {
               <button
                 type="button"
                 onClick={() => setMode("view")}
-                className="px-4 py-2 border border-gray-300 rounded-md"
+                className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
               >
                 Cancel
               </button>
@@ -725,12 +732,12 @@ const TrendingItemsManagement = () => {
       )}
 
       {/* Items Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-slate-900 overflow-hidden">
         <div className="overflow-x-auto no-scrollbar">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+            <thead className="bg-gray-50 dark:bg-slate-900">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Name
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -753,9 +760,12 @@ const TrendingItemsManagement = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
               {data?.items.map((item) => (
-                <tr key={item.id}>
+                <tr
+                  key={item.id}
+                  className="hover:bg-gray-50 dark:hover:bg-slate-700"
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
@@ -770,34 +780,34 @@ const TrendingItemsManagement = () => {
                         />
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                           {item.name}
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     ${item.price}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {item.retailer}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {item.category}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     <div className="flex items-center">
                       <FaStar className="text-yellow-500 mr-1" />
                       {item.rating}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {item.badge || "-"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
                       onClick={() => handleEdit(item)}
-                      className="text-blue-600 hover:text-blue-900 mr-4"
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-4"
                     >
                       <FaEdit />
                     </button>
