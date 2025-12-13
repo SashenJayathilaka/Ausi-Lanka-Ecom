@@ -16,6 +16,7 @@ import { Bar } from "react-chartjs-2";
 import { ErrorBoundary } from "react-error-boundary";
 import ChartError from "./chartError";
 import ChartLoading from "./chartLoading";
+import { useTheme } from "next-themes";
 
 // Register ChartJS components
 ChartJS.register(
@@ -38,6 +39,7 @@ export const MonthlySalesBarChart = () => {
 };
 
 const MonthlySalesBarChartSuspense = () => {
+  const { theme } = useTheme();
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [monthsToShow, setMonthsToShow] = useState(12);
@@ -75,14 +77,16 @@ const MonthlySalesBarChartSuspense = () => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow">
+    <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow dark:shadow-slate-900 border border-transparent dark:border-slate-700">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Monthly Sales Trend</h2>
+        <h2 className="text-lg font-semibold dark:text-gray-100">
+          Monthly Sales Trend
+        </h2>
         <div className="flex gap-2">
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(Number(e.target.value))}
-            className="border rounded px-2 py-1 text-sm"
+            className="border rounded px-2 py-1 text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 dark:text-gray-100"
           >
             {[currentYear - 1, currentYear, currentYear + 1].map((year) => (
               <option key={year} value={year}>
@@ -93,7 +97,7 @@ const MonthlySalesBarChartSuspense = () => {
           <select
             value={monthsToShow}
             onChange={(e) => setMonthsToShow(Number(e.target.value))}
-            className="border rounded px-2 py-1 text-sm"
+            className="border rounded px-2 py-1 text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 dark:text-gray-100"
           >
             <option value={6}>Last 6 months</option>
             <option value={12}>Last 12 months</option>
@@ -109,6 +113,9 @@ const MonthlySalesBarChartSuspense = () => {
             plugins: {
               legend: {
                 position: "top",
+                labels: {
+                  color: theme === "dark" ? "#e5e7eb" : "#374151",
+                },
               },
               tooltip: {
                 callbacks: {
@@ -134,6 +141,18 @@ const MonthlySalesBarChartSuspense = () => {
                     }
                     return `LKR ${value}`;
                   },
+                  color: theme === "dark" ? "#e5e7eb" : "#374151",
+                },
+                grid: {
+                  color: theme === "dark" ? "#374151" : "#e5e7eb",
+                },
+              },
+              x: {
+                ticks: {
+                  color: theme === "dark" ? "#e5e7eb" : "#374151",
+                },
+                grid: {
+                  color: theme === "dark" ? "#374151" : "#e5e7eb",
                 },
               },
             },

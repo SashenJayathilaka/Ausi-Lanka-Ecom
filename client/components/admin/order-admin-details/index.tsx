@@ -60,7 +60,7 @@ const OrderCard = ({
   };
 
   return (
-    <div className="border rounded-lg p-6 mb-6 bg-white">
+    <div className="border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6 bg-white dark:bg-slate-800">
       {/* Order Header */}
       <div className="flex justify-between items-start mb-4">
         <div
@@ -69,15 +69,17 @@ const OrderCard = ({
           }
           className="cursor-pointer hover:underline"
         >
-          <h3 className="font-medium text-lg">Order #{order.id}</h3>
-          <p className="text-sm text-gray-500 flex items-center">
+          <h3 className="font-medium text-lg text-gray-900 dark:text-gray-100">
+            Order #{order.id}
+          </h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
             <FiCalendar className="mr-1" />
             {new Date(order.createdAt).toLocaleString()}
           </p>
         </div>
         <div className="flex items-center">
           {isUpdating ? (
-            <div className="h-8 w-24 bg-gray-200 rounded-md animate-pulse"></div>
+            <div className="h-8 w-24 bg-gray-200 dark:bg-slate-700 rounded-md animate-pulse"></div>
           ) : (
             <select
               value={order.status}
@@ -98,7 +100,7 @@ const OrderCard = ({
                 <option
                   key={option.value}
                   value={option.value}
-                  className="bg-white"
+                  className="bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                 >
                   {option.label}
                 </option>
@@ -109,59 +111,69 @@ const OrderCard = ({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h4 className="font-medium mb-3 flex items-center underline">
+        <div className="bg-gray-50 dark:bg-slate-700/50 p-4 rounded-lg">
+          <h4 className="font-medium mb-3 flex items-center underline text-gray-900 dark:text-gray-100">
             <FiUser className="mr-2" /> Customer
           </h4>
-          <p className="font-semibold">{order.name}</p>
-          <p className="text-sm text-gray-500 flex items-center mt-1 font-semibold">
+          <p className="font-semibold text-gray-900 dark:text-gray-100">
+            {order.name}
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center mt-1 font-semibold">
             <FiPhone className="mr-1" /> {order.mobile}
           </p>
           {order.user?.emailId && (
-            <p className="text-sm text-gray-500 font-semibold">
+            <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold">
               {order.user.emailId}
             </p>
           )}
         </div>
 
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h4 className="font-medium mb-3 flex items-center underline">
+        <div className="bg-gray-50 dark:bg-slate-700/50 p-4 rounded-lg">
+          <h4 className="font-medium mb-3 flex items-center underline text-gray-900 dark:text-gray-100">
             <FiDollarSign className="mr-2" /> Order Summary
           </h4>
-          <p className="font-semibold">
+          <p className="font-semibold text-gray-900 dark:text-gray-100">
             Total: {LkrFormat(Number(order.totalAmount))}
           </p>
-          <p className="text-sm text-gray-500 mt-1 font-semibold">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-semibold">
             {order.items.length} item{order.items.length !== 1 ? "s" : ""}
           </p>
-          <p className="text-sm text-gray-500 flex items-center mt-1 font-semibold">
+          <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center mt-1 font-semibold">
             <FiTruck className="mr-1" /> {order.deliveryMethod} delivery
           </p>
         </div>
 
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h4 className="font-medium mb-3 flex items-center underline">
+        <div className="bg-gray-50 dark:bg-slate-700/50 p-4 rounded-lg">
+          <h4 className="font-medium mb-3 flex items-center underline text-gray-900 dark:text-gray-100">
             <FiMapPin className="mr-2" /> Shipping
           </h4>
-          <p className="font-semibold">{order.addressLine1}</p>
+          <p className="font-semibold text-gray-900 dark:text-gray-100">
+            {order.addressLine1}
+          </p>
           {order.addressLine2 && (
-            <p className="font-semibold">{order.addressLine2}</p>
+            <p className="font-semibold text-gray-900 dark:text-gray-100">
+              {order.addressLine2}
+            </p>
           )}
-          <p className="font-semibold">
+          <p className="font-semibold text-gray-900 dark:text-gray-100">
             {order.city}, {order.district}
           </p>
-          <p className="font-semibold">{order.postalCode}</p>
+          <p className="font-semibold text-gray-900 dark:text-gray-100">
+            {order.postalCode}
+          </p>
         </div>
       </div>
 
       {/* Order Items */}
       <div className="mb-6">
-        <h4 className="font-medium mb-3 underline">Order Items</h4>
-        <div className="bg-gray-50 rounded-lg overflow-hidden">
+        <h4 className="font-medium mb-3 underline text-gray-900 dark:text-gray-100">
+          Order Items
+        </h4>
+        <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg overflow-hidden">
           {order.items.map((item) => (
             <div
               key={item.id}
-              className="flex items-center p-4 border-b hover:bg-gray-100 transition-colors"
+              className="flex items-center p-4 border-b border-gray-200 dark:border-slate-600 hover:bg-gray-100 dark:hover:bg-slate-600 transition-colors"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -176,7 +188,7 @@ const OrderCard = ({
               />
               <div className="flex-1">
                 <h5
-                  className="font-medium hover:underline"
+                  className="font-medium hover:underline text-gray-900 dark:text-gray-100"
                   style={{ cursor: item.url ? "pointer" : "default" }}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -189,7 +201,7 @@ const OrderCard = ({
                   {LkrFormat(Number(item.calculatedPrice))} × {item.quantity}
                 </p>
                 <div className="mt-1 flex items-center">
-                  <span className="text-xs bg-gray-100 px-2 py-1 rounded mr-2">
+                  <span className="text-xs bg-gray-100 dark:bg-slate-600 px-2 py-1 rounded mr-2 text-gray-700 dark:text-gray-300">
                     {item.retailer}
                   </span>
                   {item.url && (
@@ -197,7 +209,7 @@ const OrderCard = ({
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-blue-600 hover:underline font-semibold"
+                      className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-semibold"
                       onClick={(e) => e.stopPropagation()}
                     >
                       View Product
@@ -206,7 +218,7 @@ const OrderCard = ({
                 </div>
               </div>
               <div className="text-right">
-                <p className="font-semibold">
+                <p className="font-semibold text-gray-900 dark:text-gray-100">
                   {LkrFormat(parseFloat(item.calculatedPrice) * item.quantity)}
                 </p>
               </div>
@@ -218,33 +230,41 @@ const OrderCard = ({
       {/* Comments (if any) */}
       {order.comments && (
         <div className="mb-6">
-          <h4 className="font-medium mb-2">Customer Comments</h4>
-          <p className="bg-gray-50 p-4 rounded-lg">{order.comments}</p>
+          <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">
+            Customer Comments
+          </h4>
+          <p className="bg-gray-50 dark:bg-slate-700/50 p-4 rounded-lg text-gray-700 dark:text-gray-300">
+            {order.comments}
+          </p>
         </div>
       )}
       {order.missingItems && (
         <div className="mb-6">
-          <h4 className="font-medium mb-2">Missing Items</h4>
-          <p className="bg-gray-50 p-4 rounded-lg">{order.missingItems}</p>
+          <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">
+            Missing Items
+          </h4>
+          <p className="bg-gray-50 dark:bg-slate-700/50 p-4 rounded-lg text-gray-700 dark:text-gray-300">
+            {order.missingItems}
+          </p>
         </div>
       )}
       {/* Order Total */}
       <div className="flex justify-end">
-        <div className="bg-gray-50 p-4 rounded-lg w-full md:w-1/3">
+        <div className="bg-gray-50 dark:bg-slate-700/50 p-4 rounded-lg w-full md:w-1/3">
           <div className="flex justify-between mb-2">
-            <span className="text-gray-500">Subtotal</span>
-            <span className="font-semibold">
+            <span className="text-gray-500 dark:text-gray-400">Subtotal</span>
+            <span className="font-semibold text-gray-900 dark:text-gray-100">
               {LkrFormat(Number(order.totalAmount))}
             </span>
           </div>
           <div className="flex justify-between mb-2">
-            <span className="text-gray-500">Shipping</span>
-            <span>0.00</span>
+            <span className="text-gray-500 dark:text-gray-400">Shipping</span>
+            <span className="text-gray-900 dark:text-gray-100">0.00</span>
           </div>
-          <div className="border-t my-2"></div>
+          <div className="border-t border-gray-200 dark:border-slate-600 my-2"></div>
           <div className="flex justify-between font-medium">
-            <span>Total</span>
-            <span className="font-bold">
+            <span className="text-gray-900 dark:text-gray-100">Total</span>
+            <span className="font-bold text-gray-900 dark:text-gray-100">
               {LkrFormat(Number(order.totalAmount))}
             </span>
           </div>
@@ -305,18 +325,20 @@ const OrderAdminPageSectionsSuspense: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Orders Management</h1>
+      <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+        Orders Management
+      </h1>
 
       <div className="mb-6">
-        <div className="flex flex-wrap gap-2 border-b">
+        <div className="flex flex-wrap gap-2 border-b border-gray-200 dark:border-slate-700">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-2 rounded-t-lg font-medium transition-colors cursor-pointer ${
                 activeTab === tab.id
-                  ? "bg-blue-100 text-blue-800 border-b-2 border-blue-800"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-100 border-b-2 border-blue-800 dark:border-blue-400"
+                  : "bg-gray-100 dark:bg-slate-700/50 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700"
               }`}
             >
               {tab.label}
@@ -335,8 +357,8 @@ const OrderAdminPageSectionsSuspense: React.FC = () => {
             />
           ))
         ) : (
-          <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <p className="text-gray-500 text-lg">
+          <div className="text-center py-12 bg-gray-50 dark:bg-slate-800 rounded-lg">
+            <p className="text-gray-500 dark:text-gray-400 text-lg">
               No {activeTab !== "all" ? activeTab : ""} orders found
             </p>
           </div>

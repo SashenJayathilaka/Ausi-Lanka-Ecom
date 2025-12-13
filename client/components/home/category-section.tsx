@@ -232,6 +232,9 @@ const CategorySection = () => {
                   onClick={() => router.push(category.link)}
                   className="group cursor-pointer relative flex-shrink-0 w-[200px] md:w-[240px] h-[260px] md:h-[300px] rounded-[32px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 snap-start"
                 >
+                  {/* Background Pattern (fallback) */}
+                  <div className={`absolute inset-0 ${category.bgPattern}`} />
+
                   {/* Background Image */}
                   {!hasError && (
                     <div className="absolute inset-0 w-full h-full">
@@ -246,9 +249,6 @@ const CategorySection = () => {
                       />
                     </div>
                   )}
-
-                  {/* Background Pattern (fallback) */}
-                  <div className={`absolute inset-0 ${category.bgPattern}`} />
 
                   {/* Animated Gradient Background - blend with image */}
                   <div

@@ -15,6 +15,7 @@ import { Bar } from "react-chartjs-2";
 import { ErrorBoundary } from "react-error-boundary";
 import ChartError from "./chartError";
 import ChartLoading from "./chartLoading";
+import { useTheme } from "next-themes";
 
 // Register ChartJS components
 ChartJS.register(
@@ -51,6 +52,9 @@ export const DeliveryMethodBarChart = () => {
 const DeliveryMethodBarChartSuspense = () => {
   const { data, error } =
     trpc.orderAnalyticsRouter.getDeliveryMethodDistribution.useQuery();
+  const { theme } = useTheme();
+  const textColor = theme === "dark" ? "#e5e7eb" : "#374151";
+  const gridColor = theme === "dark" ? "#374151" : "#e5e7eb";
 
   if (error) {
     return <ChartError />;
@@ -72,8 +76,8 @@ const DeliveryMethodBarChartSuspense = () => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow">
-      <h2 className="text-lg font-semibold mb-4">
+    <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow dark:shadow-slate-900 border border-transparent dark:border-slate-700">
+      <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">
         Delivery Method Preferences
       </h2>
       <div className="h-64">
@@ -100,6 +104,18 @@ const DeliveryMethodBarChartSuspense = () => {
                 beginAtZero: true,
                 ticks: {
                   precision: 0,
+                  color: textColor,
+                },
+                grid: {
+                  color: gridColor,
+                },
+              },
+              x: {
+                ticks: {
+                  color: textColor,
+                },
+                grid: {
+                  color: gridColor,
                 },
               },
             },

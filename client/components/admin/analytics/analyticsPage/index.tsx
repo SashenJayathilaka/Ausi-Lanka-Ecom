@@ -7,6 +7,7 @@ import { Pie } from "react-chartjs-2";
 import { ErrorBoundary } from "react-error-boundary";
 import ChartError from "./chartError";
 import ChartLoading from "./chartLoading";
+import { useTheme } from "next-themes";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -39,6 +40,8 @@ export const OrderStatusPieChart = () => {
 const OrderStatusPieChartSuspense = () => {
   const { data, error } =
     trpc.orderAnalyticsRouter.getStatusDistribution.useQuery();
+  const { theme } = useTheme();
+  const textColor = theme === "dark" ? "#e5e7eb" : "#374151";
 
   /*   if (isLoading) {
     return (
@@ -62,13 +65,16 @@ const OrderStatusPieChartSuspense = () => {
           (item) => statusColors[item.status] || "#999999"
         ),
         borderWidth: 1,
+        borderColor: theme === "dark" ? "#1e293b" : "#ffffff",
       },
     ],
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow">
-      <h2 className="text-lg font-semibold mb-4">Order Status Distribution</h2>
+    <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow dark:shadow-slate-900 border border-transparent dark:border-slate-700">
+      <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">
+        Order Status Distribution
+      </h2>
       <div className="h-64">
         <Pie
           data={chartData}
@@ -78,6 +84,9 @@ const OrderStatusPieChartSuspense = () => {
             plugins: {
               legend: {
                 position: "right",
+                labels: {
+                  color: textColor,
+                },
               },
               tooltip: {
                 callbacks: {

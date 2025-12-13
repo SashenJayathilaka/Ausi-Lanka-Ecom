@@ -24,17 +24,11 @@ export const scrapeProduct = async (
   const urls = Array.isArray(productUrls) ? productUrls : [productUrls];
 
   try {
-    // 1. Trigger Inngest event (Background)
-    // We don't await this to block the response, or we can await it just to ensure it's sent.
-    // Awaiting is safer to ensure the event is queued.
-    await inngest.send({
-      name: "scraping/product.requested",
-      data: {
-        url: urls,
-        rate: rate,
-      },
-    });
-    console.log("Inngest event sent.");
+    // 1. (Optional) Trigger Inngest if needed for async processing/logging
+    // Currently disabled to prevent double scraping (foreground + background).
+    // if (needsAsyncProcessing) {
+    //   await inngest.send({ name: "scraping/product.requested", data: { url: urls, rate } });
+    // }
 
     // 2. Perform Synchronous Scraping (Foreground)
     // This is to satisfy the frontend's need for immediate results.

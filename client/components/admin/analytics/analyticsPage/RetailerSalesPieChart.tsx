@@ -8,6 +8,7 @@ import { Pie } from "react-chartjs-2";
 import { ErrorBoundary } from "react-error-boundary";
 import ChartError from "./chartError";
 import ChartLoading from "./chartLoading";
+import { useTheme } from "next-themes";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -37,6 +38,7 @@ export const RetailerSalesPieChart = () => {
 const RetailerSalesPieChartSuspense = () => {
   const { data, error } =
     trpc.orderAnalyticsRouter.getSalesByRetailer.useQuery();
+  const { theme } = useTheme();
 
   if (error) {
     return <ChartError />;
@@ -73,13 +75,16 @@ const RetailerSalesPieChartSuspense = () => {
           ...(others.length > 0 ? ["#CCCCCC"] : []),
         ],
         borderWidth: 1,
+        borderColor: theme === "dark" ? "#1e293b" : "#ffffff",
       },
     ],
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow">
-      <h2 className="text-lg font-semibold mb-4">Sales by Retailer</h2>
+    <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow dark:shadow-slate-900 border border-transparent dark:border-slate-700">
+      <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">
+        Sales by Retailer
+      </h2>
       <div className="h-64">
         <Pie
           data={chartData}
@@ -89,6 +94,9 @@ const RetailerSalesPieChartSuspense = () => {
             plugins: {
               legend: {
                 position: "right",
+                labels: {
+                  color: theme === "dark" ? "#e5e7eb" : "#374151",
+                },
               },
               tooltip: {
                 callbacks: {
@@ -108,7 +116,7 @@ const RetailerSalesPieChartSuspense = () => {
           }}
         />
       </div>
-      <div className="mt-4 text-sm text-gray-600">
+      <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
         <p>
           Showing top {topRetailers.length} retailers
           {others.length > 0 ? ` + ${others.length} others` : ""}

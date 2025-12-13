@@ -9,7 +9,7 @@ import { LkrFormat } from "@/utils/format";
 
 const AdminOrders = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
       <Suspense fallback={<LoadingSpinner />}>
         <ErrorBoundary fallback={<ErrorFallback />}>
           <ProductAdminPageSectionsSuspense />
@@ -49,16 +49,16 @@ const ProductAdminPageSectionsSuspense: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
         Product Management
       </h1>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-slate-900 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+            <thead className="bg-gray-50 dark:bg-slate-900">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Image
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -78,9 +78,12 @@ const ProductAdminPageSectionsSuspense: React.FC = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
               {data.pages[0].products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50">
+                <tr
+                  key={product.id}
+                  className="hover:bg-gray-50 dark:hover:bg-slate-700"
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex-shrink-0 h-10 w-10">
                       <Image
@@ -94,7 +97,7 @@ const ProductAdminPageSectionsSuspense: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {product.name}
                     </div>
                     {product.url && (
@@ -102,13 +105,13 @@ const ProductAdminPageSectionsSuspense: React.FC = () => {
                         href={product.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs text-blue-600 hover:underline"
+                        className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
                       >
                         View Product
                       </a>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {productCounts[product.name]}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

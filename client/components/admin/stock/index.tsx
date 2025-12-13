@@ -274,7 +274,9 @@ const InStockItemsManagement = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">In-Stock Items</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          In-Stock Items
+        </h1>
         <button
           onClick={handleCreate}
           className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
@@ -284,8 +286,8 @@ const InStockItemsManagement = () => {
       </div>
 
       {mode !== "view" && (
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-slate-900 p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
             {mode === "edit" ? "Edit Item" : "Create New Item"}
           </h2>
 
@@ -296,12 +298,12 @@ const InStockItemsManagement = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Name*
                 </label>
                 <input
                   {...form.register("name")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                 />
                 {form.formState.errors.name && (
                   <p className="mt-1 text-sm text-red-600">
@@ -312,12 +314,12 @@ const InStockItemsManagement = () => {
 
               {/* SKU */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   SKU*
                 </label>
                 <input
                   {...form.register("sku")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                 />
                 {form.formState.errors.sku && (
                   <p className="mt-1 text-sm text-red-600">
@@ -328,14 +330,14 @@ const InStockItemsManagement = () => {
 
               {/* Price */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Price*
                 </label>
                 <input
                   type="text"
                   step="0.01"
                   {...form.register("price")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                 />
                 {form.formState.errors.price && (
                   <p className="mt-1 text-sm text-red-600">
@@ -346,12 +348,12 @@ const InStockItemsManagement = () => {
 
               {/* Image */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Image URL*
                 </label>
                 <input
                   {...form.register("image")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                 />
                 {form.formState.errors.image && (
                   <p className="mt-1 text-sm text-red-600">
@@ -362,13 +364,13 @@ const InStockItemsManagement = () => {
 
               {/* URL */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   URL
                 </label>
                 <div className="relative">
                   <input
                     {...form.register("url")}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                     placeholder="Enter product URL to auto-fill details"
                   />
                   {urlLoading && (
@@ -384,12 +386,12 @@ const InStockItemsManagement = () => {
 
               {/* Retailer */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Retailer*
                 </label>
                 <input
                   {...form.register("retailer")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                 />
                 {form.formState.errors.retailer && (
                   <p className="mt-1 text-sm text-red-600">
@@ -400,14 +402,14 @@ const InStockItemsManagement = () => {
 
               {/* Quantity */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Quantity*
                 </label>
                 <input
                   type="number"
                   min="0"
                   {...form.register("quantity", { valueAsNumber: true })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                 />
                 {form.formState.errors.quantity && (
                   <p className="mt-1 text-sm text-red-600">
@@ -418,14 +420,14 @@ const InStockItemsManagement = () => {
 
               {/* Threshold */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Threshold*
                 </label>
                 <input
                   type="number"
                   min="0"
                   {...form.register("threshold", { valueAsNumber: true })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                 />
                 {form.formState.errors.threshold && (
                   <p className="mt-1 text-sm text-red-600">
@@ -436,12 +438,12 @@ const InStockItemsManagement = () => {
 
               {/* Location */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Location
                 </label>
                 <select
                   {...form.register("location")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                   defaultValue="Sri Lanka" // or "Australia"
                 >
                   <option value="Sri Lanka">Sri Lanka</option>
@@ -451,12 +453,12 @@ const InStockItemsManagement = () => {
 
               {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Category
                 </label>
                 <select
                   {...form.register("category")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                 >
                   <option value="">Select a category</option>
                   <option value="Supermarket">Supermarket</option>
@@ -468,13 +470,13 @@ const InStockItemsManagement = () => {
 
               {/* Description */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Description
                 </label>
                 <textarea
                   {...form.register("description")}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
                 />
               </div>
             </div>
@@ -483,7 +485,7 @@ const InStockItemsManagement = () => {
               <button
                 type="button"
                 onClick={() => setMode("view")}
-                className="px-4 py-2 border border-gray-300 rounded-md"
+                className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
               >
                 Cancel
               </button>
@@ -500,12 +502,12 @@ const InStockItemsManagement = () => {
       )}
 
       {/* Items Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-slate-900 overflow-hidden">
         <div className="overflow-x-auto no-scrollbar">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+            <thead className="bg-gray-50 dark:bg-slate-900">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Product
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -528,9 +530,12 @@ const InStockItemsManagement = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
               {data?.items.map((item) => (
-                <tr key={item.id}>
+                <tr
+                  key={item.id}
+                  className="hover:bg-gray-50 dark:hover:bg-slate-700"
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
@@ -545,40 +550,40 @@ const InStockItemsManagement = () => {
                         />
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                           {item.name}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
                           {item.category}
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {item.sku}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {LkrFormat(Number(item.price))}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {item.retailer}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {item.quantity}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {item.threshold}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
                       onClick={() => handleEdit(item)}
-                      className="text-blue-600 hover:text-blue-900 mr-4"
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-4"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(item.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
                     >
                       Delete
                     </button>

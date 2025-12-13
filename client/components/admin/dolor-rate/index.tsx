@@ -140,8 +140,8 @@ const DollarRateSection = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow p-6">
-        <h1 className="text-2xl font-bold mb-6 text-gray-900">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-slate-900 p-6">
+        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
           Latest Dollar Rate
         </h1>
 
@@ -150,14 +150,14 @@ const DollarRateSection = () => {
             <input type="hidden" {...form.register("id")} />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Dollar Rate
               </label>
               <input
                 type="number"
                 step="0.01"
                 {...form.register("rate", { valueAsNumber: true })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
               />
               {form.formState.errors.rate && (
                 <p className="mt-1 text-sm text-red-600">
@@ -167,13 +167,13 @@ const DollarRateSection = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Notes (Optional)
               </label>
               <textarea
                 {...form.register("notes")}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
               />
             </div>
 
@@ -181,7 +181,7 @@ const DollarRateSection = () => {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 Cancel
               </button>
@@ -205,13 +205,13 @@ const DollarRateSection = () => {
         ) : latestRate ? (
           <div className="space-y-4">
             <div>
-              <h2 className="text-lg font-medium text-gray-900">
+              <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                 Current Rate
               </h2>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                 ${Number(latestRate.rate).toFixed(2)}
               </p>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
                 Last updated:{" "}
                 {new Date(latestRate.updatedAt).toLocaleString("en-US")}
               </p>
@@ -219,8 +219,12 @@ const DollarRateSection = () => {
 
             {latestRate.notes && (
               <div>
-                <h2 className="text-lg font-medium text-gray-900">Notes</h2>
-                <p className="mt-1 text-sm text-gray-600">{latestRate.notes}</p>
+                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                  Notes
+                </h2>
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                  {latestRate.notes}
+                </p>
               </div>
             )}
 
@@ -235,7 +239,9 @@ const DollarRateSection = () => {
           </div>
         ) : (
           <div className="text-center py-8">
-            <p className="text-gray-500 mb-4">No dollar rate set yet</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-4">
+              No dollar rate set yet
+            </p>
             <button
               onClick={handleEditClick}
               className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
