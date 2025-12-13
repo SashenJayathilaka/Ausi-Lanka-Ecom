@@ -3,10 +3,13 @@ module.exports = {
     {
       name: "server",
       script: "npm",
-      args: "run dev",
+      args: "start", // Uses 'npm start' which runs 'node dist/index.js'
       env: {
-        NODE_ENV: "development",
-        ENV_VAR1: "environment-variable",
+        NODE_ENV: "production",
+        PORT: 5000,
+        // Add your Inngest keys here (Get these from inngest.com)
+        INNGEST_EVENT_KEY: "your_event_key_here",
+        INNGEST_SIGNING_KEY: "your_signing_key_here",
       },
     },
   ],
