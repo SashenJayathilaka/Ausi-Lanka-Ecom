@@ -44,7 +44,7 @@ const ChemistWareHouse = () => {
   const [error, setError] = useState<string | null>(null);
   const [showBucket, setShowBucket] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
-  /* console.log("🚀 ~ ChemistWareHouse ~ showCopied:", showCopied); */
+  console.log("🚀 ~ ChemistWareHouse ~ showCopied:", showCopied);
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [scrapingStep, setScrapingStep] = useState<string>("");
