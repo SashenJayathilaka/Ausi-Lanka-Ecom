@@ -2,6 +2,7 @@ import AdvertisementSection from "@/components/home/advertisement-section";
 import ChristmasAdvertisement from "@/components/home/christmas-advertisement";
 import CompanyLogo from "@/components/home/company-logo";
 import FeaturesSection from "@/components/home/features-section";
+import CategorySection from "@/components/home/category-section";
 import Footer from "@/components/home/footer";
 import Hero from "@/components/home/hero-section";
 import MonitorSection from "@/components/home/monitor-section";
@@ -28,6 +29,7 @@ export default async function Home() {
         {user ? <SessionIn /> : <SessionNot />}
         <Hero />
         <CompanyLogo />
+        <CategorySection />
         <HydrateClient>
           <ShippingCountdown isSmall />
         </HydrateClient>

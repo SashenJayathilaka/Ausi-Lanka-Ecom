@@ -47,6 +47,12 @@ const ChemistWareHouse = () => {
   console.log("🚀 ~ ChemistWareHouse ~ showCopied:", showCopied);
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [scrapingStep, setScrapingStep] = useState<string>("");
+  const [isSticky, setIsSticky] = useState(false);
+  const [autoScrapeEnabled, setAutoScrapeEnabled] = useState(true);
+  const [urlValidation, setUrlValidation] = useState<
+    "valid" | "invalid" | "empty"
+  >("empty");
 
   // Supported retailers data with color schemes
   const supportedRetailers = [
@@ -56,6 +62,7 @@ const ChemistWareHouse = () => {
       logo: "/assets/partner_chemistwarehouse.webp",
       color: "from-amber-500 to-amber-600",
       bgColor: "bg-amber-100 dark:bg-amber-900/30",
+      exampleUrl: "https://www.chemistwarehouse.com.au/buy/12345/product-name",
     },
     {
       name: "Coles",
@@ -63,6 +70,7 @@ const ChemistWareHouse = () => {
       logo: "/assets/coles.png",
       color: "from-red-500 to-red-600",
       bgColor: "bg-red-100 dark:bg-red-900/30",
+      exampleUrl: "https://www.coles.com.au/product/product-name-12345",
     },
     {
       name: "ALDI",
@@ -70,6 +78,7 @@ const ChemistWareHouse = () => {
       logo: "/assets/Aldi-Logo.png",
       color: "from-purple-500 to-purple-600",
       bgColor: "bg-purple-100 dark:bg-purple-900/30",
+      exampleUrl: "https://www.aldi.com.au/en/groceries/product/",
     },
     {
       name: "Woolworths",
@@ -77,6 +86,7 @@ const ChemistWareHouse = () => {
       logo: "/assets/woolworths.png",
       color: "from-green-600 to-green-700",
       bgColor: "bg-green-100 dark:bg-green-900/30",
+      exampleUrl: "https://www.woolworths.com.au/shop/productdetails/12345",
     },
     /*     {
       name: "JB Hi-Fi",
@@ -91,6 +101,7 @@ const ChemistWareHouse = () => {
       logo: "/assets/officeworks.png",
       color: "from-purple-500 to-purple-600",
       bgColor: "bg-purple-100 dark:bg-purple-900/30",
+      exampleUrl: "https://www.officeworks.com.au/shop/product-name-p12345",
     },
   ];
 
@@ -99,6 +110,13 @@ const ChemistWareHouse = () => {
   useEffect(() => {
     setMounted(true);
     setIsLoading(false);
+
+    // Sticky bar scroll listener
+    const handleScroll = () => {
+      setIsSticky(window.scrollY > 400);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,7 +133,15 @@ const ChemistWareHouse = () => {
       setTimeout(() => setShowCopied(false), 2000);
 
       if (isValidUrl(clipboardText)) {
-        await handleScrape(clipboardText);
+        // Auto-scrape if enabled
+        if (autoScrapeEnabled) {
+          toast.success("Valid URL detected! Starting analysis...", {
+            duration: 2000,
+          });
+          await handleScrape(clipboardText);
+        } else {
+          toast.success("Valid URL pasted! Click Analyze to continue.");
+        }
       } else {
         toast.warning("Clipboard doesn't contain a supported retailer URL");
       }
@@ -152,10 +178,17 @@ const ChemistWareHouse = () => {
     }
 
     setLoading(true);
+    setScrapingStep("Fetching product data...");
+
     try {
+      // Simulate progress steps
+      setTimeout(() => setScrapingStep("Analyzing product details..."), 800);
+      setTimeout(() => setScrapingStep("Calculating LKR price..."), 1600);
+
       const result = await scrapeMutation.mutateAsync({ url: targetUrl });
 
       if (result.success && result.data) {
+        setScrapingStep("Complete!");
         setData(result.data);
         toast.success("Product data analyzed successfully!");
       } else {
@@ -170,6 +203,7 @@ const ChemistWareHouse = () => {
       toast.error(errorMessage);
     } finally {
       setLoading(false);
+      setTimeout(() => setScrapingStep(""), 1000);
     }
   };
 
@@ -189,6 +223,18 @@ const ChemistWareHouse = () => {
       toast.success("Product added to your collection!");
     }
   };
+
+  // Real-time URL validation
+  useEffect(() => {
+    if (!url.trim()) {
+      setUrlValidation("empty");
+    } else if (isValidUrl(url)) {
+      setUrlValidation("valid");
+    } else {
+      setUrlValidation("invalid");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -223,6 +269,64 @@ const ChemistWareHouse = () => {
       variants={staggerContainer()}
       className="min-h-screen bg-gray-50 dark:bg-gray-900 relative overflow-hidden"
     >
+      {/* Sticky Compact Search Bar */}
+      <AnimatePresence>
+        {isSticky && !loading && (
+          <motion.div
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
+            className="fixed top-0 left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-gray-200 dark:border-gray-700"
+          >
+            <div className="container mx-auto px-4 py-3">
+              <div className="flex items-center gap-3 max-w-4xl mx-auto">
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900 text-gray-900 dark:text-white placeholder-gray-400 text-sm transition-all"
+                    placeholder="Paste product URL for instant analysis..."
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleScrape()}
+                    disabled={loading}
+                  />
+                  {urlValidation === "valid" && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                      <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+                        Valid
+                      </span>
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    </div>
+                  )}
+                  {urlValidation === "invalid" && url.length > 10 && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <span className="text-xs text-red-600 dark:text-red-400 font-medium">
+                        Invalid URL
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={handlePaste}
+                  className="px-4 py-2.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium text-sm transition-all flex items-center gap-2"
+                >
+                  <FiClipboard className="h-4 w-4" />
+                  Paste
+                </button>
+                <button
+                  onClick={() => handleScrape()}
+                  disabled={loading || urlValidation !== "valid"}
+                  className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-lg font-bold text-sm transition-all flex items-center gap-2 disabled:cursor-not-allowed"
+                >
+                  <span>Analyze</span>
+                  <RiPriceTag3Line className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Main Content */}
       <div className="pt-24 pb-16 container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
@@ -258,7 +362,7 @@ const ChemistWareHouse = () => {
                 <div className="flex-1 relative group">
                   <input
                     type="text"
-                    className="w-full px-6 py-4 rounded-xl bg-white/20 backdrop-blur-sm border-2 border-white/30 focus:border-white/50 focus:ring-4 focus:ring-white/10 text-white placeholder-blue-100/80 font-medium text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:bg-white/30 focus:shadow-2xl focus:bg-white/30"
+                    className="w-full px-6 py-4 pr-24 rounded-xl bg-white/20 backdrop-blur-sm border-2 border-white/30 focus:border-white/50 focus:ring-4 focus:ring-white/10 text-white placeholder-blue-100/80 font-medium text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:bg-white/30 focus:shadow-2xl focus:bg-white/30"
                     placeholder="Paste product URL here..."
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
@@ -266,6 +370,32 @@ const ChemistWareHouse = () => {
                     aria-label="Product URL input"
                     disabled={loading}
                   />
+                  {urlValidation === "valid" && !loading && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute right-16 top-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-green-500/20 backdrop-blur-sm px-2.5 py-1 rounded-lg"
+                    >
+                      <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                      <span className="text-xs text-white font-semibold">
+                        Valid
+                      </span>
+                    </motion.div>
+                  )}
+                  {urlValidation === "invalid" &&
+                    url.length > 10 &&
+                    !loading && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute right-16 top-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-red-500/20 backdrop-blur-sm px-2.5 py-1 rounded-lg"
+                      >
+                        <FiX className="w-3 h-3 text-red-300" />
+                        <span className="text-xs text-white font-semibold">
+                          Invalid
+                        </span>
+                      </motion.div>
+                    )}
                   <motion.button
                     onClick={handlePaste}
                     type="button"
@@ -283,11 +413,18 @@ const ChemistWareHouse = () => {
                 </div>
                 <button
                   onClick={() => handleScrape()}
-                  disabled={loading}
-                  className="px-6 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all hover:bg-gray-100"
+                  disabled={loading || urlValidation !== "valid"}
+                  className="px-6 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
-                    <AiOutlineLoading3Quarters className="animate-spin h-6 w-6" />
+                    <div className="flex flex-col items-center gap-1">
+                      <AiOutlineLoading3Quarters className="animate-spin h-6 w-6" />
+                      {scrapingStep && (
+                        <span className="text-xs font-normal">
+                          {scrapingStep}
+                        </span>
+                      )}
+                    </div>
                   ) : (
                     <>
                       <span>Analyze</span>
@@ -297,8 +434,21 @@ const ChemistWareHouse = () => {
                 </button>
               </div>
 
-              <div className="mt-6 flex flex-col items-center justify-between">
+              <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <ShippingCountdown className="text-white font-medium" />
+                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={autoScrapeEnabled}
+                      onChange={(e) => setAutoScrapeEnabled(e.target.checked)}
+                      className="w-4 h-4 rounded border-white/30 bg-white/20 text-indigo-600 focus:ring-2 focus:ring-white/50"
+                    />
+                    <span className="text-sm text-white font-medium">
+                      Auto-analyze on paste
+                    </span>
+                  </label>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -317,28 +467,44 @@ const ChemistWareHouse = () => {
               viewport={{ once: true }}
             >
               {supportedRetailers.map((retailer, index) => (
-                <motion.a
+                <motion.div
                   key={retailer.name}
-                  href={retailer.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   variants={fadeIn("up", 0.2 + index * 0.1)}
                   whileHover={{ y: -5 }}
-                  className={`group rounded-xl overflow-hidden shadow-md ${retailer.bgColor} dark:border dark:border-gray-700/50`}
+                  className={`group rounded-xl overflow-hidden shadow-md ${retailer.bgColor} dark:border dark:border-gray-700/50 cursor-pointer relative`}
                 >
-                  <div className="p-4 flex flex-col items-center">
-                    <div className="w-16 h-16 mb-3 flex items-center justify-center">
-                      <img
-                        src={retailer.logo}
-                        alt={retailer.name}
-                        className="w-full h-full object-contain"
-                      />
+                  <a
+                    href={retailer.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <div className="p-4 flex flex-col items-center">
+                      <div className="w-16 h-16 mb-3 flex items-center justify-center">
+                        <img
+                          src={retailer.logo}
+                          alt={retailer.name}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <span className="text-sm font-medium text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                        {retailer.name}
+                      </span>
                     </div>
-                    <span className="text-sm font-medium text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                      {retailer.name}
-                    </span>
+                  </a>
+                  {/* Tooltip with example URL */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                    <div className="bg-gray-900 dark:bg-gray-700 text-white text-xs px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
+                      <div className="font-semibold mb-1">Example URL:</div>
+                      <div className="text-gray-300 dark:text-gray-400 text-[10px] font-mono">
+                        {retailer.exampleUrl}
+                      </div>
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
+                        <div className="border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                      </div>
+                    </div>
                   </div>
-                </motion.a>
+                </motion.div>
               ))}
             </motion.div>
 
