@@ -98,7 +98,7 @@ const initCluster = async () => {
   if (!cluster) {
     const launchOptions: any = {
       concurrency: Cluster.CONCURRENCY_CONTEXT,
-      maxConcurrency: Number(process.env.MAX_CONCURRENCY) || 5,
+      maxConcurrency: 5,
       puppeteer, // Use puppeteer-extra
       puppeteerOptions: {
         headless: true,
